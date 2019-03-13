@@ -1,0 +1,83 @@
+.progressBar
+	color: $blue 
+	+rem('font-size', 14px)
+	margin: 35px 0 0
+	max-width: 625px
+	&.-sticky
+		display: block 
+		max-width: initial 
+		margin-bottom: 0
+		position: fixed
+		top: -100%
+		left: 0
+		+transition(500ms)
+		z-index: 1000
+		width: 100%
+		background: white
+		.progressCaption
+			display: none
+		.progressLoader
+			margin: 0 auto
+			overflow: hidden
+		.progressStatus
+			display: none
+		&.-stuck
+			top: -35px
+		>ul 
+			>li:first-child
+				display: none	
+	>ul 
+		>li 
+			display: block 
+			&.progressLoader
+				border: 1px $blue solid
+				background-color: whitesmoke
+				height: 35px
+				margin: -25px 0 5px !important
+				position: relative
+				width: 100%
+				>span
+					background-color: $orange
+					content: ''
+					display: block 
+					height: 100%
+					min-width: 1%
+					left: 0
+					position: absolute 
+					top: 0
+					transition: width 500ms
+			&.progressStatus
+				left: 0
+				position: relative
+				+transition(500ms)
+			&.progressCaption
+				>ul 
+					align-items: flex-start
+					@extend .flex 
+					flex-flow: row 
+					justify-content: space-between
+					// transform: scale(.75)
+					// left: -65px
+					> li 
+						&:first-of-type ~ *,
+						&.filled ~ *
+							@extend .disabled
+							background-color: initial
+						flex: 0 0 auto
+						+rem('font-size', 12px)
+						// transform: rotateZ(90deg)
+						transform-origin: 0 0
+						text-transform: uppercase
+			&:not(:last-child)
+				margin-bottom: 35px
+#subfamilia
+	background-color: $lightblue
+	margin-right: -40px
+	padding: 20px 40px 55px 0
+	.subfamilia_result
+		bottom: 30px
+		color: $blue 
+		+rem('font-size', 15px)
+		padding-left: 170px
+		padding-top: 15px	
+		position: absolute 

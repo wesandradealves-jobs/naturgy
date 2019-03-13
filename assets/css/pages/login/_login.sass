@@ -1,0 +1,60 @@
+.pg-login
+	#wrap 
+		align-items: flex-start
+		@extend .flex 
+		flex-flow: column wrap 
+		justify-content: space-between
+		#header,
+		.main
+			flex: 0 0 auto  
+			width: 100%
+		.main 
+			align-items: center
+			@extend .flex  
+			flex-flow: column wrap 
+			flex: 1
+			justify-content: center
+			padding: 30px 50px
+			+mq(640px, max)
+				padding: 30px
+			.login-form
+				background-color: $lightblue
+				color: $blue
+				padding: 75px 165px
+				+mq(814px, max)
+					padding: 75px
+					+mq(568px, max)
+						padding: 75px 30px
+				&-footer 
+					>* 
+						flex: 1
+						+mq(480px, max)
+							width: 100%
+							&:first-child 
+								order: 2
+								& + * 
+									margin-bottom: 6px
+									order: 1
+						.btn 	
+						    display: block
+						    margin-left: auto
+						    +mq(480px, max)
+						    	max-width: 100%
+				&-text
+					display: block 
+					+rem('font-size', 16px)
+					margin: 0 auto 60px
+					text-align: center  
+				.fieldset
+					max-width: 400px
+					margin-left: auto 
+					margin-right: auto
+				a 	
+					+mq(480px, max)
+						+rem('font-size', 12px)
+					.fal
+						display: inline-block 
+						font-style: initial
+						margin-right: 4px
+						vertical-align: middle 
+					text-decoration: underline 

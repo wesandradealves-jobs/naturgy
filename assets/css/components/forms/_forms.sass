@@ -1,0 +1,175 @@
+.forms
+	#sociedades
+		margin: 25px 0 35px
+		.row
+			>div:first-child
+				flex: 0 0 auto
+				width: 135px
+	.rodadas
+		display: block 
+		width: 100%
+		&-footer
+			align-items: center
+			@extend .flex 
+			flex-flow: row wrap 
+			justify-content: flex-end
+			> * 
+				margin-left: auto 
+		.btn 
+		    display: block
+		    +rem(('line-height':40px))
+		    height: 40px
+		    padding: 0px 35px
+	.custom-checkbox
+	    border: 1px lightblue solid
+	    border-radius: 3px
+	    color: lightblue	
+	    height: 30px
+	    line-height: 30px
+	    text-align: center
+	    width: 30px
+	.obs
+		bottom: -14px
+		color: coral	
+		display: block
+		+rem('font-size', 10px)
+		position: absolute
+		right: 0
+	.error-message
+		color: red 
+		display: block 
+		+rem('font-size', 12px)
+		font-style: italic
+		margin: 15px auto 0
+		text-align: center
+		&.success
+			color: lightgreen
+	&-header-text
+		color: $blue 
+		+rem('font-size', 15px)
+		font-weight: bold 
+		margin: 10px 0 25px
+		padding-left: 12px
+	&-footer
+		@extend .flex 
+		flex-flow: row 
+		justify-content: flex-end !important
+		margin-bottom: 35px
+		&.-sticky
+			bottom: -100%
+			@extend .flex 
+			align-items: flex-end
+			flex-flow: row wrap 
+			justify-content: flex-end 
+			background-color: rgba(255,255,255,.75) 
+			left: 0
+			padding: 10px 15px
+			position: fixed
+			+shadow(0, 0, 20px, -15px, black)
+			+transition(500ms)
+			width: 100% 
+			z-index: 100
+			&.-stuck
+				bottom: -35px
+	.btn 
+		max-width: 165px
+		width: 100%
+	[id*="section"]
+		margin-bottom: 45px
+	.disabled
+		background-color: transparent
+		&.btn
+			background-color: $blue !important
+	.fieldset
+		align-items: center 
+		@extend .flex
+		flex-flow: row 
+		justify-content: space-between
+		&:not(:last-child)
+			margin-bottom: 20px
+		+mq(480px, max)
+			align-items: flex-start
+			flex-flow: column wrap
+			justify-content: flex-start
+		>span 
+			>span 
+				display: block
+				position: relative
+				.removeElement
+					color: lightgray
+					display: block
+					position: absolute
+					padding: 0 35px
+					right: 0  
+					top: calc(50% - 20px/2)
+					z-index: 2 
+				&:not(:last-of-type)
+					margin-bottom: 15px
+		>label
+			flex: 0 0 auto
+			+rem('font-size', 16px)
+			padding-right: 15px
+			text-align: right  
+			width: 75px
+			+mq(480px, max)
+				padding-right: 0
+				padding-bottom: 4px
+				text-align: left
+				width: 100%
+			& + * 
+				flex: 1
+				+mq(480px, max)
+					width: 100%
+		.custom-combobox,
+		input:not([type='submit']):not([type='checkbox']):not([type='radio'])
+			border: 1px $lightgray solid
+			color: $blue
+			display: block
+			+rem(('font-size' : 16px, 'line-height' : 45px))
+			padding: 0 15px 
+			height: 45px
+			width: 100%
+			select 
+				color: inherit
+				height: inherit
+				font-size: inherit 
+				line-height: inherit
+	.rows 
+		>.row
+			align-items: center 
+			@extend .flex
+			flex-flow: row wrap 
+			justify-content: space-between
+			&:not(:last-of-type)
+				margin-bottom: 15px
+			> div 
+				flex: 1
+				@extend .fieldset
+				display: block 
+				margin-bottom: 0 !important
+				&:not(:last-of-type)
+					padding-right: 15px
+	.columns
+		align-items: center 
+		@extend .flex 
+		flex-flow: row wrap 
+		justify-content: space-between
+		margin: 45px 0
+		& + .columns 
+			margin-top: -35px !important
+		> * 
+			flex: 1
+			&:not(:last-child)
+				margin-bottom: 0
+				padding-right: 15px
+			&.fieldset
+				> label 
+					min-width: initial !important
+					width: auto 
+		> strong 
+			color: $blue
+			flex: 0 0 auto
+			padding-bottom: 15px 
+			padding-right: 0
+			text-transform: uppercase
+			width: 100%

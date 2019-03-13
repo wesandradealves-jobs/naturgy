@@ -1,0 +1,132 @@
+RewriteEngine On
+
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond %{SCRIPT_FILENAME} !-d
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteCond %{REQUEST_URI} !^/dashboard
+
+RewriteRule ^login index.php [L]
+
+RewriteRule ^404 404.php [L]
+
+ErrorDocument 404 /404
+
+RewriteRule ^dashboard/([0-9]+) usuario.php?id=$1 [L]
+
+RewriteRule ^usuarios usuarios.php [L]
+
+RewriteRule ^usuarios/?p=([0-9]+) usuarios.php?page=$1 [L]
+
+RewriteRule ^cadastro/usuarios usuario.php [L]
+
+RewriteRule ^usuario/([0-9]+) usuario.php?id=$1 [L]
+
+RewriteRule ^busca/usuarios usuarios [L]
+
+RewriteRule ^busca/usuarios/(.*)/(.*) usuarios.php?nome=$1&sap=$2 [L]
+
+RewriteRule ^processos processos.php [L]
+
+RewriteRule ^processos/?p=([0-9]+) processos.php?page=$1 [L]
+
+RewriteRule ^cadastro/processos processo.php [L]
+
+RewriteRule ^processo/([0-9]+)/([0-9]+) processo.php?uid=$1&id=$2 [L]
+
+RewriteRule ^busca/processos processos [L]
+
+RewriteRule ^busca/processos/(.*)/(.*)/(.*) processos.php?numero_processo=$1&nome_processo=$2&tipo_processo=$3 [L]
+
+RewriteRule ^cadastro/processos/tipos-de-processo tipos-de-processo.php [L]
+
+RewriteRule ^cadastro/processos/tipos-de-processo/?p=([0-9]+) tipos-de-processo.php?page=$1 [L]
+
+RewriteRule ^cadastro/processos/tipos-de-processo/([0-9]+) tipo-de-processo.php?id=$1 [L]
+
+RewriteRule ^cadastro/processos/subfamilias subfamilias.php [L]
+
+RewriteRule ^cadastro/processos/subfamilias/?p=([0-9]+) subfamilias.php?page=$1 [L]
+
+RewriteRule ^cadastro/processos/subfamilias/([0-9]+) subfamilia.php?id=$1 [L]
+
+RewriteRule ^reset reset.php [L]
+
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/atom_xml
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-httpd-php
+    AddOutputFilterByType DEFLATE application/x-httpd-fastphp
+    AddOutputFilterByType DEFLATE application/x-httpd-eruby
+    AddOutputFilterByType DEFLATE text/html
+
+    SetOutputFilter DEFLATE
+
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+
+    BrowserMatch ^Mozilla/4.0[678] no-gzip
+
+    BrowserMatch ^HMSI[E] !no-gzip !gzip-only-text/html
+
+    SetEnvIfNoCase Request_URI .(?:gif|jpe?g|png)$ no-gzip dont-vary
+</IfModule>
+
+#Força a utilizar Cache-Control e Expires header
+<IfModule mod_headers.c>
+    Header unset ETag
+</IfModule>
+    FileETag None
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresDefault "access plus 1 month"
+    ExpiresByType text/cache-manifest "access plus 0 seconds"
+    # Html
+    ExpiresByType text/html "access plus 0 seconds"
+    # Data
+    ExpiresByType text/xml "access plus 0 seconds"
+    ExpiresByType application/xml "access plus 0 seconds"
+    ExpiresByType application/json "access plus 0 seconds"
+    # Feed
+    ExpiresByType application/rss+xml "access plus 1 hour"
+    ExpiresByType application/atom+xml "access plus 1 hour"
+    # Favicon
+    ExpiresByType image/x-icon "access plus 1 week"
+    # Media: images, video, audio
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType video/ogg "access plus 1 month"
+    ExpiresByType audio/ogg "access plus 1 month"
+    ExpiresByType video/mp4 "access plus 1 month"
+    ExpiresByType video/webm "access plus 1 month"
+    # HTC files
+    ExpiresByType text/x-component "access plus 1 month"
+    # Webfonts
+    ExpiresByType application/x-font-ttf "access plus 1 month"
+    ExpiresByType font/opentype "access plus 1 month"
+    ExpiresByType application/x-font-woff "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 month"
+    # CSS / JS
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType application/x-javascript "access plus 1 year"
+</IfModule>
+#Força o IE a sempre carregar utilizando a última versão disponível
+<IfModule mod_headers.c>
+    Header set X-UA-Compatible "IE=Edge,chrome=1"
+    <FilesMatch "\.(js|css|gif|png|jpeg|pdf|xml|oga|ogg|m4a|ogv|mp4|m4v|webm|svg|svgz|eot|ttf|otf|woff|ico|webp|appcache|manifest|htc|crx|oex|xpi|safariextz|vcf)$" >
+        Header unset X-UA-Compatible
+    </FilesMatch>
+</IfModule>

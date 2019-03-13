@@ -1,0 +1,143 @@
+.pg-dashboard
+	.rodadas
+		&-footer
+			>div 
+				align-items: center 
+				@extend .flex 
+				flex-flow: row 
+				justify-content: flex-end
+				width: 100%
+				>.btn 
+					flex: 0 0 auto
+					min-width: initial
+					width: initial
+		&-header 
+			align-items: flex-end 
+			color: $blue 
+			font-weight: bold 
+			@extend .flex 
+			flex-flow: row wrap 
+			justify-content: space-between
+			margin-bottom: 15px  
+		ul 
+			align-items: stretch
+			@extend .flex 
+			flex-flow: row wrap 
+			justify-content: space-between
+			margin: 0 -15px
+			>li 
+				+border(5px)
+				background-color: lighten($teal, 25%)
+				margin: 0 15px
+				padding: 15px
+				flex: 1
+				&:first-child
+					>.rodadas-footer
+						>div 
+							>.btn[onclick='remove(this)']
+								@extend .disabled
+				&:not(:last-child)
+					margin-bottom: 15px
+				>.fieldset
+					flex-flow: row
+					>label 
+						min-width: 94px !important
+	// .forms 
+	// 	&:not(.edit)
+	// 		[id*='section_']
+	// 			&:first-of-type ~ [id*='section_'],
+	// 			&.filled ~ [id*='section_']
+	// 				@extend .disabled
+	// 				background-color: initial
+	// 			&.enabled
+	// 				cursor: initial !important
+	// 				opacity: 1 !important
+	// 				pointer-events: initial !important
+	#section_15
+		.fieldset
+			flex: 0 0 auto 
+			width: 33.333%
+			input 
+				max-width: 115px
+	#section_7
+		.columns 
+			align-items: flex-start
+			flex-flow: row
+	#section_2
+		text-transform: uppercase
+		.rows 
+			>.row 
+				color: $blue
+				>div:first-child 
+					flex: 0 0 auto 
+					width: 20%
+	.forms
+		&.register
+			max-width: 625px
+			.add-more
+				background-color: $teal
+				+border(4px)
+				color: white
+				display: block
+				+rem(('font-size' : 16px, 'line-height' : 45px))
+				height: 45px
+				margin-left: 15px
+				text-align: center
+				width: 45px
+			.fieldset
+				>label 
+					color: $blue
+					min-width: 170px
+					>small 
+						display: block
+				input:not([type='submit']):not([type='checkbox']):not([type='radio'])
+					&:not(:first-of-type)
+						margin-top: 15px
+					&:focus 
+						border-color: lightblue
+						background-color: lighten(lightblue, 16%)	
+	.navigation
+		background-color: $blue 
+		border-top: 4px white solid
+		color: white
+		+mq(767px, max)
+			overflow: auto
+		.container  
+			padding-top: 10px
+			padding-bottom: 10px
+			+mq(767px, max)
+				width: 760px
+			>ul 
+				text-align: center
+				>li 
+					&.disabled
+						background-color: transparent !important
+					display: inline-block
+					+rem(('line-height' : 30px, 'font-size' : 15.5px))
+					+mq(1024px, max)
+						+rem('font-size', 14px)
+						+mq(930px, max)
+							+rem('font-size', 11px)
+					text-align: center
+					text-transform: uppercase
+					vertical-align: middle 
+					&:hover > a 
+						color: lightblue 
+						text-decoration: underline
+					&:not(:last-child)
+						&::after 
+							bottom: 3px
+							background-color: $orange 
+							content: ''
+							display: inline-block
+							height: 15px
+							margin: 0 20.5px
+							+mq(1080px, max)
+								margin: 0 16px
+								+mq(1050px, max)
+									margin: 0 12px
+									+mq(1024px, max)
+										margin: 7.5px
+							position: relative
+							vertical-align: middle 
+							width: 2px
