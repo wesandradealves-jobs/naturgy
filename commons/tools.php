@@ -48,28 +48,35 @@
                         <div class="fieldset">
                             <label for="numero_processo">Número do processo</label>
                             <span>
-                                <input name="numero_processo" type="text">
+                                <input name="search['numero_processo']" type="text">
                             </span>
                         </div>
                         <div class="fieldset">
                             <label for="nome_processo">Nome do processo</label>
                             <span>
-                                <input name="nome_processo" type="text">
+                                <input name="search['nome_processo']" type="text">
                             </span>
                         </div>
-         <!--                <div class="fieldset">
+                        <div class="fieldset">
                             <label for="tipo_processo">Tipo do processo</label>
                             <span class="custom-combobox">
                                 <i class="fal fa-angle-down"></i>
-                                <select name="tipo_processo">
-                                    <option value="">Lorem ipsum dolor.</option>
+                                <select name="search['tipo_processo']">
+                                  <option value="">Selecione uma opção</option>
+                                  <?php 
+                                    $tipo_processo = $conn->query("SELECT * FROM `processos_tipos` ORDER BY tipo");
+                                    while($row = $tipo_processo->fetch_assoc()) :
+                                      echo '<option value="'.$row['tipo'].'">'.$row['tipo'].'</option>';
+                                    endwhile;
+                                  ?>
+                 <!--                    <option value="">Lorem ipsum dolor.</option>
                                     <option value="">Delectus ab, labore.</option>
                                     <option value="">Iste, ut, nihil!</option>
                                     <option value="">Voluptatibus, cumque, ab.</option>
-                                    <option value="">Iure, quis voluptatum.</option>
+                                    <option value="">Iure, quis voluptatum.</option> -->
                                 </select>
                             </span>
-                        </div> -->
+                        </div>
                       <?php
                       endif;
                     ?>        

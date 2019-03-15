@@ -33,7 +33,7 @@
 				while($row = mysqli_fetch_array($resresponsaveis)) :
 					if($_SESSION['userType'] == 'responsavel'){
 						if($_SESSION['uid'] == $row['responsavel']){
-							array_push($proc_by_resp, array('pid'=>$row['pid']));
+							array_push($proc_by_resp, array('pid'=>$row['pid'],'rid'=>$row['responsavel']));
 						}
 					} else {
 						array_push($proc_by_resp, array('pid'=>$row['pid'],'rid'=>$row['responsavel']));
@@ -59,43 +59,25 @@
 				$total_rows = mysqli_fetch_array($result)[0];
 				$total_pages = ceil($total_rows / $no_of_records_per_page);
 
-				if($_SESSION['userType'] == 'comprador'){
-					if((isset($_GET['nome_processo']) && isset($_GET['numero_processo'])) && ($_GET['nome_processo'] != '' || $_GET['numero_processo'] != '')){
-						if($_GET['nome_processo'] && $_GET['numero_processo'] == ''){
-							$sql = "SELECT * FROM processos WHERE `processos`.uid = ".$_SESSION['uid']." AND `processos`.nome_processo = '".$_GET['nome_processo']."' LIMIT ".$offset.','.$no_of_records_per_page;
-						} elseif($_GET['nome_processo'] == '' && $_GET['numero_processo']){
-							$sql = "SELECT * FROM processos WHERE `processos`.uid = ".$_SESSION['uid']." AND `processos`.nome_processo != '".$_GET['nome_processo']."' AND `processos`.numero_processo = '".$_GET['numero_processo']."' LIMIT ".$offset.','.$no_of_records_per_page;
-						} else {
-							$sql = "SELECT * FROM processos WHERE `processos`.uid = ".$_SESSION['uid']." AND `processos`.numero_processo = '".$_GET['numero_processo']."' AND `processos`.nome_processo = '".$_GET['nome_processo']."'LIMIT ".$offset.','.$no_of_records_per_page;
+				$queryCondition = NULL;	
+
+				if(!empty($_GET["search"])) {
+					foreach($_GET["search"] as $k=>$v){
+						if(!empty($v) && !empty($k)) {
+							if(!empty($queryCondition)) {
+								$queryCondition .= " AND ".str_replace("'", "", $k)." = '".$v."'";
+							} else {
+								$queryCondition .= " WHERE ".str_replace("'", "", $k)." = '".$v."'";
+							}
 						}
-					} else {
-						$sql = 'SELECT * FROM processos WHERE `processos`.uid = '.$_SESSION['uid'].' OR `processos`.comprador = '.$_SESSION['usuario'].'  LIMIT '.$offset.','.$no_of_records_per_page; 
-					}
-				} elseif($_SESSION['userType'] == 'responsavel') {
-					if((isset($_GET['nome_processo']) || isset($_GET['numero_processo']))){
-						if($_GET['nome_processo'] && $_GET['numero_processo'] == ''){
-							$sql = "SELECT * FROM processos WHERE id IN ('" . implode("','", $arr_ids) . "') AND `processos`.nome_processo = '".$_GET['nome_processo']."' LIMIT ".$offset.','.$no_of_records_per_page;
-						} elseif($_GET['nome_processo'] == '' && $_GET['numero_processo']){
-							$sql = "SELECT * FROM processos WHERE id IN ('" . implode("','", $arr_ids) . "') AND `processos`.nome_processo != '".$_GET['nome_processo']."' AND `processos`.numero_processo = '".$_GET['numero_processo']."' LIMIT ".$offset.','.$no_of_records_per_page;
-						} else {
-							$sql = "SELECT * FROM processos WHERE id IN ('" . implode("','", $arr_ids) . "') AND `processos`.numero_processo = '".$_GET['numero_processo']."' AND `processos`.nome_processo = '".$_GET['nome_processo']."'LIMIT ".$offset.','.$no_of_records_per_page;
-						}
-					} else {
-						$sql = "SELECT * FROM processos WHERE id IN ('" . implode("','", $arr_ids) . "') LIMIT ".$offset.','.$no_of_records_per_page;
-					}
-				} else {
-					if((isset($_GET['nome_processo']) && isset($_GET['numero_processo'])) && ($_GET['nome_processo'] != '' || $_GET['numero_processo'] != '')){
-						if($_GET['nome_processo'] && $_GET['numero_processo'] == ''){
-							$sql = "SELECT * FROM processos WHERE `processos`.nome_processo = '".$_GET['nome_processo']."' LIMIT ".$offset.','.$no_of_records_per_page;
-						} elseif($_GET['nome_processo'] == '' && $_GET['numero_processo']){
-							$sql = "SELECT * FROM processos WHERE `processos`.nome_processo != '".$_GET['nome_processo']."' AND `processos`.numero_processo = '".$_GET['numero_processo']."' LIMIT ".$offset.','.$no_of_records_per_page;
-						} else {
-							$sql = "SELECT * FROM processos WHERE `processos`.numero_processo = '".$_GET['numero_processo']."' AND `processos`.nome_processo = '".$_GET['nome_processo']."'LIMIT ".$offset.','.$no_of_records_per_page;
-						}
-					} else {
-						$sql = 'SELECT * FROM processos LIMIT '.$offset.','.$no_of_records_per_page; 
 					}
 				}
+
+				$orderby = " ORDER BY id DESC"; 
+
+				$sql = "SELECT * FROM processos " . $queryCondition . $orderby . " LIMIT ".$offset.','.$no_of_records_per_page;
+
+				print_r($sql);
 
 		        $res_data = mysqli_query($conn,$sql);
 		        while($row = mysqli_fetch_array($res_data)) :
@@ -109,25 +91,22 @@
 				<th><?php echo $row['id'] ?></th>
 				<th>
 					<?php 
-						if($_SESSION['userType'] == 'responsavel'){
-							echo $_SESSION['usuario'];
-						} elseif($_SESSION['userType'] != 'responsavel'){
-							$rids = array();
-							foreach ($proc_by_resp as $key => $value) {
-								if($value['pid'] == $row['id']){
-									array_push($rids, $value['rid']);
-								}
-							}
+						$responsaveis = array();
+						$responsaveis_fetch = array();
 
-							$srids = "SELECT * FROM users WHERE id IN ('" . implode("','", $rids) . "')";
-							if ($rd = $conn->query($srids)) {
-								$i = 0;
-							    while($rw = $rd->fetch_assoc()) : 
-							    	echo $rw['usuario'].'<br/>';
-								endwhile;
+						foreach ($proc_by_resp as $key => $value) {
+							if($value['pid'] == $row['id']){
+								array_push($responsaveis, $value['rid']);
 							}
-							$rd->free();		
 						}
+
+						$sqlr = "SELECT * FROM users WHERE id IN (".implode(',', $responsaveis).")" . $orderby;
+				        $res_data_sqlr = mysqli_query($conn,$sqlr);
+				        while($rw = mysqli_fetch_array($res_data_sqlr)) :
+				        	array_push($responsaveis_fetch, $rw['usuario']);
+				        endwhile;
+
+				        print_r(implode(',', $responsaveis_fetch));
 					?>
 				</th>
 				<th><?php 

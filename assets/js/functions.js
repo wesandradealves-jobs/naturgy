@@ -114,8 +114,8 @@ $(document).ready(function () {
         // percent();        
     } else {
       if($('#processo-form').length){
-        // $('#processo-form').children('div.fieldset').addClass('disabled'),
-        // $('#processo-form').children('div.fieldset').first().removeClass('disabled');     
+        $('#processo-form').children('div.fieldset').addClass('disabled'),
+        $('#processo-form').children('div.fieldset').first().removeClass('disabled');     
       }
     }
 
@@ -190,20 +190,20 @@ $(document).ready(function () {
       var tipo = $('[name=tipo_processo]').val();
       switch(tipo) {
         case 'ADJUDICAÇÃO DIRETA':
-          fields.push('[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_disponivel_sap"]');
+          fields.push('[class*="responsavel"]','[class*="requisicao"]','[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_disponivel_sap"]');
           // $(this).closest('form').children('div.fieldset:not()').fadeOut();
           var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
           break;
         case 'LICITAÇÃO':
         case 'LEILÃO':
-          fields.push('[class*="id_comprador"]','[class*="id_estrategia"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_leilao"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
+          fields.push('[class*="responsavel"]','[class*="requisicao"]','[class*="id_comprador"]','[class*="id_estrategia"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_leilao"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
           var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
           break;
         case 'RENOVAÇÃO':
         case 'PCAE':
         case 'RAMPA DE SAÍDA':
         case 'RÉPLICA GLOBAL':
-          fields.push('[class*="id_rodadas"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
+          fields.push('[class*="responsavel"]','[class*="requisicao"]','[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
           var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
           break;
         default:
