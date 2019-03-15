@@ -83,7 +83,7 @@
 													            <span class="fieldset">
 													              <label for="nivel-rodada">Nível</label>
 													              <span>
-													                <input value="'.$row['nivel'].'" name="nivel-rodada[]" type="text">
+													                <input readonly="readonly" value="'.$row['nivel'].'" name="nivel-rodada[]" class="nivel_rodada" type="text">
 													              </span>		              
 													            </span> 
 													            <span class="fieldset">
@@ -97,32 +97,108 @@
 															      	</span>
 													            </span>
 													            <span class="fieldset">
-													              <label for="data-inicial-rodada">Data Inicial</label>
+													              <label for="data-inicial-rodada">Início</label>
 													              <span>
 													                <input value="'.$row['data_inicial'].'" name="data-inicial-rodada[]" type="date">
 													              </span>
 													            </span>  
 													            <span class="fieldset">
-													              <label for="data-final-rodada">Data Final</label>
+													              <label for="data-final-rodada">Fim</label>
 													              <span>
 													                <input value="'.$row['data_final'].'" name="data-final-rodada[]" type="date">
 													              </span>
 													            </span>
+													            <!--
 													            <span class="fieldset rodadas-footer">
 													              <div> 
 													                <a href="'.$default_url.'/functions/delete.php?table=rodadas&uid='.$_GET['uid'].'&pid='.$_GET['id'].'&position='.$row['position'].'&id='.$row['id'].'" class="btn btn-2">Excluir</a>
 													              </div>
-													            </span>';
+													            </span>-->';
 													            echo '
 													          </li>
 											      			';
 												        endwhile;
-										      			echo '									        
-												          <li>
+										      // 			echo '<li>
+												    //         <span class="fieldset">
+												    //           <label for="nivel-rodada">Nível</label>
+												    //           <span>
+												    //             <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
+												    //           </span>		              
+												    //         </span> 
+												    //         <span class="fieldset">
+												    //         	<label for="rodada_tipo">Tipo</label>
+																// <span class="custom-combobox">
+														  //       <i class="fal fa-angle-down"></i>
+														  //       <select name="rodada-tipo[]">
+														  //         <option selected="selected" value="Rodada Comercial">Rodada Comercial</option>
+														  //         <option value="Rodada Técnica">Rodada Técnica</option>
+														  //       </select>
+														  //     	</span>
+												    //         </span>
+												    //         <span class="fieldset">
+												    //           <label for="data-inicial-rodada">Início</label>
+												    //           <span>
+												    //             <input name="data-inicial-rodada[]" type="date">
+												    //           </span>
+												    //         </span>  
+												    //         <span class="fieldset">
+												    //           <label for="data-final-rodada">Fim</label>
+												    //           <span>
+												    //             <input name="data-final-rodada[]" type="date">
+												    //           </span>
+												    //         </span> 
+												    //         <!--
+												    //         <span class="fieldset rodadas-footer">
+												    //           <span> 
+												    //             <a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2">Excluir</a>
+												    //           </span>
+												    //         </span>
+												    //         -->
+												    //       </li>
+												    //       <li>
+												    //         <span class="fieldset">
+												    //           <label for="nivel-rodada">Nível</label>
+												    //           <span>
+												    //             <input value="1" readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
+												    //           </span>		              
+												    //         </span> 
+												    //         <span class="fieldset">
+												    //         	<label for="rodada_tipo">Tipo</label>
+																// <span class="custom-combobox">
+														  //       <i class="fal fa-angle-down"></i>
+														  //       <select name="rodada-tipo[]">
+														  //         <option value="Rodada Comercial">Rodada Comercial</option>
+														  //         <option value="Rodada Técnica" selected="selected">Rodada Técnica</option>
+														  //       </select>
+														  //     	</span>
+												    //         </span>
+												    //         <span class="fieldset">
+												    //           <label for="data-inicial-rodada">Início</label>
+												    //           <span>
+												    //             <input name="data-inicial-rodada[]" type="date">
+												    //           </span>
+												    //         </span>  
+												    //         <span class="fieldset">
+												    //           <label for="data-final-rodada">Fim</label>
+												    //           <span>
+												    //             <input name="data-final-rodada[]" type="date">
+												    //           </span>
+												    //         </span> 
+												    //         <!--
+												    //         <span class="fieldset rodadas-footer">
+												    //           <span> 
+												    //             <a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2">Excluir</a>
+												    //           </span>
+												    //         </span>
+												    //         -->
+												    //       </li>
+												    //      ';
+										      		} else {	
+										      			echo '<li>
 												            <span class="fieldset">
 												              <label for="nivel-rodada">Nível</label>
 												              <span>
-												                <input name="nivel-rodada[]" type="text">
+												                <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
 												              </span>		              
 												            </span> 
 												            <span class="fieldset">
@@ -130,36 +206,36 @@
 																<span class="custom-combobox">
 														        <i class="fal fa-angle-down"></i>
 														        <select name="rodada-tipo[]">
-														          <option value="Rodada Comercial">Rodada Comercial</option>
+														          <option selected="selected" value="Rodada Comercial">Rodada Comercial</option>
 														          <option value="Rodada Técnica">Rodada Técnica</option>
 														        </select>
 														      	</span>
 												            </span>
 												            <span class="fieldset">
-												              <label for="data-inicial-rodada">Data Inicial</label>
+												              <label for="data-inicial-rodada">Início</label>
 												              <span>
 												                <input name="data-inicial-rodada[]" type="date">
 												              </span>
 												            </span>  
 												            <span class="fieldset">
-												              <label for="data-final-rodada">Data Final</label>
+												              <label for="data-final-rodada">Fim</label>
 												              <span>
 												                <input name="data-final-rodada[]" type="date">
 												              </span>
 												            </span> 
+												            <!--
 												            <span class="fieldset rodadas-footer">
 												              <span> 
 												                <a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2">Excluir</a>
 												              </span>
 												            </span>
-												          </li>';												        
-										      		} else {	
-										      			echo '									        
+												            -->
+												          </li>
 												          <li>
 												            <span class="fieldset">
 												              <label for="nivel-rodada">Nível</label>
 												              <span>
-												                <input name="nivel-rodada[]" type="text">
+												                <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
 												              </span>		              
 												            </span> 
 												            <span class="fieldset">
@@ -168,31 +244,42 @@
 														        <i class="fal fa-angle-down"></i>
 														        <select name="rodada-tipo[]">
 														          <option value="Rodada Comercial">Rodada Comercial</option>
-														          <option value="Rodada Técnica">Rodada Técnica</option>
+														          <option value="Rodada Técnica" selected="selected">Rodada Técnica</option>
 														        </select>
 														      	</span>
 												            </span>
 												            <span class="fieldset">
-												              <label for="data-inicial-rodada">Data Inicial</label>
+												              <label for="data-inicial-rodada">Início</label>
 												              <span>
 												                <input name="data-inicial-rodada[]" type="date">
 												              </span>
 												            </span>  
 												            <span class="fieldset">
-												              <label for="data-final-rodada">Data Final</label>
+												              <label for="data-final-rodada">Fim</label>
 												              <span>
 												                <input name="data-final-rodada[]" type="date">
 												              </span>
 												            </span> 
+												            <!--
 												            <span class="fieldset rodadas-footer">
 												              <span> 
-												                <a href="javascrip:void(0)" onclick="removeRodada(this)" class=" disabled btn btn-2">Excluir</a>
+												                <a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2">Excluir</a>
 												              </span>
 												            </span>
-												          </li>';
+												            -->
+												          </li>
+												         ';
 												    }
 										          echo '
 										        </ul>
+										        <div class="rodadas-footer">'; 
+									                	if(isset($res_sql_rodadas)){
+									                		echo '<a class="btn btn-2 deletar_rodada">Excluir</a>';
+									                	} else {
+									                	echo '<a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2 disabled">Excluir</a>';		
+									                	}
+									                echo '
+										        </div>
 											</div>
 										</div>
 									';

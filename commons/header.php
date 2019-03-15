@@ -48,12 +48,15 @@
   </head>
   <body class="pg-login <?php echo ($basename != 'index') ? 'pg-dashboard pg-'.$basename : ''; ?>"> 
     <div id="wrap">
-      <?php if(isset($_GET['sent']) || isset($_GET['error']) || isset($_GET['erro']) || isset($_GET['logout']) || isset($_GET['updated']) || isset($_GET['updated']) || isset($_GET['deleted']) || isset($_GET['registered']) || isset($_GET['enabled']) || isset($_GET['disabled'])) : ?>
+      <?php 
+      if(isset($_GET['exist']) || isset($_GET['sent']) || isset($_GET['error']) || isset($_GET['erro']) || isset($_GET['logout']) || isset($_GET['updated']) || isset($_GET['updated']) || isset($_GET['deleted']) || isset($_GET['registered']) || isset($_GET['enabled']) || isset($_GET['disabled'])) : ?>
           <div class="messageBar">
             <span>
               <?php
                 if(isset($_GET['updated'])){
                   echo 'Atualizado com sucesso.';
+                } elseif(isset($_GET['exist'])){
+                  echo 'Já existe cadastro semelhante.';
                 } elseif(isset($_GET['sent'])){
                   echo 'E-mail enviado com sucesso.';
                 } elseif(isset($_GET['erro']) || isset($_GET['error'])){

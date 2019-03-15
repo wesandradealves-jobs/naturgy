@@ -47,17 +47,40 @@ function addSimpleInput(e){
 function remove(e){
   $(e).closest('span').remove();
 }
+
+var nivel_rodada = 1;
+
 function removeRodada(e){
-  $(e).closest('li').remove();
-}
-function addMultipleInput(e){
-    var el = $(e).closest('.rodadas').find('ul').children();
-    el.eq(0).clone(true).appendTo($(e).closest('.rodadas').find('ul')).find('a').removeClass('disabled').attr(
-      {
-        'href':'javascript:void(0)',
-        'onclick':'removeRodada(this)'
+    if($('.rodadas .columns').children().length > 2){
+      var length = $('.rodadas .columns').children().length;
+      $('.rodadas .columns').find('li:nth-child('+length+')').remove(),
+      $('.rodadas .columns').find('li:nth-child('+ (length - 1) +')').remove();
+
+      nivel_rodada = nivel_rodada - 1;    
+
+      console.log(nivel_rodada);      
+
+      if(nivel_rodada < 2){
+        $('.rodadas-footer').children().first().addClass('disabled');
       }
-    );
+    }
+}
+
+function addMultipleInput(e){
+    var el = $(e).closest('.rodadas').find('.columns').children();
+
+    nivel_rodada +=1;
+
+    console.log(nivel_rodada);
+
+    if(nivel_rodada > 1){
+      $('.rodadas-footer').children().first().removeClass('disabled');
+    }
+
+    el.eq(0).clone(true).appendTo($(e).closest('.rodadas')
+      .find('.columns')).closest('li').find('.nivel_rodada').val(nivel_rodada).closest('li').find('input[type="date"]').val(''),
+    el.eq(1).clone(true).appendTo($(e).closest('.rodadas')
+      .find('.columns')).closest('li').find('.nivel_rodada').val(nivel_rodada).closest('li').find('input[type="date"]').val('');
 }
 function changeMessage(message){
     if(!$('.error-message').length){
@@ -91,8 +114,8 @@ $(document).ready(function () {
         // percent();        
     } else {
       if($('#processo-form').length){
-        $('#processo-form').children('div.fieldset').addClass('disabled'),
-        $('#processo-form').children('div.fieldset').first().removeClass('disabled');     
+        // $('#processo-form').children('div.fieldset').addClass('disabled'),
+        // $('#processo-form').children('div.fieldset').first().removeClass('disabled');     
       }
     }
 
@@ -124,20 +147,20 @@ $(document).ready(function () {
       
       switch($(this).val()) {
         case 'ADJUDICAÇÃO DIRETA':
-          fields.push('[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_disponivel_sap"]');
+          fields.push('[class*="requisicao"]','[class*="responsavel"]','[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_disponivel_sap"]');
           // $(this).closest('form').children('div.fieldset:not()').fadeOut();
           var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
           break;
         case 'LICITAÇÃO':
         case 'LEILÃO':
-          fields.push('[class*="id_comprador"]','[class*="id_estrategia"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_leilao"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
+          fields.push('[class*="requisicao"]','[class*="responsavel"]','[class*="id_comprador"]','[class*="id_estrategia"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_leilao"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
           var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
           break;
         case 'RENOVAÇÃO':
         case 'PCAE':
         case 'RAMPA DE SAÍDA':
         case 'RÉPLICA GLOBAL':
-          fields.push('[class*="id_rodadas"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
+          fields.push('[class*="requisicao"]','[class*="responsavel"]','[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
           var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
           break;
         default:
@@ -250,8 +273,8 @@ $(document).ready(function () {
 
         if($('.progressBar').length){
           var el = $('.progressBar');
-          el.find('.progressStatus > span').html(percent);
-          el.find('.progressLoader > span').css('width', percent+'%');
+          el.find('.progressStatus > span').html(Math.ceil(parseInt(percent)));
+          el.find('.progressLoader > span').css('width', Math.ceil(parseInt(percent))+'%');
           el.find('.progressStatus').css('left', percent+'%');
           $('[name="status"]').val(Math.ceil(parseInt(percent)));
         }  
@@ -278,7 +301,78 @@ $(document).ready(function () {
         if(t > ($('.forms-footer:not(.-sticky)').offset().top - 1000)) {
             $(".forms-footer.-sticky").removeClass("-stuck");
         }
-    });    
+    });  
+
+    // if(localStorage.getItem('mensagem')){
+    //   alert(localStorage.getItem('mensagem'));
+
+    //   setTimeout(function(){ 
+    //     localStorage.removeItem('mensagem');
+    //   }, 600);
+    // }
+
+    // $( '.logout,  [title="Deletar"], .forms-footer .btn').click(function( event ) {
+    //     event.preventDefault();
+
+    //     var el = event.target.classList.value;
+
+    //     if(el.indexOf('logout') != -1){
+    //       localStorage.setItem('mensagem', 'Deslogado com sucesso.');
+    //     } else if (el.indexOf('btn') != -1){
+    //       var action = $('[name="action"]').val();
+
+    //       if(action == 'salvar'){
+    //         localStorage.setItem('mensagem', 'Salvo com sucesso.');
+    //       } else if(action == 'atualizar') {
+    //         localStorage.setItem('mensagem', 'Atualizado com sucesso.');
+    //       }
+    //     } else if(el.indexOf('trash') != -1){
+    //       localStorage.setItem('mensagem', 'Deletado com sucesso.');
+    //     }
+
+    //     if(event.currentTarget.href != undefined){
+    //       setTimeout(function(){ 
+    //         window.location = event.currentTarget.href;
+    //       }, 300);
+    //     }
+    // });   
+
+    $( '.deletar_rodada' ).click(function( event ) {
+        event.preventDefault();
+
+        if($('.rodadas .columns').children().length > 2){
+          var vars = window.location.pathname,
+              id = vars.split('/')[3],
+              uid = vars.split('/')[2],
+              max_pos = parseInt($('.rodadas .columns').children().length) - 1;
+
+          $.ajax({
+                type: 'POST',
+                async: true,
+                url: window.location.origin + '/functions/delete.php',
+                data: {
+                  'table' : 'rodadas',
+                  'pid' : id,
+                  'position' : max_pos,
+                },
+                datatype: 'json',
+                cache: true,
+                global: false,
+                beforeSend: function() { 
+                    $("#loader").css('display', 'flex'),
+                    $('.rodadas .columns li:nth-child('+$('.rodadas .columns').children().length+'), .rodadas .columns li:nth-child('+(parseInt($('.rodadas .columns').children().length) - 1)+')').fadeOut();
+                },
+                success: function(data) {
+                    console.log(data);
+                },
+                complete: function() { 
+                    $("#loader").css('display', 'none');
+                }
+            });   
+        } else {
+          alert('Não é possível deletar todas as rodadas, cadastre mais um nível para que possa deletar.');
+        }
+    });     
 });
       
       

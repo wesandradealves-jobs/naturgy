@@ -131,14 +131,16 @@
 					?>
 				</th>
 				<th><?php 
-				    if(strlen($row['comprador']) <= 2){
-    			        $scomprador = "SELECT * FROM users WHERE id = ".$row['comprador'];
-    			        $qcomprador = mysqli_fetch_assoc(mysqli_query($conn, $scomprador));
-    			        
-    			        print_r($qcomprador['nome']);   
-				    } else {
-				        echo $row['comprador'];
-				    }
+					if(isset($row['comprador']) && $row['comprador'] != ''){
+					    if(strlen($row['comprador']) <= 2){
+	    			        $scomprador = "SELECT * FROM users WHERE id = ".$row['comprador'];
+	    			        $qcomprador = mysqli_fetch_assoc(mysqli_query($conn, $scomprador));
+	    			        
+	    			        print_r($qcomprador['nome']);   
+					    } else {
+					        echo $row['comprador'];
+					    }						
+					}
 				?></th>
 				<th><?php echo $row['numero_processo'] ?></th>
 				<th><?php echo $row['nome_processo'] ?></th>
