@@ -1,5 +1,12 @@
 <?php 
 	include('commons/header.php'); 
+
+	$url = NULL;
+
+	if(isset($_SERVER['REQUEST_URI'])){
+		$url = explode('&orderBy', $_SERVER['REQUEST_URI'])[0];
+		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
+	}
 ?>
 <section>
 	<div class="container">
@@ -9,40 +16,44 @@
           <table class="tables tables-1" width="100%">
             <thead>
               <tr>
-              	<th>ID</th>
+              	<th><a title="ID" href="<?php echo ($url) ? $url.'&orderBy=id' : 'processos/ordem/?orderBy=id';?>">ID</a></th>
                 <th width="20">Responsável<br/>(Cliente)</th>
                 <th width="100">Comprador</th>
-                <th width="100">Solped</th>
-                <th width="100">Objeto</th>
+                <th width="100"><a title="Solped" href="<?php echo ($url) ? $url.'&orderBy=numero_processo' : 'processos/ordem/?orderBy=numero_processo';?>">Solped</a></th>
+                <th width="100"><a title="Objeto" href="<?php echo ($url) ? $url.'&orderBy=nome_processo' : 'processos/ordem/?orderBy=nome_processo';?>">Objeto</a></th>
                 <th width="100">Sociedade(s)</th>
                 <th width="150">Valor</th>
                 <th width="100">Moeda</th>
-                <th width="100">Tratamento</th>
+                <th width="100"><a title="Tratamento" href="<?php echo ($url) ? $url.'&orderBy=tipo_processo' : 'processos/ordem/?orderBy=tipo_processo';?>">Tratamento</a></th>
                 <th width="250">Tempo em curso<br/>(Dias úteis)</th>
-                <th width="150">Status</th>
+                <th width="150"><a title="Status" href="<?php echo ($url) ? $url.'&orderBy=status' : 'processos/ordem/?orderBy=status';?>">Status</a></th>
                 <th width="10%"></th>
               </tr>
             </thead>	
             <tbody>
 			<?php
-				$proc_by_resp = array();
-				$arr_ids = array();
-				$curr_query = array();
-				$sqlresponsaveis = 'SELECT * FROM responsavel_by_processos';
-				$resresponsaveis = mysqli_query($conn,$sqlresponsaveis);
-				while($row = mysqli_fetch_array($resresponsaveis)) :
-					if($_SESSION['userType'] == 'responsavel'){
-						if($_SESSION['uid'] == $row['responsavel']){
-							array_push($proc_by_resp, array('pid'=>$row['pid'],'rid'=>$row['responsavel']));
-						}
-					} else {
-						array_push($proc_by_resp, array('pid'=>$row['pid'],'rid'=>$row['responsavel']));
-					}
-				endwhile;
+				$orderby = " ORDER BY ". ( (isset($_GET['orderBy'])) ? $_GET['orderBy'] : 'id' ) ." ASC"; 
 
-				foreach ($proc_by_resp as $value) {
-					array_push($arr_ids, $value['pid']);
-				}
+				$queryCondition = NULL;
+				$userCondition = NULL;
+				$filter = false;
+				$arr = array();
+				$current = array();
+				$pids = array();
+
+				// Responsaveis
+
+				$sResponsaveis = 'SELECT * FROM responsavel_by_processos ORDER BY id ASC';
+				$rsResponsaveis = mysqli_query($conn,$sResponsaveis);
+
+				while($rowResponsaveis = mysqli_fetch_array($rsResponsaveis)) :
+					array_push($arr, array(
+						'pid'=>$rowResponsaveis['pid'], 
+						'rid'=>$rowResponsaveis['responsavel']
+					));
+				endwhile;			
+
+				// Controle de Paginação
 
 				if (isset($_GET['p'])) {
 				    $page = $_GET['p'];
@@ -54,16 +65,59 @@
 				$offset = ($page-1) * $no_of_records_per_page; 
 
 				$total_pages_sql = "SELECT COUNT(*) FROM processos";
-				
+
 				$result = mysqli_query($conn,$total_pages_sql);
 				$total_rows = mysqli_fetch_array($result)[0];
 				$total_pages = ceil($total_rows / $no_of_records_per_page);
 
-				$queryCondition = NULL;	
+				// Processos
+
+				$sProcessos = 'SELECT * FROM processos ORDER BY id ASC';
+				$rsProcessos = mysqli_query($conn,$sProcessos);
+
+				while($rowProcessos = mysqli_fetch_array($rsProcessos)) :
+					array_push($current, array(
+						'pid'=>$rowProcessos['id'], 
+						'rid'=>$_SESSION['uid']
+					));
+				endwhile;	
+
+				// Pega os processos por responsavel logado
+
+				$mapping = array_map(function($current, $arr) {
+				    if($_SESSION['uid'] === $arr['rid']){
+				    	return $arr['pid'];
+				    }
+				}, $current, $arr);
+
+				foreach ($mapping as $key => $value) {
+					if($value){
+						array_push($pids, $value);
+					}
+				}	
+
+				// Motor de Busca
 
 				if(!empty($_GET["search"])) {
+					$j = 0;
+					// Pega dados da busca
 					foreach($_GET["search"] as $k=>$v){
-						if(!empty($v) && !empty($k)) {
+						if(!empty($v)) {
+							$j++;
+
+							// Define a condição do usuário
+							switch ($_SESSION['userType']) {
+								case 'responsavel':
+									$userCondition = ' AND id IN ('.implode(',', $pids).')'; 
+									break;		
+								case 'comprador':
+									$userCondition = ' AND `processos`.uid = '.$_SESSION['uid']; 
+									break;			
+								default:
+									
+									break;
+							}
+
 							if(!empty($queryCondition)) {
 								$queryCondition .= " AND ".str_replace("'", "", $k)." = '".$v."'";
 							} else {
@@ -71,42 +125,69 @@
 							}
 						}
 					}
+					// Se vier de busca e não tiver valores
+					if(!$j){
+						// Define a condição do usuário
+						switch ($_SESSION['userType']) {
+							case 'responsavel':
+								$userCondition = ' WHERE id IN ('.implode(',', $pids).')'; 
+								break;		
+							case 'comprador':
+								$userCondition = ' WHERE `processos`.uid = '.$_SESSION['uid']; 
+								break;			
+							default:
+								
+								break;
+						}
+					}
+				} else {
+					// Define a condição do usuário
+					switch ($_SESSION['userType']) {
+						case 'responsavel':
+							$userCondition = ' WHERE id IN ('.implode(',', $pids).')'; 
+							break;		
+						case 'comprador':
+							$userCondition = ' WHERE `processos`.comprador = '.$_SESSION['uid']; 
+							break;			
+						default:
+							
+							break;
+					}
 				}
 
-				$orderby = " ORDER BY id DESC"; 
+				// Default loop
 
-				$sql = "SELECT * FROM processos " . $queryCondition . $orderby . " LIMIT ".$offset.','.$no_of_records_per_page;
-
-				print_r($sql);
+				$sql = "SELECT * FROM processos " . ((isset($queryCondition)) ? $queryCondition : '') . $userCondition . $orderby . " LIMIT ".$offset.','.$no_of_records_per_page;
 
 		        $res_data = mysqli_query($conn,$sql);
 		        while($row = mysqli_fetch_array($res_data)) :
-
-			        $QueryResponsavel = "SELECT * FROM users WHERE id = ".$row['uid'];
-			        $resultQueryResponsavel = mysqli_fetch_assoc(mysqli_query($conn, $QueryResponsavel));
-			        array_push($curr_query, array('pid'=>$row['id']));
-
 		    ?>
 			<tr>
-				<th><?php echo $row['id'] ?></th>
 				<th>
 					<?php 
+						echo $row['id'];
+					?>
+				</th>
+				<th>
+					<?php 
+						// Pega o repsonsavel
+					
 						$responsaveis = array();
-						$responsaveis_fetch = array();
 
-						foreach ($proc_by_resp as $key => $value) {
-							if($value['pid'] == $row['id']){
+						foreach ($arr as $key => $value) {
+							if(in_array($row['id'], $value, false)){
 								array_push($responsaveis, $value['rid']);
 							}
 						}
 
-						$sqlr = "SELECT * FROM users WHERE id IN (".implode(',', $responsaveis).")" . $orderby;
-				        $res_data_sqlr = mysqli_query($conn,$sqlr);
-				        while($rw = mysqli_fetch_array($res_data_sqlr)) :
-				        	array_push($responsaveis_fetch, $rw['usuario']);
-				        endwhile;
+    			        $stblresponsavel = "SELECT * FROM users WHERE id IN (".implode(',', $responsaveis).")";
 
-				        print_r(implode(',', $responsaveis_fetch));
+	    			    $qtblresponsavel = mysqli_fetch_array(mysqli_query($conn, $stblresponsavel));
+
+				        $rqtblresponsavel = mysqli_query($conn,$stblresponsavel);
+				        while($rwqtblresponsavel = mysqli_fetch_array($rqtblresponsavel)) :
+				        	print_r($rwqtblresponsavel['nome'].'<br>');
+				        endwhile;
 					?>
 				</th>
 				<th><?php 
@@ -167,8 +248,6 @@
 			</tr>		            
 	        <?php 
 				endwhile;
-				$conn->close();
-				unset($conn);
             ?>
 			</tbody>
 		</table>

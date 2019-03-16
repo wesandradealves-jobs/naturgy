@@ -32,6 +32,8 @@ RewriteRule ^processos processos.php [L]
 
 RewriteRule ^processos/?p=([0-9]+) processos.php?page=$1 [L]
 
+RewriteRule ^processos/ordem/(.*) processos.php?orderBy=$1 [L]
+
 RewriteRule ^cadastro/processos processo.php [L]
 
 RewriteRule ^processo/([0-9]+)/([0-9]+) processo.php?uid=$1&id=$2 [L]
@@ -40,17 +42,7 @@ RewriteRule ^busca/processos processos [L]
 
 RewriteRule ^busca/processos/(.*)/(.*)/(.*) processos.php?numero_processo=$1&nome_processo=$2&tipo_processo=$3 [L]
 
-RewriteRule ^cadastro/processos/tipos-de-processo tipos-de-processo.php [L]
-
-RewriteRule ^cadastro/processos/tipos-de-processo/?p=([0-9]+) tipos-de-processo.php?page=$1 [L]
-
-RewriteRule ^cadastro/processos/tipos-de-processo/([0-9]+) tipo-de-processo.php?id=$1 [L]
-
-RewriteRule ^cadastro/processos/subfamilias subfamilias.php [L]
-
-RewriteRule ^cadastro/processos/subfamilias/?p=([0-9]+) subfamilias.php?page=$1 [L]
-
-RewriteRule ^cadastro/processos/subfamilias/([0-9]+) subfamilia.php?id=$1 [L]
+RewriteRule ^busca/processos/(.*)/(.*)/(.*)/(.*) processos.php?numero_processo=$1&nome_processo=$2&tipo_processo=$3&orderBy=$4 [L]
 
 RewriteRule ^reset reset.php [L]
 
