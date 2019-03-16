@@ -35,7 +35,7 @@
 
 				// Responsaveis
 
-				$sResponsaveis = 'SELECT * FROM responsavel_by_processos';
+				$sResponsaveis = 'SELECT * FROM responsavel_by_processos ORDER BY id ASC';
 				$rsResponsaveis = mysqli_query($conn,$sResponsaveis);
 
 				while($rowResponsaveis = mysqli_fetch_array($rsResponsaveis)) :
@@ -64,7 +64,7 @@
 
 				// Processos
 
-				$sProcessos = 'SELECT * FROM processos';
+				$sProcessos = 'SELECT * FROM processos ORDER BY id ASC';
 				$rsProcessos = mysqli_query($conn,$sProcessos);
 
 				while($rowProcessos = mysqli_fetch_array($rsProcessos)) :
@@ -87,6 +87,10 @@
 						array_push($pids, $value);
 					}
 				}	
+
+				// Pega os responsaveis de cada processo
+
+				// $arr
 
 				// Motor de Busca
 
@@ -151,8 +155,6 @@
 
 				$sql = "SELECT * FROM processos " . ((isset($queryCondition)) ? $queryCondition : '') . $userCondition . $orderby . " LIMIT ".$offset.','.$no_of_records_per_page;
 
-				print_r($sql);
-
 		        $res_data = mysqli_query($conn,$sql);
 		        while($row = mysqli_fetch_array($res_data)) :
 		    ?>
@@ -163,7 +165,26 @@
 					?>
 				</th>
 				<th>
-				
+					<?php 
+						// Pega o repsonsavel
+					
+						$responsaveis = array();
+
+						foreach ($arr as $key => $value) {
+							if(in_array($row['id'], $value, false)){
+								array_push($responsaveis, $value['rid']);
+							}
+						}
+
+    			        $stblresponsavel = "SELECT * FROM users WHERE id IN (".implode(',', $responsaveis).")";
+
+	    			    $qtblresponsavel = mysqli_fetch_array(mysqli_query($conn, $stblresponsavel));
+
+				        $rqtblresponsavel = mysqli_query($conn,$stblresponsavel);
+				        while($rwqtblresponsavel = mysqli_fetch_array($rqtblresponsavel)) :
+				        	print_r($rwqtblresponsavel['nome'].'<br>');
+				        endwhile;
+					?>
 				</th>
 				<th><?php 
 					if(isset($row['comprador']) && $row['comprador'] != ''){
