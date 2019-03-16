@@ -4,8 +4,7 @@
 	$url = NULL;
 
 	if(isset($_SERVER['QUERY_STRING'])){
-		$url = explode('&orderBy', $_SERVER['REQUEST_URI'])[0];
-		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
+		$url = 'http://'.$_SERVER['HTTP_HOST'].explode('&orderBy', $_SERVER['REQUEST_URI'])[0];
 	}
 ?>
 <section>
@@ -14,25 +13,25 @@
 			<h2 class="title"><span>&#187;</span> Todos os Processos</h2>
 		</div>
           <table class="tables tables-1" width="100%">
-            <thead>
+           <thead>
               <tr>
-              	<th><a title="ID" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=id' : 'processos/ordem/?orderBy=id';?>">ID</a></th>
+              	<th><a title="ID" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=id' : 'processos/ordem/?orderBy=id';?>">ID</a></th>
                 <th width="20">Responsável<br/>(Cliente)</th>
                 <th width="100">Comprador</th>
-                <th width="100"><a title="Solped" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=numero_processo' : 'processos/ordem/?orderBy=numero_processo';?>">Solped</a></th>
-                <th width="100"><a title="Objeto" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=nome_processo' : 'processos/ordem/?orderBy=nome_processo';?>">Objeto</a></th>
+                <th width="100"><a title="Solped" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=numero_processo' : 'processos/ordem/?orderBy=numero_processo';?>">Solped</a></th>
+                <th width="100"><a title="Objeto" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=nome_processo' : 'processos/ordem/?orderBy=nome_processo';?>">Objeto</a></th>
                 <th width="100">Sociedade(s)</th>
                 <th width="150">Valor</th>
                 <th width="100">Moeda</th>
-                <th width="100"><a title="Tratamento" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=tipo_processo' : 'processos/ordem/?orderBy=tipo_processo';?>">Tratamento</a></th>
+                <th width="100"><a title="Tratamento" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=tipo_processo' : 'processos/ordem/?orderBy=tipo_processo';?>">Tratamento</a></th>
                 <th width="250">Tempo em curso<br/>(Dias úteis)</th>
-                <th width="150"><a title="Status" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=status' : 'processos/ordem/?orderBy=status';?>">Status</a></th>
+                <th width="150"><a title="Status" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=status' : 'processos/ordem/?orderBy=status';?>">Status</a></th>
                 <th width="10%"></th>
               </tr>
             </thead>	
             <tbody>
 			<?php
-				$orderby = " ORDER BY ". ( (isset($_GET['orderBy'])) ? $_GET['orderBy'] : 'id' ) ." ASC"; 
+				$orderby = " ORDER BY ". ( (isset($_GET['orderBy'])) ? (($_GET['orderBy'] == 'status') ? 'ABS('.$_GET['orderBy'].')' : $_GET['orderBy']) : 'id' ) ." ASC"; 
 
 				$queryCondition = NULL;
 				$userCondition = NULL;
