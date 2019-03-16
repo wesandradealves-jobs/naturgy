@@ -3,7 +3,7 @@
 
 	$url = NULL;
 
-	if(isset($_SERVER['REQUEST_URI'])){
+	if(isset($_SERVER['QUERY_STRING'])){
 		$url = explode('&orderBy', $_SERVER['REQUEST_URI'])[0];
 		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
 	}
@@ -16,17 +16,17 @@
           <table class="tables tables-1" width="100%">
             <thead>
               <tr>
-              	<th><a title="ID" href="<?php echo ($url) ? $url.'&orderBy=id' : 'processos/ordem/?orderBy=id';?>">ID</a></th>
+              	<th><a title="ID" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=id' : 'processos/ordem/?orderBy=id';?>">ID</a></th>
                 <th width="20">Responsável<br/>(Cliente)</th>
                 <th width="100">Comprador</th>
-                <th width="100"><a title="Solped" href="<?php echo ($url) ? $url.'&orderBy=numero_processo' : 'processos/ordem/?orderBy=numero_processo';?>">Solped</a></th>
-                <th width="100"><a title="Objeto" href="<?php echo ($url) ? $url.'&orderBy=nome_processo' : 'processos/ordem/?orderBy=nome_processo';?>">Objeto</a></th>
+                <th width="100"><a title="Solped" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=numero_processo' : 'processos/ordem/?orderBy=numero_processo';?>">Solped</a></th>
+                <th width="100"><a title="Objeto" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=nome_processo' : 'processos/ordem/?orderBy=nome_processo';?>">Objeto</a></th>
                 <th width="100">Sociedade(s)</th>
                 <th width="150">Valor</th>
                 <th width="100">Moeda</th>
-                <th width="100"><a title="Tratamento" href="<?php echo ($url) ? $url.'&orderBy=tipo_processo' : 'processos/ordem/?orderBy=tipo_processo';?>">Tratamento</a></th>
+                <th width="100"><a title="Tratamento" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=tipo_processo' : 'processos/ordem/?orderBy=tipo_processo';?>">Tratamento</a></th>
                 <th width="250">Tempo em curso<br/>(Dias úteis)</th>
-                <th width="150"><a title="Status" href="<?php echo ($url) ? $url.'&orderBy=status' : 'processos/ordem/?orderBy=status';?>">Status</a></th>
+                <th width="150"><a title="Status" href="<?php echo ($_SERVER['QUERY_STRING']) ? $url.'&orderBy=status' : 'processos/ordem/?orderBy=status';?>">Status</a></th>
                 <th width="10%"></th>
               </tr>
             </thead>	
@@ -158,6 +158,8 @@
 				// Default loop
 
 				$sql = "SELECT * FROM processos " . ((isset($queryCondition)) ? $queryCondition : '') . $userCondition . $orderby . " LIMIT ".$offset.','.$no_of_records_per_page;
+
+				print_r($sql);
 
 		        $res_data = mysqli_query($conn,$sql);
 		        while($row = mysqli_fetch_array($res_data)) :
