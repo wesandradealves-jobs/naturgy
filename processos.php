@@ -1,5 +1,12 @@
 <?php 
 	include('commons/header.php'); 
+
+	$url = NULL;
+
+	if(isset($_SERVER['REQUEST_URI'])){
+		$url = explode('&orderBy', $_SERVER['REQUEST_URI'])[0];
+		$url = 'http://'.$_SERVER['HTTP_HOST'].$url;
+	}
 ?>
 <section>
 	<div class="container">
@@ -9,23 +16,24 @@
           <table class="tables tables-1" width="100%">
             <thead>
               <tr>
-              	<th>ID</th>
+              	<th><a title="ID" href="<?php echo ($url) ? $url.'&orderBy=id' : 'processos/ordem/?orderBy=id';?>">ID</a></th>
                 <th width="20">Responsável<br/>(Cliente)</th>
                 <th width="100">Comprador</th>
-                <th width="100">Solped</th>
-                <th width="100">Objeto</th>
+                <th width="100"><a title="Solped" href="<?php echo ($url) ? $url.'&orderBy=numero_processo' : 'processos/ordem/?orderBy=numero_processo';?>">Solped</a></th>
+                <th width="100"><a title="Objeto" href="<?php echo ($url) ? $url.'&orderBy=nome_processo' : 'processos/ordem/?orderBy=nome_processo';?>">Objeto</a></th>
                 <th width="100">Sociedade(s)</th>
                 <th width="150">Valor</th>
                 <th width="100">Moeda</th>
-                <th width="100">Tratamento</th>
+                <th width="100"><a title="Tratamento" href="<?php echo ($url) ? $url.'&orderBy=tipo_processo' : 'processos/ordem/?orderBy=tipo_processo';?>">Tratamento</a></th>
                 <th width="250">Tempo em curso<br/>(Dias úteis)</th>
-                <th width="150">Status</th>
+                <th width="150"><a title="Status" href="<?php echo ($url) ? $url.'&orderBy=status' : 'processos/ordem/?orderBy=status';?>">Status</a></th>
                 <th width="10%"></th>
               </tr>
             </thead>	
             <tbody>
 			<?php
-				$orderby = " ORDER BY id DESC"; 
+				$orderby = " ORDER BY ". ( (isset($_GET['orderBy'])) ? $_GET['orderBy'] : 'id' ) ." ASC"; 
+
 				$queryCondition = NULL;
 				$userCondition = NULL;
 				$filter = false;
@@ -87,10 +95,6 @@
 						array_push($pids, $value);
 					}
 				}	
-
-				// Pega os responsaveis de cada processo
-
-				// $arr
 
 				// Motor de Busca
 

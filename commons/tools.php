@@ -1,4 +1,4 @@
-      	<?php if(isset($_SESSION['uid'])) : ?>
+        <?php if(isset($_SESSION['uid'])) : ?>
           <nav class="navigation">
         		<div class="container">
         			<ul>
@@ -21,8 +21,7 @@
         			</ul>
         		</div>
         	</nav>
-          <?php if(isset($_SESSION['userType']) && $_SESSION['userType']=='responsavel' && $basename == 'processo' || $basename == 'processos') : ?>
-          <form method="GET" action="busca/<?php echo ($basename == 'usuarios' || $basename == 'usuario') ? 'usuarios' : 'processos'; ?>/" class="searchbar forms">
+           <form method="GET" action="busca/<?php echo ($basename == 'usuarios' || $basename == 'usuario') ? 'usuarios' : 'processos'; ?>/" class="searchbar forms">
               <div class="container">
                     <div class="fieldset">
                       <i class="fa fa-search"></i>
@@ -33,13 +32,13 @@
                         <div class="fieldset">
                               <label for="nome">Nome de usuário</label>
                               <span>
-                                  <input name="nome" type="text">
+                                  <input name="search['nome']" type="text">
                               </span>
                         </div>
                         <div class="fieldset">
                               <label for="sap">Número da matrícula (SAP)</label>
                               <span>
-                                  <input name="sap" type="text">
+                                  <input name="search['sap']" type="text">
                               </span>
                         </div>        
                       <?php
@@ -69,11 +68,6 @@
                                       echo '<option value="'.$row['tipo'].'">'.$row['tipo'].'</option>';
                                     endwhile;
                                   ?>
-                 <!--                    <option value="">Lorem ipsum dolor.</option>
-                                    <option value="">Delectus ab, labore.</option>
-                                    <option value="">Iste, ut, nihil!</option>
-                                    <option value="">Voluptatibus, cumque, ab.</option>
-                                    <option value="">Iure, quis voluptatum.</option> -->
                                 </select>
                             </span>
                         </div>
@@ -85,7 +79,6 @@
                     </div>
                 </div>
           </form> 
-          <?php endif; ?> 
         <?php
         endif;
       ?>   

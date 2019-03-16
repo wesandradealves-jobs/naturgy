@@ -26,6 +26,13 @@
             </thead>	
             <tbody>
 			<?php
+				$orderby = " ORDER BY id ASC"; 
+				$queryCondition = NULL;
+				$userCondition = NULL;
+				$filter = false;
+
+				// Controle de Paginação
+
 				if (isset($_GET['p'])) {
 				    $page = $_GET['p'];
 				} else {
@@ -41,50 +48,24 @@
 				$total_rows = mysqli_fetch_array($result)[0];
 				$total_pages = ceil($total_rows / $no_of_records_per_page);
 
-				if($_SESSION['userType']=='administrador'){
-					if( (isset($_GET['nome']) && isset($_GET['sap'])) && ($_GET['nome'] != '' || $_GET['sap'] != '') ){
-						if($_GET['nome'] && $_GET['sap'] == ''){
-							$sql = "SELECT * FROM users WHERE `users`.usuario = '".$_GET['nome']."' LIMIT ".$offset.','.$no_of_records_per_page;
-						} elseif($_GET['nome'] == '' && $_GET['sap']){
-							$sql = "SELECT * FROM users WHERE `users`.usuario != '".$_SESSION['usuario']."' AND `users`.sap = '".$_GET['sap']."' LIMIT ".$offset.','.$no_of_records_per_page;
-						} else {
-							$sql = "SELECT * FROM users WHERE `users`.sap = '".$_GET['sap']."' AND `users`.usuario = '".$_GET['nome']."'LIMIT ".$offset.','.$no_of_records_per_page;
-						}
-					} else {
-						$sql = "SELECT * FROM users WHERE `users`.usuario != '".$_SESSION['usuario']."' LIMIT ".$offset.",".$no_of_records_per_page;
-					}		
-				} else {
-					if( (isset($_GET['nome']) && isset($_GET['sap'])) && ($_GET['nome'] != '' || $_GET['sap'] != '') ){
-						if($_SESSION['userType'] == 'comprador'){
-							if($_GET['nome'] && $_GET['sap'] == ''){
-								$sql = "SELECT * FROM users WHERE `users`.userType != 'administrador' AND `users`.usuario = '".$_GET['nome']."' AND `users`.gerencia != '".$_SESSION['usuario']."' LIMIT ".$offset.','.$no_of_records_per_page;
-							} elseif($_GET['nome'] == '' && $_GET['sap']){
-								$sql = "SELECT * FROM users WHERE `users`.userType != 'administrador' AND `users`.sap = '".$_GET['sap']."' AND `users`.gerencia != '".$_SESSION['usuario']."' LIMIT ".$offset.','.$no_of_records_per_page;
+				if(!empty($_GET["search"])) {
+					// Pega dados da busca
+					foreach($_GET["search"] as $k=>$v){
+						if(!empty($v)) {
+							if(!empty($queryCondition)) {
+								$queryCondition .= " AND ".str_replace("'", "", $k)." = '".$v."'";
 							} else {
-								$sql = "SELECT * FROM users WHERE `users`.userType != 'administrador' AND `users`.sap = '".$_GET['sap']."' AND `users`.usuario = '".$_GET['nome']."'AND `users`.gerencia != '".$_SESSION['usuario']."' LIMIT ".$offset.','.$no_of_records_per_page;
-							}
-						} else {
-							if($_GET['nome'] && $_GET['sap'] == ''){
-								$sql = "SELECT * FROM users WHERE `users`.userType != 'administrador' AND `users`.usuario = '".$_GET['nome']."' LIMIT ".$offset.','.$no_of_records_per_page;
-							} elseif($_GET['nome'] == '' && $_GET['sap']){
-								$sql = "SELECT * FROM users WHERE `users`.userType != 'administrador' AND `users`.sap = '".$_GET['sap']."' LIMIT ".$offset.','.$no_of_records_per_page;
-							} else {
-								$sql = "SELECT * FROM users WHERE `users`.userType != 'administrador' AND `users`.sap = '".$_GET['sap']."' AND `users`.usuario = '".$_GET['nome']."'LIMIT ".$offset.','.$no_of_records_per_page;
+								$queryCondition .= " WHERE ".str_replace("'", "", $k)." = '".$v."'";
 							}
 						}
-
-					} else {
-						if($_SESSION['userType'] == 'comprador'){
-							$sql = "SELECT * FROM users WHERE `users`.gerencia = '".$_SESSION['usuario']."' && `users`.userType != 'administrador' LIMIT ".$offset.",".$no_of_records_per_page;
-						} else {
-							$sql = "SELECT * FROM users WHERE `users`.userType != 'administrador' AND `users`.usuario != '".$_SESSION['usuario']."' LIMIT ".$offset.",".$no_of_records_per_page;
-						}
-						
-					}	
+					}
 				}
 
-		        $res_data = mysqli_query($conn,$sql);
+				// Default loop
 
+				$sql = "SELECT * FROM users " . ((isset($queryCondition)) ? $queryCondition : '') . $userCondition . $orderby . " LIMIT ".$offset.','.$no_of_records_per_page;
+
+		        $res_data = mysqli_query($conn,$sql);
 		        while($row = mysqli_fetch_array($res_data)) :
 		    ?>
 			<tr>
