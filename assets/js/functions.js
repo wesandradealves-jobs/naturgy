@@ -370,12 +370,25 @@ $(document).ready(function () {
     $( "#sociedades input[type='checkbox']" ).each(function() {
         $(this).change(function() {
           if(!$(this).is( ":checked" )){
-            $(this).closest('li').find('.money').val('').attr('required', false);
+            $(this).closest('li').find('.money, .moeda').val('').attr('required', false);
           } else {
-            $(this).closest('li').find('.money').attr('required', true);
+            $(this).closest('li').find('.money, .moeda').attr('required', true);
           }
         });        
-    });        
+    });     
+    $( "#sociedades .moeda" ).each(function() {
+        $(this).on('change', function (e) {
+          if($(this).val()){
+            if(!$(this).closest('li').find('input[type="checkbox"]').is(":checked")){
+              $(this).closest('li').find('input[type="checkbox"]').trigger('click');
+            }
+          } else {
+            if($(this).closest('li').find('input[type="checkbox"]').is(":checked")){
+              $(this).closest('li').find('input[type="checkbox"]').trigger('click');
+            }
+          }
+        });
+    });
     $( "#sociedades .money" ).each(function() {
         $(this).on('blur keypress', function (e) {
           if($(this).val()){

@@ -102,7 +102,6 @@
 
             for($count = 0; $count < sizeof($_POST['nivel-rodada']); $count++){
                 $q = "SELECT * FROM rodadas WHERE position = ".$count;
-                print_r(mysqli_query($conn, $q)->num_rows);
                 if(!mysqli_query($conn, $q)->num_rows){
                     $query_rodadas = "INSERT INTO rodadas (uid, pid, position, tipo, nivel, data_inicial, data_final) VALUES (".$_POST['uid'].",".$_POST['id'].",'".$count."','".$_POST['rodada-tipo'][$count]."','".$_POST['nivel-rodada'][$count]."','".$_POST['data-inicial-rodada'][$count]."','".$_POST['data-final-rodada'][$count]."')";
                 } else {
@@ -135,18 +134,21 @@
             $sociedadeQuery = 'TRUNCATE TABLE sociedades_by_processos';
             mysqli_query($conn, $sociedadeQuery);              
 
-            if(!empty($_POST['sociedade'])){   
-                
+            if(!empty($_POST['sociedade'])){
+
                 $sociedade = array();
                 $valor = array();
+                $moeda = array();
 
                 foreach (array_filter($_POST['sociedade']) as $key => $value) {
                     array_push($sociedade, $value);
-                }  foreach (array_filter($_POST['valor']) as $key => $value) {
+                } foreach (array_filter($_POST['valor']) as $key => $value) {
                     array_push($valor, $value);
+                } foreach (array_filter($_POST['moeda']) as $key => $value) {
+                    array_push($moeda, $value);
                 }
 
-                if(!empty($sociedade) && !empty($valor)){
+                if(!empty($sociedade) && !empty($valor) && !empty($moeda)){
                     $count = -1;
 
                     foreach ($sociedade as $key => $value) {
@@ -154,11 +156,11 @@
                         $query_sociedade_test = "SELECT * FROM sociedades_by_processos WHERE sociedade = '".$value."'";
 
                         if(!mysqli_query($conn, $query_sociedade_test)->num_rows){
-                            $q = "INSERT INTO sociedades_by_processos (uid, pid, position, sociedade, valor) VALUES (".$_POST['uid'].",".$_POST['id'].",".(mysqli_query($conn, "SELECT * FROM sociedades_by_processos")->num_rows + 1).",'".$value."','".$valor[$count]."')";
+                            $q = "INSERT INTO sociedades_by_processos (uid, pid, position, sociedade, valor, moeda) VALUES (".$_POST['uid'].",".$_POST['id'].",".(mysqli_query($conn, "SELECT * FROM sociedades_by_processos")->num_rows + 1).",'".$value."','".$valor[$count]."','".$moeda[$count]."')";
                             mysqli_query($conn, $q);
                         } elseif(mysqli_query($conn, $query_sociedade_test)->num_rows) {
-                            if($value && $valor[$count]){
-                                $qup = "UPDATE sociedades_by_processos SET sociedade = '".$value."', valor = '".$valor[$count]."' WHERE sociedade = '".$value."'";
+                            if($value && $valor[$count] && $moeda[$count]){
+                                $qup = "UPDATE sociedades_by_processos SET sociedade = '".$value."', valor = '".$valor[$count]."', moeda = '".$moeda[$count]."' WHERE sociedade = '".$value."'";
 
                                 mysqli_query($conn, $qup);      
                             }

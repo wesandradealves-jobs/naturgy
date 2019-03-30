@@ -368,7 +368,11 @@
 									        <strong>Moeda</strong>
 									      </div>
 									    </li>
-										<?php 
+										<?php
+											$moedas = array(
+												array('slug'=>'USD', 'title'=>'United States Dollars'),array('slug'=>'EUR', 'title'=>'Euro'),array('slug'=>'GBP', 'title'=>'United Kingdom Pounds'),array('slug'=>'DZD', 'title'=>'Algeria Dinars'),array('slug'=>'ARP', 'title'=>'Argentina Pesos'),array('slug'=>'AUD', 'title'=>'Australia Dollars'),array('slug'=>'ATS', 'title'=>'Austria Schillings'),array('slug'=>'BSD', 'title'=>'Bahamas Dollars'),array('slug'=>'BBD', 'title'=>'Barbados Dollars'),array('slug'=>'BEF', 'title'=>'Belgium Francs'),array('slug'=>'BMD', 'title'=>'Bermuda Dollars'),array('slug'=>'BRR', 'title'=>'Brazil Real'),array('slug'=>'BGL', 'title'=>'Bulgaria Lev'),array('slug'=>'CAD', 'title'=>'Canada Dollars'),array('slug'=>'CLP', 'title'=>'Chile Pesos'),array('slug'=>'CNY', 'title'=>'China Yuan Renmimbi'),array('slug'=>'CYP', 'title'=>'Cyprus Pounds'),array('slug'=>'CSK', 'title'=>'Czech Republic Koruna'),array('slug'=>'DKK', 'title'=>'Denmark Kroner'),array('slug'=>'NLG', 'title'=>'Dutch Guilders'),array('slug'=>'XCD', 'title'=>'Eastern Caribbean Dollars'),array('slug'=>'EGP', 'title'=>'Egypt Pounds'),array('slug'=>'FJD', 'title'=>'Fiji Dollars'),array('slug'=>'FIM', 'title'=>'Finland Markka'),array('slug'=>'FRF', 'title'=>'France Francs'),array('slug'=>'DEM', 'title'=>'Germany Deutsche Marks'),array('slug'=>'XAU', 'title'=>'Gold Ounces'),array('slug'=>'GRD', 'title'=>'Greece Drachmas'),array('slug'=>'HKD', 'title'=>'Hong Kong Dollars'),array('slug'=>'HUF', 'title'=>'Hungary Forint'),array('slug'=>'ISK', 'title'=>'Iceland Krona'),array('slug'=>'INR', 'title'=>'India Rupees'),array('slug'=>'IDR', 'title'=>'Indonesia Rupiah'),array('slug'=>'IEP', 'title'=>'Ireland Punt'),array('slug'=>'ILS', 'title'=>'Israel New Shekels'),array('slug'=>'ITL', 'title'=>'Italy Lira'),array('slug'=>'JMD', 'title'=>'Jamaica Dollars'),array('slug'=>'JPY', 'title'=>'Japan Yen'),array('slug'=>'JOD', 'title'=>'Jordan Dinar'),array('slug'=>'KRW', 'title'=>'Korea (South) Won'),array('slug'=>'LBP', 'title'=>'Lebanon Pounds'),array('slug'=>'LUF', 'title'=>'Luxembourg Francs'),array('slug'=>'MYR', 'title'=>'Malaysia Ringgit'),array('slug'=>'MXP', 'title'=>'Mexico Pesos'),array('slug'=>'NLG', 'title'=>'Netherlands Guilders'),array('slug'=>'NZD', 'title'=>'New Zealand Dollars'),array('slug'=>'NOK', 'title'=>'Norway Kroner'),array('slug'=>'PKR', 'title'=>'Pakistan Rupees'),array('slug'=>'XPD', 'title'=>'Palladium Ounces'),array('slug'=>'PHP', 'title'=>'Philippines Pesos'),array('slug'=>'XPT', 'title'=>'Platinum Ounces')
+											);
+
 											$chosen_sociedades = array();
 											$chosen_valores = array();
 											$chosen_moedas = array();
@@ -384,6 +388,7 @@
 									        		$count = -1;
 								        			foreach ($sociedades_by_processos as $key => $value) {
 								        				$count++;
+
 							        					if($value['sociedade'] == $row['sociedade']){
 							        						array_push($chosen_sociedades, $value['sociedade']);
 							        						array_push($chosen_valores, $value['valor']);
@@ -420,90 +425,39 @@
 															}
 												        echo '
 												      </div>
-												      <div>
+												      <div>';
+												      echo '
 												        <span class="custom-combobox">
 												          <i class="fal fa-angle-down"></i>
 												          <select name="moeda[]" class="moeda">
-												          	<option value="">Selecione uma moeda</option>
-															<option value="USD">United States Dollars</option>
-															<option value="EUR">Euro</option>
-															<option value="GBP">United Kingdom Pounds</option>
-															<option value="DZD">Algeria Dinars</option>
-															<option value="ARP">Argentina Pesos</option>
-															<option value="AUD">Australia Dollars</option>
-															<option value="ATS">Austria Schillings</option>
-															<option value="BSD">Bahamas Dollars</option>
-															<option value="BBD">Barbados Dollars</option>
-															<option value="BEF">Belgium Francs</option>
-															<option value="BMD">Bermuda Dollars</option>
-															<option value="BRR">Brazil Real</option>
-															<option value="BGL">Bulgaria Lev</option>
-															<option value="CAD">Canada Dollars</option>
-															<option value="CLP">Chile Pesos</option>
-															<option value="CNY">China Yuan Renmimbi</option>
-															<option value="CYP">Cyprus Pounds</option>
-															<option value="CSK">Czech Republic Koruna</option>
-															<option value="DKK">Denmark Kroner</option>
-															<option value="NLG">Dutch Guilders</option>
-															<option value="XCD">Eastern Caribbean Dollars</option>
-															<option value="EGP">Egypt Pounds</option>
-															<option value="FJD">Fiji Dollars</option>
-															<option value="FIM">Finland Markka</option>
-															<option value="FRF">France Francs</option>
-															<option value="DEM">Germany Deutsche Marks</option>
-															<option value="XAU">Gold Ounces</option>
-															<option value="GRD">Greece Drachmas</option>
-															<option value="HKD">Hong Kong Dollars</option>
-															<option value="HUF">Hungary Forint</option>
-															<option value="ISK">Iceland Krona</option>
-															<option value="INR">India Rupees</option>
-															<option value="IDR">Indonesia Rupiah</option>
-															<option value="IEP">Ireland Punt</option>
-															<option value="ILS">Israel New Shekels</option>
-															<option value="ITL">Italy Lira</option>
-															<option value="JMD">Jamaica Dollars</option>
-															<option value="JPY">Japan Yen</option>
-															<option value="JOD">Jordan Dinar</option>
-															<option value="KRW">Korea (South) Won</option>
-															<option value="LBP">Lebanon Pounds</option>
-															<option value="LUF">Luxembourg Francs</option>
-															<option value="MYR">Malaysia Ringgit</option>
-															<option value="MXP">Mexico Pesos</option>
-															<option value="NLG">Netherlands Guilders</option>
-															<option value="NZD">New Zealand Dollars</option>
-															<option value="NOK">Norway Kroner</option>
-															<option value="PKR">Pakistan Rupees</option>
-															<option value="XPD">Palladium Ounces</option>
-															<option value="PHP">Philippines Pesos</option>
-															<option value="XPT">Platinum Ounces</option>
-															<option value="PLZ">Poland Zloty</option>
-															<option value="PTE">Portugal Escudo</option>
-															<option value="ROL">Romania Leu</option>
-															<option value="RUR">Russia Rubles</option>
-															<option value="SAR">Saudi Arabia Riyal</option>
-															<option value="XAG">Silver Ounces</option>
-															<option value="SGD">Singapore Dollars</option>
-															<option value="SKK">Slovakia Koruna</option>
-															<option value="ZAR">South Africa Rand</option>
-															<option value="KRW">South Korea Won</option>
-															<option value="ESP">Spain Pesetas</option>
-															<option value="XDR">Special Drawing Right (IMF)</option>
-															<option value="SDD">Sudan Dinar</option>
-															<option value="SEK">Sweden Krona</option>
-															<option value="CHF">Switzerland Francs</option>
-															<option value="TWD">Taiwan Dollars</option>
-															<option value="THB">Thailand Baht</option>
-															<option value="TTD">Trinidad and Tobago Dollars</option>
-															<option value="TRL">Turkey Lira</option>
-															<option value="VEB">Venezuela Bolivar</option>
-															<option value="ZMK">Zambia Kwacha</option>
-															<option value="EUR">Euro</option>
-															<option value="XCD">Eastern Caribbean Dollars</option>
-															<option value="XDR">Special Drawing Right (IMF)</option>
-															<option value="XAG">Silver Ounces</option>
-															<option value="XAU">Gold Ounces</option>
-															<option value="XPD">Palladium Ounces</option>
-															<option value="XPT">Platinum Ounces</option>
+												          	<option value="">Selecione uma moeda</option>';
+															if(isset($_GET['id'])){
+																$count = -1;
+																$val = false;
+																foreach ($sociedades_by_processos as $key => $value) {
+																	$count++;
+																	$currency = 0;
+																	if($value['sociedade'] == $row['sociedade']){
+																		$moeda = $chosen_moedas[$count];
+
+															          	foreach ($moedas as $key => $value) {
+															          		echo '<option '.( ($value['slug'] == $moeda) ? 'selected' : '' ).' value="'.$value['slug'].'">'.$value['title'].'</option>';
+															          	}																		
+
+																		$val = true;
+																	}
+																}	
+																if(!$val){
+														          	foreach ($moedas as $key => $value) {
+														          		echo '<option value="'.$value['slug'].'">'.$value['title'].'</option>';
+														          	}
+																}
+															} else {
+													          	foreach ($moedas as $key => $value) {
+													          		echo '<option value="'.$value['slug'].'">'.$value['title'].'</option>';
+													          	}
+															}
+												          	echo '
 												          </select>
 												        </span>
 												      </div>
@@ -512,7 +466,6 @@
 												    </li>
 									        	';
 									        endwhile;
-
 										?>
 									  </ul>
 									  </div>
