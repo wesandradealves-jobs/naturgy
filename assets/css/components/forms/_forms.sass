@@ -1,25 +1,4 @@
 .forms
-	#sociedades
-		margin: 25px 0 35px
-		.row
-			>div:first-child
-				flex: 0 0 auto
-				width: 135px
-	.rodadas
-		display: block 
-		width: 100%
-		&-footer
-			align-items: center
-			@extend .flex 
-			flex-flow: row wrap 
-			justify-content: flex-end
-			> * 
-				margin-left: auto 
-		.btn 
-		    display: block
-		    +rem(('line-height':40px))
-		    height: 40px
-		    padding: 0px 35px
 	.custom-checkbox
 	    border: 1px lightblue solid
 	    border-radius: 3px
@@ -105,6 +84,8 @@
 					z-index: 2 
 				&:not(:last-of-type)
 					margin-bottom: 15px
+				.fieldset
+					margin-bottom: 0
 		>label
 			flex: 0 0 auto
 			+rem('font-size', 16px)
@@ -155,6 +136,7 @@
 		flex-flow: row wrap 
 		justify-content: space-between
 		margin: 45px 0
+		width: 100%
 		& + .columns 
 			margin-top: -35px !important
 		> * 

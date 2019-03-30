@@ -60,7 +60,7 @@
 									<div class="fieldset '.( ($_SESSION['userType'] == 'responsavel') ? 'disabled' : '' ).' field_id_'.str_replace('-', '_', to_permalink($value)).'">
 									    <label for="'.str_replace('-', '_', to_permalink($value)).'">'.$value.'</label>
 									    <span>
-									      <input tabindex="'.$i.'" value="'. ( (isset($_GET['id']) && isset($processo)) ? $processo[str_replace('-', '_', to_permalink($value))] : '' ) .'" name="'.str_replace('-', '_', to_permalink($value)).'" type="'.( (stripos( str_replace('-', '_', to_permalink($value)), 'data' )) ? 'date' : 'text' ).'">
+									      <input '.( (str_replace('-', '_', to_permalink($value)) == 'nome_processo' || str_replace('-', '_', to_permalink($value)) == 'numero_processo') ? 'required="required"' : '' ).' tabindex="'.$i.'" value="'. ( (isset($_GET['id']) && isset($processo)) ? $processo[str_replace('-', '_', to_permalink($value))] : '' ) .'" name="'.str_replace('-', '_', to_permalink($value)).'" type="'.( (stripos( str_replace('-', '_', to_permalink($value)), 'data' )) ? 'date' : 'text' ).'">
 									    </span>
 									  </div>';		
 								} elseif(str_replace('-', '_', to_permalink($value)) == 'rodadas') { 
@@ -79,13 +79,14 @@
 												        $res_sql_rodadas = mysqli_query($conn,$sql_rodadas);
 												        while($row = mysqli_fetch_array($res_sql_rodadas)) :
 											      			echo '
-													          <li>
+													          <li data-origin="database">
 													            <span class="fieldset">
 													              <label for="nivel-rodada">Nível</label>
 													              <span>
 													                <input readonly="readonly" value="'.$row['nivel'].'" name="nivel-rodada[]" class="nivel_rodada" type="text">
 													              </span>		              
 													            </span> 
+													            <!--
 													            <span class="fieldset">
 													            	<label for="rodada_tipo">Tipo</label>
 																	<span class="custom-combobox">
@@ -95,7 +96,13 @@
 															          <option '.( ($row['tipo'] == 'Rodada Técnica') ? 'selected="selected"' : '' ).' value="Rodada Técnica">Rodada Técnica</option>
 															        </select>
 															      	</span>
-													            </span>
+													            </span>-->
+															    <span class="fieldset">
+															      <label for="rodada-tipo">Tipo</label>
+															      <span>
+															        <input value="'.$row['tipo'].'" readonly="readonly" name="rodada-tipo[]" type="text">
+															      </span>		              
+															    </span>	
 													            <span class="fieldset">
 													              <label for="data-inicial-rodada">Início</label>
 													              <span>
@@ -108,6 +115,11 @@
 													                <input value="'.$row['data_final'].'" name="data-final-rodada[]" type="date">
 													              </span>
 													            </span>
+															    <span class="fieldset rodadas-footer">
+															      <span> 
+															        <a href="javascript:void(0)" class="remove-rodada btn btn-2">Excluir</a>
+															      </span>
+															    </span>													            
 													            <!--
 													            <span class="fieldset rodadas-footer">
 													              <div> 
@@ -118,81 +130,39 @@
 													          </li>
 											      			';
 												        endwhile;
-										      			echo '<li>
-												            <span class="fieldset">
-												              <label for="nivel-rodada">Nível</label>
-												              <span>
-												                <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
-												              </span>		              
-												            </span> 
-												            <span class="fieldset">
-												            	<label for="rodada_tipo">Tipo</label>
-																<span class="custom-combobox">
-														        <i class="fal fa-angle-down"></i>
-														        <select name="rodada-tipo[]">
-														          <option selected="selected" value="Rodada Comercial">Rodada Comercial</option>
-														          <option value="Rodada Técnica">Rodada Técnica</option>
-														        </select>
-														      	</span>
-												            </span>
-												            <span class="fieldset">
-												              <label for="data-inicial-rodada">Início</label>
-												              <span>
-												                <input name="data-inicial-rodada[]" type="date">
-												              </span>
-												            </span>  
-												            <span class="fieldset">
-												              <label for="data-final-rodada">Fim</label>
-												              <span>
-												                <input name="data-final-rodada[]" type="date">
-												              </span>
-												            </span> 
-												            <!--
-												            <span class="fieldset rodadas-footer">
-												              <span> 
-												                <a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2">Excluir</a>
-												              </span>
-												            </span>
-												            -->
-												          </li>
-												          <li>
-												            <span class="fieldset">
-												              <label for="nivel-rodada">Nível</label>
-												              <span>
-												                <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
-												              </span>		              
-												            </span> 
-												            <span class="fieldset">
-												            	<label for="rodada_tipo">Tipo</label>
-																<span class="custom-combobox">
-														        <i class="fal fa-angle-down"></i>
-														        <select name="rodada-tipo[]">
-														          <option value="Rodada Comercial">Rodada Comercial</option>
-														          <option value="Rodada Técnica" selected="selected">Rodada Técnica</option>
-														        </select>
-														      	</span>
-												            </span>
-												            <span class="fieldset">
-												              <label for="data-inicial-rodada">Início</label>
-												              <span>
-												                <input name="data-inicial-rodada[]" type="date">
-												              </span>
-												            </span>  
-												            <span class="fieldset">
-												              <label for="data-final-rodada">Fim</label>
-												              <span>
-												                <input name="data-final-rodada[]" type="date">
-												              </span>
-												            </span> 
-												            <!--
-												            <span class="fieldset rodadas-footer">
-												              <span> 
-												                <a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2">Excluir</a>
-												              </span>
-												            </span>
-												            -->
-												          </li>
-												         ';
+												        if(!$res_sql_rodadas->num_rows){
+															echo '<li>
+															    <span class="fieldset">
+															      <label for="nivel-rodada">Nível</label>
+															      <span>
+															        <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
+															      </span>		              
+															    </span>
+															    <span class="fieldset">
+															      <label for="rodada-tipo">Tipo</label>
+															      <span>
+															        <input value=""  readonly="readonly" name="rodada-tipo[]" type="text">
+															      </span>		              
+															    </span>															    
+															    <span class="fieldset">
+															      <label for="data-inicial-rodada">Início</label>
+															      <span>
+															        <input name="data-inicial-rodada[]" type="date">
+															      </span>
+															    </span>  
+															    <span class="fieldset">
+															      <label for="data-final-rodada">Fim</label>
+															      <span>
+															        <input name="data-final-rodada[]" type="date">
+															      </span>
+															    </span> 
+															    <span class="fieldset rodadas-footer">
+															      <span> 
+															        <a href="javascript:void(0)" class="remove-rodada btn btn-2">Excluir</a>
+															      </span>
+															    </span>
+															  </li>';	
+												        }
 										      		} else {	
 										      			echo '<li>
 												            <span class="fieldset">
@@ -201,16 +171,12 @@
 												                <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
 												              </span>		              
 												            </span> 
-												            <span class="fieldset">
-												            	<label for="rodada_tipo">Tipo</label>
-																<span class="custom-combobox">
-														        <i class="fal fa-angle-down"></i>
-														        <select name="rodada-tipo[]">
-														          <option selected="selected" value="Rodada Comercial">Rodada Comercial</option>
-														          <option value="Rodada Técnica">Rodada Técnica</option>
-														        </select>
-														      	</span>
-												            </span>
+														    <span class="fieldset">
+														      <label for="rodada-tipo">Tipo</label>
+														      <span>
+														        <input value=""  readonly="readonly" name="rodada-tipo[]" type="text">
+														      </span>		              
+														    </span>	
 												            <span class="fieldset">
 												              <label for="data-inicial-rodada">Início</label>
 												              <span>
@@ -223,63 +189,25 @@
 												                <input name="data-final-rodada[]" type="date">
 												              </span>
 												            </span> 
-												            <!--
 												            <span class="fieldset rodadas-footer">
 												              <span> 
-												                <a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2">Excluir</a>
+												                <a href="javascript:void(0)" class="remove-rodada btn btn-2">Excluir</a>
 												              </span>
 												            </span>
-												            -->
-												          </li>
-												          <li>
-												            <span class="fieldset">
-												              <label for="nivel-rodada">Nível</label>
-												              <span>
-												                <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
-												              </span>		              
-												            </span> 
-												            <span class="fieldset">
-												            	<label for="rodada_tipo">Tipo</label>
-																<span class="custom-combobox">
-														        <i class="fal fa-angle-down"></i>
-														        <select name="rodada-tipo[]">
-														          <option value="Rodada Comercial">Rodada Comercial</option>
-														          <option value="Rodada Técnica" selected="selected">Rodada Técnica</option>
-														        </select>
-														      	</span>
-												            </span>
-												            <span class="fieldset">
-												              <label for="data-inicial-rodada">Início</label>
-												              <span>
-												                <input name="data-inicial-rodada[]" type="date">
-												              </span>
-												            </span>  
-												            <span class="fieldset">
-												              <label for="data-final-rodada">Fim</label>
-												              <span>
-												                <input name="data-final-rodada[]" type="date">
-												              </span>
-												            </span> 
-												            <!--
-												            <span class="fieldset rodadas-footer">
-												              <span> 
-												                <a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2">Excluir</a>
-												              </span>
-												            </span>
-												            -->
-												          </li>
-												         ';
+												          </li>';
 												    }
 										          echo '
 										        </ul>
+										        <!--
 										        <div class="rodadas-footer">'; 
 									                	if(isset($res_sql_rodadas)){
 									                		echo '<a class="btn btn-2 deletar_rodada">Excluir</a>';
 									                	} else {
-									                	echo '<a href="javascript:void(0)" onclick="removeRodada(this)" class="btn btn-2 disabled">Excluir</a>';		
+									                		echo '<a href="javascript:void(0)" class="remove-rodada btn btn-2 disabled">Excluir</a>';		
 									                	}
 									                echo '
 										        </div>
+										        -->
 											</div>
 										</div>
 									';
@@ -311,28 +239,28 @@
 										        endwhile;
 
 
-												$responsaveis = "SELECT * FROM `users` WHERE `userType` = 'responsavel' ORDER BY nome";
-												if ($responsavel = $conn->query($responsaveis)) {
-													echo '<span><span class="fieldset">
-														<span class="custom-combobox">
-													    	<i class="fal fa-angle-down"></i>
-										    				<select name="'.str_replace('-', '_', to_permalink($value)).'[]">';
-										    				echo '<option value="">Selecione uma opção</option>';
-												    while($row = $responsavel->fetch_assoc()) :
-														echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
-													endwhile;
-													echo '</select>
-														  	</span>		  
-														</span></span>';
-												}
- 												$responsavel->free();	
+												// $responsaveis = "SELECT * FROM `users` WHERE `userType` = 'responsavel' ORDER BY nome";
+												// if ($responsavel = $conn->query($responsaveis)) {
+												// 	echo '<span><span class="fieldset">
+												// 		<span class="custom-combobox">
+												// 	    	<i class="fal fa-angle-down"></i>
+										  //   				<select name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+										  //   				echo '<option value="">Selecione uma opção</option>';
+												//     while($row = $responsavel->fetch_assoc()) :
+												// 		echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
+												// 	endwhile;
+												// 	echo '</select>
+												// 		  	</span>		  
+												// 		</span></span>';
+												// }
+ 												// $responsavel->free();	
 								      		} else {
 												$responsaveis = "SELECT * FROM `users` WHERE `userType` = 'responsavel' ORDER BY nome";
 												if ($responsavel = $conn->query($responsaveis)) {
 													echo '<span><span class="fieldset">
 														<span class="custom-combobox">
 													    	<i class="fal fa-angle-down"></i>
-										    				<select name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+										    				<select required="required" name="'.str_replace('-', '_', to_permalink($value)).'[]">';
 										    				echo '<option value="">Selecione uma opção</option>';
 												    while($row = $responsavel->fetch_assoc()) :
 														echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
@@ -434,144 +362,157 @@
 									        <strong>Sociedades</strong>
 									      </div>
 									      <div>
-									        <strong>Valor Total</strong>
+									        <strong>Valor</strong>
 									      </div>
 									      <div>
 									        <strong>Moeda</strong>
 									      </div>
 									    </li>
 										<?php 
+											$chosen_sociedades = array();
+											$chosen_valores = array();
+											$chosen_moedas = array();
+
 											$sociedades = "SELECT * FROM sociedades";
 									        $rsociedades = mysqli_query($conn,$sociedades);
-									        $j = 0;
+									        $j = -1;
+
 									        while($row = mysqli_fetch_array($rsociedades)) :
 									        	$j++; 
+
+									        	if(isset($_GET['id'])){
+									        		$count = -1;
+								        			foreach ($sociedades_by_processos as $key => $value) {
+								        				$count++;
+							        					if($value['sociedade'] == $row['sociedade']){
+							        						array_push($chosen_sociedades, $value['sociedade']);
+							        						array_push($chosen_valores, $value['valor']);
+							        						array_push($chosen_moedas, $value['moeda']);
+							        					}
+							        				}									        		
+									        	}
+
 									        	echo '
 													<li id="'.to_permalink($row['sociedade']).'" class="row">
 												      <div>
 												      	<div class="custom-checkbox">
-															<input type="checkbox" name="sociedade[]" value="'.$row['sociedade'].'">
+															<input '.( (in_array($row['sociedade'], $chosen_sociedades) ) ? 'checked="checked"' : '' ).' type="checkbox" name="sociedade[]" value="'.$row['sociedade'].'">
 															<label for="'.$row['sociedade'].'"></label>
 												      	</div>
 												        <label for="sociedade">'.$row['sociedade'].'</label>
-												      </div>';
-												      if($j <= 1){
-												      echo '
-													      <div>
-													        <input class="money" value="'. ( (isset($_GET['id']) && isset($processo)) ? $processo['valor'] : '' ) .'" name="valor" type="text">
-													      </div>
-													      <div>
-													        <span class="custom-combobox">
-													          <i class="fal fa-angle-down"></i>
-													          <select name="moeda" class="moeda">
-													          	<option value="">Selecione uma moeda</option>
-																<option value="USD">United States Dollars</option>
-																<option value="EUR">Euro</option>
-																<option value="GBP">United Kingdom Pounds</option>
-																<option value="DZD">Algeria Dinars</option>
-																<option value="ARP">Argentina Pesos</option>
-																<option value="AUD">Australia Dollars</option>
-																<option value="ATS">Austria Schillings</option>
-																<option value="BSD">Bahamas Dollars</option>
-																<option value="BBD">Barbados Dollars</option>
-																<option value="BEF">Belgium Francs</option>
-																<option value="BMD">Bermuda Dollars</option>
-																<option value="BRR">Brazil Real</option>
-																<option value="BGL">Bulgaria Lev</option>
-																<option value="CAD">Canada Dollars</option>
-																<option value="CLP">Chile Pesos</option>
-																<option value="CNY">China Yuan Renmimbi</option>
-																<option value="CYP">Cyprus Pounds</option>
-																<option value="CSK">Czech Republic Koruna</option>
-																<option value="DKK">Denmark Kroner</option>
-																<option value="NLG">Dutch Guilders</option>
-																<option value="XCD">Eastern Caribbean Dollars</option>
-																<option value="EGP">Egypt Pounds</option>
-																<option value="FJD">Fiji Dollars</option>
-																<option value="FIM">Finland Markka</option>
-																<option value="FRF">France Francs</option>
-																<option value="DEM">Germany Deutsche Marks</option>
-																<option value="XAU">Gold Ounces</option>
-																<option value="GRD">Greece Drachmas</option>
-																<option value="HKD">Hong Kong Dollars</option>
-																<option value="HUF">Hungary Forint</option>
-																<option value="ISK">Iceland Krona</option>
-																<option value="INR">India Rupees</option>
-																<option value="IDR">Indonesia Rupiah</option>
-																<option value="IEP">Ireland Punt</option>
-																<option value="ILS">Israel New Shekels</option>
-																<option value="ITL">Italy Lira</option>
-																<option value="JMD">Jamaica Dollars</option>
-																<option value="JPY">Japan Yen</option>
-																<option value="JOD">Jordan Dinar</option>
-																<option value="KRW">Korea (South) Won</option>
-																<option value="LBP">Lebanon Pounds</option>
-																<option value="LUF">Luxembourg Francs</option>
-																<option value="MYR">Malaysia Ringgit</option>
-																<option value="MXP">Mexico Pesos</option>
-																<option value="NLG">Netherlands Guilders</option>
-																<option value="NZD">New Zealand Dollars</option>
-																<option value="NOK">Norway Kroner</option>
-																<option value="PKR">Pakistan Rupees</option>
-																<option value="XPD">Palladium Ounces</option>
-																<option value="PHP">Philippines Pesos</option>
-																<option value="XPT">Platinum Ounces</option>
-																<option value="PLZ">Poland Zloty</option>
-																<option value="PTE">Portugal Escudo</option>
-																<option value="ROL">Romania Leu</option>
-																<option value="RUR">Russia Rubles</option>
-																<option value="SAR">Saudi Arabia Riyal</option>
-																<option value="XAG">Silver Ounces</option>
-																<option value="SGD">Singapore Dollars</option>
-																<option value="SKK">Slovakia Koruna</option>
-																<option value="ZAR">South Africa Rand</option>
-																<option value="KRW">South Korea Won</option>
-																<option value="ESP">Spain Pesetas</option>
-																<option value="XDR">Special Drawing Right (IMF)</option>
-																<option value="SDD">Sudan Dinar</option>
-																<option value="SEK">Sweden Krona</option>
-																<option value="CHF">Switzerland Francs</option>
-																<option value="TWD">Taiwan Dollars</option>
-																<option value="THB">Thailand Baht</option>
-																<option value="TTD">Trinidad and Tobago Dollars</option>
-																<option value="TRL">Turkey Lira</option>
-																<option value="VEB">Venezuela Bolivar</option>
-																<option value="ZMK">Zambia Kwacha</option>
-																<option value="EUR">Euro</option>
-																<option value="XCD">Eastern Caribbean Dollars</option>
-																<option value="XDR">Special Drawing Right (IMF)</option>
-																<option value="XAG">Silver Ounces</option>
-																<option value="XAU">Gold Ounces</option>
-																<option value="XPD">Palladium Ounces</option>
-																<option value="XPT">Platinum Ounces</option>
-													          </select>
-													        </span>
-													      </div>';   	
-												      }
-											        	if(isset($_GET['id'])){
-										        			foreach ($sociedades_by_processos as $key => $value) {
-									        					if($value['sociedade'] == $row['sociedade']){
-									        						echo '
-									        							<script>
-									        								document.querySelector("#'.to_permalink($value['sociedade']).' input").checked = true;
-
-									        								document.querySelector(".moeda").setAttribute("value", "'.$processo['moeda'].'");
-
-																		    for(var i = 0, j = document.querySelector(".moeda").options.length; i < j; ++i) {
-																		        if(document.querySelector(".moeda").options[i].value === "'.$processo['moeda'].'") {
-																		           document.querySelector(".moeda").selectedIndex = i;
-																		           break;
-																		        }
-																		    }
-																		</script>
-									        						';
-									        					}
-										        			}
-											        	}												      
+												      </div>
+												      <div>';
+															if(isset($_GET['id'])){
+																$count = -1;
+																$val = false;
+																foreach ($sociedades_by_processos as $key => $value) {
+																	$count++;
+																	if($value['sociedade'] == $row['sociedade']){
+																		echo '<input class="money" value="'.$chosen_valores[$count].'" name="valor[]" type="text">';
+																		$val = true;
+																	}
+																}	
+																if(!$val){
+																	echo '<input class="money" name="valor[]" type="text">';
+																}
+															} else {
+																echo '<input class="money" name="valor[]" type="text">';
+															}
+												        echo '
+												      </div>
+												      <div>
+												        <span class="custom-combobox">
+												          <i class="fal fa-angle-down"></i>
+												          <select name="moeda[]" class="moeda">
+												          	<option value="">Selecione uma moeda</option>
+															<option value="USD">United States Dollars</option>
+															<option value="EUR">Euro</option>
+															<option value="GBP">United Kingdom Pounds</option>
+															<option value="DZD">Algeria Dinars</option>
+															<option value="ARP">Argentina Pesos</option>
+															<option value="AUD">Australia Dollars</option>
+															<option value="ATS">Austria Schillings</option>
+															<option value="BSD">Bahamas Dollars</option>
+															<option value="BBD">Barbados Dollars</option>
+															<option value="BEF">Belgium Francs</option>
+															<option value="BMD">Bermuda Dollars</option>
+															<option value="BRR">Brazil Real</option>
+															<option value="BGL">Bulgaria Lev</option>
+															<option value="CAD">Canada Dollars</option>
+															<option value="CLP">Chile Pesos</option>
+															<option value="CNY">China Yuan Renmimbi</option>
+															<option value="CYP">Cyprus Pounds</option>
+															<option value="CSK">Czech Republic Koruna</option>
+															<option value="DKK">Denmark Kroner</option>
+															<option value="NLG">Dutch Guilders</option>
+															<option value="XCD">Eastern Caribbean Dollars</option>
+															<option value="EGP">Egypt Pounds</option>
+															<option value="FJD">Fiji Dollars</option>
+															<option value="FIM">Finland Markka</option>
+															<option value="FRF">France Francs</option>
+															<option value="DEM">Germany Deutsche Marks</option>
+															<option value="XAU">Gold Ounces</option>
+															<option value="GRD">Greece Drachmas</option>
+															<option value="HKD">Hong Kong Dollars</option>
+															<option value="HUF">Hungary Forint</option>
+															<option value="ISK">Iceland Krona</option>
+															<option value="INR">India Rupees</option>
+															<option value="IDR">Indonesia Rupiah</option>
+															<option value="IEP">Ireland Punt</option>
+															<option value="ILS">Israel New Shekels</option>
+															<option value="ITL">Italy Lira</option>
+															<option value="JMD">Jamaica Dollars</option>
+															<option value="JPY">Japan Yen</option>
+															<option value="JOD">Jordan Dinar</option>
+															<option value="KRW">Korea (South) Won</option>
+															<option value="LBP">Lebanon Pounds</option>
+															<option value="LUF">Luxembourg Francs</option>
+															<option value="MYR">Malaysia Ringgit</option>
+															<option value="MXP">Mexico Pesos</option>
+															<option value="NLG">Netherlands Guilders</option>
+															<option value="NZD">New Zealand Dollars</option>
+															<option value="NOK">Norway Kroner</option>
+															<option value="PKR">Pakistan Rupees</option>
+															<option value="XPD">Palladium Ounces</option>
+															<option value="PHP">Philippines Pesos</option>
+															<option value="XPT">Platinum Ounces</option>
+															<option value="PLZ">Poland Zloty</option>
+															<option value="PTE">Portugal Escudo</option>
+															<option value="ROL">Romania Leu</option>
+															<option value="RUR">Russia Rubles</option>
+															<option value="SAR">Saudi Arabia Riyal</option>
+															<option value="XAG">Silver Ounces</option>
+															<option value="SGD">Singapore Dollars</option>
+															<option value="SKK">Slovakia Koruna</option>
+															<option value="ZAR">South Africa Rand</option>
+															<option value="KRW">South Korea Won</option>
+															<option value="ESP">Spain Pesetas</option>
+															<option value="XDR">Special Drawing Right (IMF)</option>
+															<option value="SDD">Sudan Dinar</option>
+															<option value="SEK">Sweden Krona</option>
+															<option value="CHF">Switzerland Francs</option>
+															<option value="TWD">Taiwan Dollars</option>
+															<option value="THB">Thailand Baht</option>
+															<option value="TTD">Trinidad and Tobago Dollars</option>
+															<option value="TRL">Turkey Lira</option>
+															<option value="VEB">Venezuela Bolivar</option>
+															<option value="ZMK">Zambia Kwacha</option>
+															<option value="EUR">Euro</option>
+															<option value="XCD">Eastern Caribbean Dollars</option>
+															<option value="XDR">Special Drawing Right (IMF)</option>
+															<option value="XAG">Silver Ounces</option>
+															<option value="XAU">Gold Ounces</option>
+															<option value="XPD">Palladium Ounces</option>
+															<option value="XPT">Platinum Ounces</option>
+												          </select>
+												        </span>
+												      </div>
+												      ';		
 												      echo '
 												    </li>
 									        	';
 									        endwhile;
+
 										?>
 									  </ul>
 									  </div>

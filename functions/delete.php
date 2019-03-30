@@ -31,14 +31,6 @@
                 mysqli_query($conn, $query_sociedade);
 
                 header("Location: ".$default_url."/processos/?deleted=true");
-            } elseif($_GET['table'] == 'rodadas'){
-                // $query_rodadas = 'DELETE FROM rodadas WHERE pid = '.$_GET['pid'].' AND position = '.$_GET['position'];
-
-                // if(mysqli_query($conn, $query_rodadas)){
-                //     header("Location: ".$default_url."/processo/".$_GET['uid']."/".$_GET['pid']."/?deleted=true"); 
-                // }
-
-                // print_r(json_encode( $_POST ));
             } elseif($_GET['table'] == 'responsavel_by_processos'){
                 $query_responsaveis = 'DELETE FROM responsavel_by_processos WHERE pid = '.$_GET['pid'].' AND responsavel = '.$_GET['id'];
 
@@ -48,13 +40,9 @@
             }
         } 
     } elseif($_POST){
-        $positions = array($_POST['position'], (string)((int)$_POST['position'] - 1));
-
-        foreach($positions as $key => $value) {
-            $query_rodadas = 'DELETE FROM '.$_POST['table'].' WHERE pid = '.$_POST['pid'].' AND position = '.$value;
-        
-            print_r(json_encode( array('SQL'=>mysqli_query($conn, $query_rodadas) ) ));
-        }        
+        $query_rodadas = 'DELETE FROM '.$_POST['table'].' WHERE pid = '.$_POST['pid'].' AND position = '.$_POST['position'];
+    
+        print_r(json_encode( array('SQL'=>mysqli_query($conn, $query_rodadas) ) ));  
     }
 
 

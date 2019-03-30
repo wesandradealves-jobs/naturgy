@@ -158,8 +158,6 @@
 
 				$sql = "SELECT * FROM processos " . ((isset($queryCondition)) ? $queryCondition : '') . $userCondition . $orderby . " LIMIT ".$offset.','.$no_of_records_per_page;
 
-				print_r($sql);
-
 		        $res_data = mysqli_query($conn,$sql);
 		        while($row = mysqli_fetch_array($res_data)) :
 		    ?>

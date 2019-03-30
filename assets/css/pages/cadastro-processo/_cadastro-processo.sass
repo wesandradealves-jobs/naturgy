@@ -81,6 +81,12 @@
 		padding-left: 170px
 		padding-top: 15px	
 		position: absolute 
+#sociedades
+	margin: 25px 0 35px
+	.row
+		>div:first-child
+			flex: 0 0 auto
+			width: 135px		
 #processo-form
 	align-items: center 
 	@extend .flex 
@@ -102,25 +108,18 @@
 				text-overflow: ellipsis
 				white-space: nowrap				
 	.rodadas
-		.rodadas-footer
-			margin-top: 15px
+		width: 100%
 		input[type="date"]
 			padding-right: 0!important	
 		&-footer
+			margin-top: 15px
+			.btn 
+			    display: block
+			    +rem(('line-height':40px))
+			    height: 40px
+			    padding: 0px 35px			
 			> * 
-				margin: initial
-				&:not(:last-child)
-					margin-right: 15px
-			>div 
-				align-items: center 
-				@extend .flex 
-				flex-flow: row 
-				justify-content: flex-end
-				width: 100%
-				>.btn 
-					flex: 0 0 auto
-					min-width: initial
-					width: initial
+				margin-left: auto
 		&-header 
 			align-items: flex-end 
 			color: $blue 
