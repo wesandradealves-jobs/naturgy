@@ -141,7 +141,7 @@
 										  <label for="'.$key.'">'.$label[$i].'</label>
 											<span class="custom-combobox">
 										    	<i class="fal fa-angle-down"></i>
-							    				<select name="'.$key.'">';
+							    				<select readonly="readonly" name="'.$key.'">';
 							    				echo '<option value="">Selecione uma opção</option>';
 												 while($row_numeros = mysqli_fetch_array($result_numeros)) :
 												 	echo '<option '.( ($value == $row_numeros['numero_processo']) ? 'selected="selected"' : '' ).' value="'.$row_numeros['numero_processo'].'">'.$row_numeros['numero_processo'].'</option>';
