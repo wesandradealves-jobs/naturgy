@@ -219,7 +219,15 @@
 						}
 					?>
 				</th>
-				<th><?php echo $row['valor'] ?></th>
+				<th>
+					<?php 
+						$valores = array();
+						foreach ($sociedades_by_processos as $key => $value) {
+							array_push($valores, $value['valor']);
+						}
+						print_r(array_sum($valores));
+					?>
+				</th>
 				<th><?php echo $row['moeda'] ?></th>
 				<th><?php echo $row['tipo_processo'] ?></th>
 				<th>
