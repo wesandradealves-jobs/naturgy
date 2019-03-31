@@ -170,23 +170,25 @@
 				<th>
 					<?php 
 						// Pega o repsonsavel
-					
-						$responsaveis = array();
 
-						foreach ($arr as $key => $value) {
-							if(in_array($row['id'], $value, false)){
-								array_push($responsaveis, $value['rid']);
+						if(!empty($arr)){
+							$responsaveis = array();
+
+							foreach ($arr as $key => $value) {
+								if(in_array($row['id'], $value, false)){
+									array_push($responsaveis, $value['rid']);
+								}
 							}
+
+	    			        $stblresponsavel = "SELECT * FROM users WHERE id IN (".implode(',', $responsaveis).")";
+
+		    			    $qtblresponsavel = mysqli_fetch_array(mysqli_query($conn, $stblresponsavel));
+
+					        $rqtblresponsavel = mysqli_query($conn,$stblresponsavel);
+					        while($rwqtblresponsavel = mysqli_fetch_array($rqtblresponsavel)) :
+					        	print_r($rwqtblresponsavel['nome'].'<br>');
+					        endwhile;	
 						}
-
-    			        $stblresponsavel = "SELECT * FROM users WHERE id IN (".implode(',', $responsaveis).")";
-
-	    			    $qtblresponsavel = mysqli_fetch_array(mysqli_query($conn, $stblresponsavel));
-
-				        $rqtblresponsavel = mysqli_query($conn,$stblresponsavel);
-				        while($rwqtblresponsavel = mysqli_fetch_array($rqtblresponsavel)) :
-				        	print_r($rwqtblresponsavel['nome'].'<br>');
-				        endwhile;
 					?>
 				</th>
 				<th><?php 

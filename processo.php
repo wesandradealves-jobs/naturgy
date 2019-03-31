@@ -238,29 +238,31 @@
 	 												$responsavel->free();	
 										        endwhile;
 
-
-												// $responsaveis = "SELECT * FROM `users` WHERE `userType` = 'responsavel' ORDER BY nome";
-												// if ($responsavel = $conn->query($responsaveis)) {
-												// 	echo '<span><span class="fieldset">
-												// 		<span class="custom-combobox">
-												// 	    	<i class="fal fa-angle-down"></i>
-										  //   				<select name="'.str_replace('-', '_', to_permalink($value)).'[]">';
-										  //   				echo '<option value="">Selecione uma opção</option>';
-												//     while($row = $responsavel->fetch_assoc()) :
-												// 		echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
-												// 	endwhile;
-												// 	echo '</select>
-												// 		  	</span>		  
-												// 		</span></span>';
-												// }
- 												// $responsavel->free();	
+										        if(!$res_sql_responsaveis->num_rows){
+													$responsaveis = "SELECT * FROM `users` WHERE `userType` = 'responsavel' ORDER BY nome";
+													if ($responsavel = $conn->query($responsaveis)) {
+														echo '<span><span class="fieldset">
+															<span class="custom-combobox">
+														    	<i class="fal fa-angle-down"></i>
+											    				<select name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+											    				echo '<option value="">Selecione uma opção</option>';
+													    while($row = $responsavel->fetch_assoc()) :
+															echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
+														endwhile;
+														echo '</select>
+															  	</span>		  
+															</span></span>';
+													}
+	 												$responsavel->free();										        	
+										        }
+	
 								      		} else {
 												$responsaveis = "SELECT * FROM `users` WHERE `userType` = 'responsavel' ORDER BY nome";
 												if ($responsavel = $conn->query($responsaveis)) {
 													echo '<span><span class="fieldset">
 														<span class="custom-combobox">
 													    	<i class="fal fa-angle-down"></i>
-										    				<select required="required" name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+										    				<select name="'.str_replace('-', '_', to_permalink($value)).'[]">';
 										    				echo '<option value="">Selecione uma opção</option>';
 												    while($row = $responsavel->fetch_assoc()) :
 														echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
