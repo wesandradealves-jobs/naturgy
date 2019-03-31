@@ -31,7 +31,7 @@
             </thead>	
             <tbody>
 			<?php
-				$orderby = " ORDER BY ". ( (isset($_GET['orderBy'])) ? (($_GET['orderBy'] == 'status') ? 'ABS('.$_GET['orderBy'].')' : $_GET['orderBy']) : 'id' ) ." ASC"; 
+				$orderby = " ORDER BY ". ( (isset($_GET['orderBy'])) ? (($_GET['orderBy'] == 'status') ? 'ABS('.$_GET['orderBy'].')' : "'".$_GET['orderBy']."'") : 'id' ) ." DESC"; 
 
 				$queryCondition = NULL;
 				$userCondition = NULL;
@@ -165,7 +165,7 @@
 
 				$sql = "SELECT * FROM processos " . ((isset($queryCondition)) ? $queryCondition : '') . $userCondition . $orderby . " LIMIT ".$offset.','.$no_of_records_per_page;
 
-				// print_r($sql);
+				print_r($sql);
 
 		        $res_data = mysqli_query($conn,$sql);
 		        while($row = mysqli_fetch_array($res_data)) :
