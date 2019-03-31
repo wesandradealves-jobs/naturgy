@@ -49,35 +49,50 @@
   <body class="pg-login <?php echo ($basename != 'index') ? 'pg-dashboard pg-'.$basename : ''; ?>"> 
     <div id="wrap">
       <?php 
-      if(isset($_GET['exist']) || isset($_GET['sent']) || isset($_GET['error']) || isset($_GET['erro']) || isset($_GET['logout']) || isset($_GET['updated']) || isset($_GET['updated']) || isset($_GET['deleted']) || isset($_GET['registered']) || isset($_GET['enabled']) || isset($_GET['disabled'])) : ?>
+        if(strpos( $_SERVER['REQUEST_URI'], '?' ) !== false){
+          ?>
           <div class="messageBar">
-            <span>
+            <span>            
+          <?php
+            switch (explode('=',substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "?") + 1))[0]) {
+              case 'updated':
+                echo 'Atualizado com sucesso.';
+                break;
+              case 'exist':
+                echo 'Já existe cadastro semelhante.';
+                break;
+              case 'sent':
+                echo 'E-mail enviado com sucesso.';
+                break;
+              case 'error':
+              case 'erro':
+                echo 'Ocorreram erros ou dados inválidos.';
+                break;
+              case 'logout':
+                echo 'Você foi deslogado do sistema.';
+                break;
+              case 'deleted':
+                echo 'Deletado com sucesso.';
+                break;
+              case 'registered':
+                echo 'Cadastrado com sucesso.';
+                break;
+              case 'enabled':
+                echo 'Ativo com sucesso.';
+                break;
+              case 'disabled':
+                echo 'Desativado com sucesso.';
+                break;                                                                                              
+              default:
+                // code...
+                break;
+            }
+            ?>
+                </span>
+                <a href="javascript:void(0)" onclick="closeMessage(this)" class="fal fa-close"></a>
+              </div>            
               <?php
-                if(isset($_GET['updated'])){
-                  echo 'Atualizado com sucesso.';
-                } elseif(isset($_GET['exist'])){
-                  echo 'Já existe cadastro semelhante.';
-                } elseif(isset($_GET['sent'])){
-                  echo 'E-mail enviado com sucesso.';
-                } elseif(isset($_GET['erro']) || isset($_GET['error'])){
-                  echo 'Ocorreram erros ou dados inválidos.';
-                } elseif(isset($_GET['logout'])){
-                  echo 'Você foi deslogado do sistema.';
-                } elseif(isset($_GET['deleted'])){
-                  echo 'Deletado com sucesso.';
-                } elseif(isset($_GET['registered'])){
-                  echo 'Cadastrado com sucesso.';
-                } elseif(isset($_GET['enabled'])){
-                  echo 'Ativo com sucesso.';
-                } elseif(isset($_GET['disabled'])){
-                  echo 'Desativado com sucesso.';
-                }
-              ?>
-            </span>
-            <a href="javascript:void(0)" onclick="closeMessage(this)" class="fal fa-close"></a>
-          </div>
-      <?php
-        endif;
+        }
       ?>
       <header id="header">
         <?php 

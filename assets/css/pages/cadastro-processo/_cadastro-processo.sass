@@ -88,11 +88,24 @@
 			flex: 0 0 auto
 			width: 135px		
 #processo-form
-	align-items: center 
+	align-items: flex-end 
 	@extend .flex 
 	flex-flow: row wrap 
 	max-width: 814px
 	justify-content: space-between 
+	>h3 
+		flex: 0 0 auto 
+		color: $blue 
+		font-weight: bold 
+		margin-bottom: 15px
+		width: 100%
+		border-top: 1px $blue solid 
+		padding-top: 15px
+		span 
+			display: block
+			text-align: right
+			width: 170px
+			padding-right: 15px	
 	>*
 		flex: 0 0 auto 
 		width: 100%

@@ -56,11 +56,81 @@
 			        		if(str_replace('-', '_', to_permalink($value)) != 'sociedade' && str_replace('-', '_', to_permalink($value)) != 'valor' && str_replace('-', '_', to_permalink($value)) != 'moeda'){
 
 			        			if(str_replace('-', '_', to_permalink($value)) != 'status' && str_replace('-', '_', to_permalink($value)) != 'responsavel' && str_replace('-', '_', to_permalink($value)) != 'subfamilia' && str_replace('-', '_', to_permalink($value)) != 'comprador' && str_replace('-', '_', to_permalink($value)) != 'rodadas' && str_replace('-', '_', to_permalink($value)) != 'tipo_processo'){
+					        		
+									switch ($value) {
+										case 'Fornecedor':
+											echo '<h3><span>'.$value.'</span></h3>';	
+											break;
+										case 'Estratégia Data Inicial':
+											echo '<h3><span>Estratégia</span></h3>';	
+											break;											
+										case 'Elaboração Documento Data Inicial':
+											echo '<h3><span>Elaboração Documentação de Lançamento</span></h3>';	
+											break;											
+										case 'Negociação Direta Data Inicial':
+											echo '<h3><span>Negociação Direta</span></h3>';	
+											break;											
+										case 'Leilão Data Inicial':
+											echo '<h3><span>Leilão</span></h3>';	
+											break;											
+										case 'Elaboração PA Data Inicial':
+											echo '<h3><span>Elaboração PA</span></h3>';	
+											break;											
+										case 'Workflow Data Inicial':
+											echo '<h3><span>Workflow</span></h3>';	
+											break;											
+										case 'Criação de Pedido Data Inicial':
+											echo '<h3><span>Criação de Pedido</span></h3>';	
+											break;											
+										case 'Trâmite Assinatura Interna Diretor 1':
+											echo '<h3><span>Trâmite 1º Diretor</span></h3>';	
+											break;											
+										case 'Trâmite Assinatura Interna Diretor 2':
+											echo '<h3><span>Trâmite 2º Diretor</span></h3>';	
+											break;
+										case 'Trãmite Assinatura Externa Email':
+											echo '<hr/>';
+											break;
+										default:
+											break;
+									}
+
 					        		echo '
 									<div class="fieldset '.( ($_SESSION['userType'] == 'responsavel') ? 'disabled' : '' ).' field_id_'.str_replace('-', '_', to_permalink($value)).'">
-									    <label for="'.str_replace('-', '_', to_permalink($value)).'">'.$value.'</label>
-									    <span>
-									      <input '.( (str_replace('-', '_', to_permalink($value)) == 'nome_processo' || str_replace('-', '_', to_permalink($value)) == 'numero_processo') ? 'required="required"' : '' ).' tabindex="'.$i.'" value="'. ( (isset($_GET['id']) && isset($processo)) ? $processo[str_replace('-', '_', to_permalink($value))] : '' ) .'" name="'.str_replace('-', '_', to_permalink($value)).'" type="'.( (stripos( str_replace('-', '_', to_permalink($value)), 'data' )) ? 'date' : 'text' ).'">
+										'; 
+
+										echo '
+									    <label for="'.str_replace('-', '_', to_permalink($value)).'">'; 
+											switch ($value) {
+												case 'Adjudicação Vencimento':
+													echo 'Vencimento Adjudicação Anterior';
+													break;
+												case 'Dados Bravo RQF':
+													echo 'Dados Bravo RFQ';
+													break;
+												case 'Trâmite Assinatura Interna Diretor 1':
+													echo '1º Diretor';
+													break;
+												case 'Trâmite Assinatura Interna Diretor 2':
+													echo '2º Diretor';
+													break;			
+												case 'Número Pedido':
+													echo 'Nº pedido/contrato SAP';
+													break;
+												default:
+													if(strpos( $value, 'Inicial' ) !== false){
+														echo 'Início';
+													} elseif(strpos( $value, 'Final' ) !== false){
+														echo 'Fim';
+													} else {
+														echo $value;
+													}
+													break;
+											}
+											echo '</label>
+									    <span>'; 
+									    echo '
+									      <input '.( (str_replace('-', '_', to_permalink($value)) == 'nome_processo' || str_replace('-', '_', to_permalink($value)) == 'numero_processo') ? 'required="required"' : '' ).' tabindex="'.$i.'" value="'. ( (isset($_GET['id']) && isset($processo)) ? $processo[str_replace('-', '_', to_permalink($value))] : '' ) .'" name="'.str_replace('-', '_', to_permalink($value)).'" type="'.( (to_permalink($value) == 'tramite-assinatura-externa-retirada' || to_permalink($value) == 'tramite-assinatura-externa-devolucao' || to_permalink($value) == 'adjudicacao-vencimento' || to_permalink($value) == 'disponivel-sap' || stripos( str_replace('-', '_', to_permalink($value)), 'data' )) ? 'date' : 'text' ).'">
 									    </span>
 									  </div>';		
 								} elseif(str_replace('-', '_', to_permalink($value)) == 'rodadas') { 
