@@ -45,11 +45,36 @@
                         elseif($basename == 'processos' || $basename == 'processo') :
                       ?>
                         <div class="fieldset">
-                            <label for="numero_processo">Número do processo</label>
-                            <span>
-                                <input name="search['numero_processo']" type="text">
+                            <label for="search[filtro]">Filtro</label>
+                            <span class="custom-combobox">
+                                <i class="fal fa-angle-down"></i>
+                                <select required="required" name="search[filtro]">
+                                  <option value="">Selecione uma opção</option>
+                              <!--     <?php 
+                                    $tipo_processo = $conn->query("SELECT * FROM `processos_tipos` ORDER BY tipo");
+                                    while($row = $tipo_processo->fetch_assoc()) :
+                                      echo '<option value="'.$row['tipo'].'">'.$row['tipo'].'</option>';
+                                    endwhile;
+                                  ?> -->
+                                  <?php 
+                                    $labelsSQL = 'SELECT * FROM processos_labels ORDER BY label ASC';
+                                    $label = mysqli_query($conn,$labelsSQL);
+
+                                    while($rowl = mysqli_fetch_array($label)) :
+                                      if(str_replace('-','_',to_permalink($rowl['label'])) != "uid" && str_replace('-','_',to_permalink($rowl['label'])) != "valor" && str_replace('-','_',to_permalink($rowl['label'])) != "id"  && str_replace('-','_',to_permalink($rowl['label'])) != "subfamilia"  && str_replace('-','_',to_permalink($rowl['label'])) != "moeda"  && str_replace('-','_',to_permalink($rowl['label'])) != "sociedade"  && str_replace('-','_',to_permalink($rowl['label'])) != "rodadas" && str_replace('-','_',to_permalink($rowl['label'])) != "responsavel" && str_replace('-','_',to_permalink($rowl['label'])) != "fornecedor" && str_replace('-','_',to_permalink($rowl['label'])) != "comprador"){
+                                        echo '<option value="'.str_replace('-','_',to_permalink($rowl['label'])).'">'.$rowl['label'].'  </option>';
+                                      }
+                                    endwhile;
+                                  ?>                                    
+                                </select>
                             </span>
-                        </div>
+                        </div>                      
+                        <div class="fieldset">
+                            <label for="search[keyword]">Palavra-chave</label>
+                            <span>
+                                <input required="required" name="search[keyword]" type="text">
+                            </span>
+                        </div><!-- 
                         <div class="fieldset">
                             <label for="nome_processo">Nome do processo</label>
                             <span>
@@ -70,7 +95,7 @@
                                   ?>
                                 </select>
                             </span>
-                        </div>
+                        </div> -->
                       <?php
                       endif;
                     ?>        
@@ -79,6 +104,7 @@
                     </div>
                 </div>
           </form> 
+    
         <?php
         endif;
       ?>   

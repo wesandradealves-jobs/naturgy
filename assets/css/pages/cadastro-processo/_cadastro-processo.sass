@@ -81,12 +81,31 @@
 		padding-left: 170px
 		padding-top: 15px	
 		position: absolute 
+#sociedades
+	margin: 25px 0 35px
+	.row
+		>div:first-child
+			flex: 0 0 auto
+			width: 135px		
 #processo-form
-	align-items: center 
+	align-items: flex-end 
 	@extend .flex 
 	flex-flow: row wrap 
 	max-width: 814px
 	justify-content: space-between 
+	>h3 
+		flex: 0 0 auto 
+		color: $blue 
+		font-weight: bold 
+		margin-bottom: 15px
+		width: 100%
+		border-top: 1px $blue solid 
+		padding-top: 15px
+		span 
+			display: block
+			text-align: right
+			width: 170px
+			padding-right: 15px	
 	>*
 		flex: 0 0 auto 
 		width: 100%
@@ -102,25 +121,20 @@
 				text-overflow: ellipsis
 				white-space: nowrap				
 	.rodadas
-		.rodadas-footer
-			margin-top: 15px
+		width: 100%
+		border-top: 1px $blue solid 
+		padding-top: 15px		
 		input[type="date"]
 			padding-right: 0!important	
 		&-footer
+			margin-top: 15px
+			.btn 
+			    display: block
+			    +rem(('line-height':40px))
+			    height: 40px
+			    padding: 0px 35px			
 			> * 
-				margin: initial
-				&:not(:last-child)
-					margin-right: 15px
-			>div 
-				align-items: center 
-				@extend .flex 
-				flex-flow: row 
-				justify-content: flex-end
-				width: 100%
-				>.btn 
-					flex: 0 0 auto
-					min-width: initial
-					width: initial
+				margin-left: auto
 		&-header 
 			align-items: flex-end 
 			color: $blue 
@@ -145,6 +159,11 @@
 				margin-bottom: 15px!important
 				padding: 15px
 				width: calc(50% - 8px)
+				&:first-child,
+				&:not(:last-child)
+					.rodadas-footer 
+						.btn
+							@extend .disabled
 				&:nth-child(2n + 1)
 					margin-right: 5px 
 				&:nth-child(2n + 2)

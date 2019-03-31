@@ -3,7 +3,7 @@
     require_once("../functions/functions.php");
     require_once("../phpmailer/PHPMailerAutoload.php");
 
-    $usuario = to_permalink($_POST['nome']);
+    $usuario = (to_permalink($_POST['usuario']) == 'admin') ? 'admin' : to_permalink($_POST['nome']);
     $query_user = "SELECT * FROM users WHERE usuario = '".$usuario."'";
     $result_query_user = mysqli_fetch_assoc(mysqli_query($conn, $query_user));
 
@@ -105,10 +105,10 @@
                     ); 
                     header("Location: ".$default_url."/login/?logout=true");
                 } else {
-                    header("Location: ".$default_url."/usuario/".$_POST['id'].'#form'); 
+                    header("Location: ".$default_url."/usuario/".$_POST['id'].'?updated=true#form'); 
                 }  
             } else {
-                header("Location: ".$default_url."/usuario/".$_POST['id'].'#form');  
+                header("Location: ".$default_url."/usuario/".$_POST['id'].'?updated=true#form');  
             }
         } else {
         	header("Location: ".$default_url."/usuario/?error=true"); 

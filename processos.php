@@ -107,7 +107,9 @@
 							// Define a condição do usuário
 							switch ($_SESSION['userType']) {
 								case 'responsavel':
-									$userCondition = ' AND id IN ('.implode(',', $pids).')'; 
+									if(!empty($pids)){
+										$userCondition = ' AND id IN ('.implode(',', $pids).')'; 
+									}
 									break;		
 								case 'comprador':
 									$userCondition = ' AND `processos`.uid = '.$_SESSION['uid']; 
@@ -118,9 +120,10 @@
 							}
 
 							if(!empty($queryCondition)) {
-								$queryCondition .= " AND ".str_replace("'", "", $k)." = '".$v."'";
+								// $queryCondition .= " AND ".str_replace("'", "", $k)." = '".$v."'";
 							} else {
-								$queryCondition .= " WHERE ".str_replace("'", "", $k)." = '".$v."'";
+								$queryCondition .= " WHERE LOWER(processos.".str_replace("'", "", $v).") LIKE '%".$_GET['search']['keyword']."%'";
+								// $queryCondition .= " WHERE ".str_replace("'", "", $k)." = '".$v."'";
 							}
 						}
 					}
@@ -129,7 +132,9 @@
 						// Define a condição do usuário
 						switch ($_SESSION['userType']) {
 							case 'responsavel':
-								$userCondition = ' WHERE id IN ('.implode(',', $pids).')'; 
+								if(!empty($pids)){
+									$userCondition = ' WHERE id IN ('.implode(',', $pids).')'; 
+								}
 								break;		
 							case 'comprador':
 								$userCondition = ' WHERE `processos`.uid = '.$_SESSION['uid']; 
@@ -143,7 +148,9 @@
 					// Define a condição do usuário
 					switch ($_SESSION['userType']) {
 						case 'responsavel':
-							$userCondition = ' WHERE id IN ('.implode(',', $pids).')'; 
+							if(!empty($pids)){
+								$userCondition = ' WHERE id IN ('.implode(',', $pids).')';
+							} 
 							break;		
 						case 'comprador':
 							$userCondition = ' WHERE `processos`.comprador = '.$_SESSION['uid']; 
@@ -158,7 +165,7 @@
 
 				$sql = "SELECT * FROM processos " . ((isset($queryCondition)) ? $queryCondition : '') . $userCondition . $orderby . " LIMIT ".$offset.','.$no_of_records_per_page;
 
-				print_r($sql);
+				// print_r($sql);
 
 		        $res_data = mysqli_query($conn,$sql);
 		        while($row = mysqli_fetch_array($res_data)) :
@@ -172,23 +179,25 @@
 				<th>
 					<?php 
 						// Pega o repsonsavel
-					
-						$responsaveis = array();
 
-						foreach ($arr as $key => $value) {
-							if(in_array($row['id'], $value, false)){
-								array_push($responsaveis, $value['rid']);
+						if(!empty($arr)){
+							$responsaveis = array();
+
+							foreach ($arr as $key => $value) {
+								if(in_array($row['id'], $value, false)){
+									array_push($responsaveis, $value['rid']);
+								}
 							}
+
+	    			        $stblresponsavel = "SELECT * FROM users WHERE id IN (".implode(',', $responsaveis).")";
+
+		    			    $qtblresponsavel = mysqli_fetch_array(mysqli_query($conn, $stblresponsavel));
+
+					        $rqtblresponsavel = mysqli_query($conn,$stblresponsavel);
+					        while($rwqtblresponsavel = mysqli_fetch_array($rqtblresponsavel)) :
+					        	print_r($rwqtblresponsavel['nome'].'<br>');
+					        endwhile;	
 						}
-
-    			        $stblresponsavel = "SELECT * FROM users WHERE id IN (".implode(',', $responsaveis).")";
-
-	    			    $qtblresponsavel = mysqli_fetch_array(mysqli_query($conn, $stblresponsavel));
-
-				        $rqtblresponsavel = mysqli_query($conn,$stblresponsavel);
-				        while($rwqtblresponsavel = mysqli_fetch_array($rqtblresponsavel)) :
-				        	print_r($rwqtblresponsavel['nome'].'<br>');
-				        endwhile;
 					?>
 				</th>
 				<th><?php 
@@ -221,7 +230,15 @@
 						}
 					?>
 				</th>
-				<th><?php echo $row['valor'] ?></th>
+				<th>
+					<?php 
+						$valores = array();
+						foreach ($sociedades_by_processos as $key => $value) {
+							array_push($valores, $value['valor']);
+						}
+						print_r(array_sum($valores));
+					?>
+				</th>
 				<th><?php echo $row['moeda'] ?></th>
 				<th><?php echo $row['tipo_processo'] ?></th>
 				<th>
