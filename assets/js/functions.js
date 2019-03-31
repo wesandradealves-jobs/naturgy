@@ -372,7 +372,7 @@ $(document).ready(function () {
 		max_inputs = $('form').children('.fieldset').find('input:not([type="checkbox"]):not([type="hidden"]):not([readonly="readonly"]), select').length,
 		curr_val;
 
-	$( "input, select" ).each(function() {
+	$( "#processo-form input, #processo-form select" ).each(function() {
 		$(this).on('focus', function() {
 			curr_val = $(this).val();
 		}).on('blur', function() {
@@ -390,19 +390,25 @@ $(document).ready(function () {
 				if(($(this).val() != curr_val && $(this).is('select')) || ($(this).val() == '' && !$(this).is('select'))){
 					filled -=1;
 				}
-				$(this).closest('div.fieldset').nextAll('div.fieldset').find('input:not([type="checkbox"]):not([type="hidden"]):not([readonly="readonly"]), select').each(function() {
+				$(this).closest('div.fieldset').nextAll('div.fieldset').find('input:not([type="checkbox"]):not([type="hidden"]):not([readonly="readonly"]):not(.moeda), select').each(function() {
 					curr_val = $(this).val();
-					if($(this).val()){
+                    $(this).val('');
+
+					if(curr_val != $(this).val()){
 						// console.log($(this).val());
 						filled -=1;
-					} else if($(this).attr('type') == 'checkbox' && $(this).is(':checked')){
-						$(this).trigger('click');
-					}
-				});					
-				$(this).closest('div.fieldset').nextAll('.fieldset:first').removeClass('enabled').find('input:not([type="checkbox"]):not([type="hidden"]):not([readonly="readonly"]),select').val(''),
-				$(this).closest('div.fieldset').nextAll('.fieldset').removeClass('enabled').find('input:not([type="checkbox"]):not([type="hidden"]):not([readonly="readonly"]),select').val('');
+					} 
+				});			
+                $(this).closest('div.fieldset').nextAll('div.fieldset').find('input[type="checkbox"]').each(function() {
+                    if($(this).is(':checked')){
+                        $(this).trigger('click');
+                    }
+                });      
+                $(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled').find('input:not([type="checkbox"]):not([type="hidden"]):not([readonly="readonly"]),select').val('');           		
 			}
 			var result = parseFloat(parseInt(filled, 10) * 100)/parseInt(max_inputs, 10);
+            result = (result) < 0 ? 0 : result;
+
 		    if($('.progressBar').length){
 		      var el = $('.progressBar');
 		      el.find('.progressStatus > span').html(Math.ceil(parseInt(result)));
