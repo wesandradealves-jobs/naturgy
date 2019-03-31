@@ -135,24 +135,58 @@
 		        				$key == 'sap'
 		        				&& (isset($_GET['id']) && $_GET['id'] == $_SESSION['uid'])
 		        			){
-								echo '
-									<div class="fieldset field_id_'.$key.'">
-									  <label for="'.$key.'">'.$label[$i].'</label>
-									  <span>
-									  	<input readonly="readonly" type="text" value="'.strtoupper($value).'">
-									    <input type="hidden" name="'.$key.'" value="'.$value.'">
-									  </span>
-									</div>	
-								';		        				
+		        				if($key == 'sap'){
+									$result_numeros = mysqli_query($conn,"SELECT numero_processo FROM `processos`");
+										echo '<div class="fieldset">
+										  <label for="'.$key.'">'.$label[$i].'</label>
+											<span class="custom-combobox">
+										    	<i class="fal fa-angle-down"></i>
+							    				<select name="'.$key.'">';
+							    				echo '<option value="">Selecione uma opção</option>';
+												 while($row_numeros = mysqli_fetch_array($result_numeros)) :
+												 	echo '<option '.( ($value == $row_numeros['numero_processo']) ? 'selected="selected"' : '' ).' value="'.$row_numeros['numero_processo'].'">'.$row_numeros['numero_processo'].'</option>';
+												 endwhile;							    				
+										echo '</select>
+											  	</span>		  
+											</div>';	
+		        				} else {
+									echo '
+										<div class="fieldset field_id_'.$key.'">
+										  <label for="'.$key.'">'.$label[$i].'</label>
+										  <span>
+										  	<input readonly="readonly" type="text" value="'.strtoupper($value).'">
+										    <input type="hidden" name="'.$key.'" value="'.$value.'">
+										  </span>
+										</div>	
+									';	
+		        				}
+	        				
 		        			} else {
-								echo '
-									<div class="fieldset field_id_'.$key.'">
-									  <label for="'.$key.'">'.$label[$i].'</label>
-									  <span>
-									    <input class="'.$key.'" '.( ( $key == 'email' ) ? 'required="required"' : '' ).' '.( (!isset($_GET['id']) ? '' : ($key == 'id') ? 'readonly="readonly"' : '' ).'  value="'.( (isset($_GET['id']) && $value) ? $value :'') ).'" name="'.$key.'" type="'.( ($key == 'senha') ? 'password' : 'text').'">
-									  </span>
-									</div>	
-								';
+		        				if($key == 'sap'){
+									$result_numeros = mysqli_query($conn,"SELECT numero_processo FROM `processos`");
+										echo '<div class="fieldset">
+										  <label for="'.$key.'">'.$label[$i].'</label>
+											<span class="custom-combobox">
+										    	<i class="fal fa-angle-down"></i>
+							    				<select name="'.$key.'">';
+							    				echo '<option value="">Selecione uma opção</option>';
+												 while($row_numeros = mysqli_fetch_array($result_numeros)) :
+												 	echo '<option '.( ($value == $row_numeros['numero_processo']) ? 'selected="selected"' : '' ).' value="'.$row_numeros['numero_processo'].'">'.$row_numeros['numero_processo'].'</option>';
+												 endwhile;							    				
+										echo '</select>
+											  	</span>		  
+											</div>';									
+
+		        				} else {
+									echo '
+										<div class="fieldset field_id_'.$key.'">
+										  <label for="'.$key.'">'.$label[$i].'</label>
+										  <span>
+										    <input class="'.$key.'" '.( ( $key == 'email' ) ? 'required="required"' : '' ).' '.( (!isset($_GET['id']) ? '' : ($key == 'id') ? 'readonly="readonly"' : '' ).'  value="'.( (isset($_GET['id']) && $value) ? $value :'') ).'" name="'.$key.'" type="'.( ($key == 'senha') ? 'password' : 'text').'">
+										  </span>
+										</div>	
+									';		        					
+		        				}
 		        			}
 		        		}
 		        	}

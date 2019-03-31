@@ -50,6 +50,7 @@
     <div id="wrap">
       <?php 
         if(strpos( $_SERVER['REQUEST_URI'], '?' ) !== false){
+            if(strpos( $_SERVER['REQUEST_URI'], 'search' ) === false) : 
           ?>
           <div class="messageBar">
             <span>            
@@ -92,6 +93,7 @@
                 <a href="javascript:void(0)" onclick="closeMessage(this)" class="fal fa-close"></a>
               </div>            
               <?php
+            endif;
         }
       ?>
       <header id="header">

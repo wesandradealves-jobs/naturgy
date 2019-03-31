@@ -61,7 +61,7 @@
                                     $label = mysqli_query($conn,$labelsSQL);
 
                                     while($rowl = mysqli_fetch_array($label)) :
-                                      if(str_replace('-','_',to_permalink($rowl['label'])) != "uid" && str_replace('-','_',to_permalink($rowl['label'])) != "valor" && str_replace('-','_',to_permalink($rowl['label'])) != "id"  && str_replace('-','_',to_permalink($rowl['label'])) != "subfamilia"  && str_replace('-','_',to_permalink($rowl['label'])) != "moeda"  && str_replace('-','_',to_permalink($rowl['label'])) != "sociedade"  && str_replace('-','_',to_permalink($rowl['label'])) != "rodadas" && str_replace('-','_',to_permalink($rowl['label'])) != "responsavel" && str_replace('-','_',to_permalink($rowl['label'])) != "fornecedor"){
+                                      if(str_replace('-','_',to_permalink($rowl['label'])) != "uid" && str_replace('-','_',to_permalink($rowl['label'])) != "valor" && str_replace('-','_',to_permalink($rowl['label'])) != "id"  && str_replace('-','_',to_permalink($rowl['label'])) != "subfamilia"  && str_replace('-','_',to_permalink($rowl['label'])) != "moeda"  && str_replace('-','_',to_permalink($rowl['label'])) != "sociedade"  && str_replace('-','_',to_permalink($rowl['label'])) != "rodadas" && str_replace('-','_',to_permalink($rowl['label'])) != "responsavel" && str_replace('-','_',to_permalink($rowl['label'])) != "fornecedor" && str_replace('-','_',to_permalink($rowl['label'])) != "comprador"){
                                         echo '<option value="'.str_replace('-','_',to_permalink($rowl['label'])).'">'.$rowl['label'].'  </option>';
                                       }
                                     endwhile;

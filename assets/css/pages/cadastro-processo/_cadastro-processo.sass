@@ -122,6 +122,8 @@
 				white-space: nowrap				
 	.rodadas
 		width: 100%
+		border-top: 1px $blue solid 
+		padding-top: 15px		
 		input[type="date"]
 			padding-right: 0!important	
 		&-footer
@@ -157,6 +159,11 @@
 				margin-bottom: 15px!important
 				padding: 15px
 				width: calc(50% - 8px)
+				&:first-child,
+				&:not(:last-child)
+					.rodadas-footer 
+						.btn
+							@extend .disabled
 				&:nth-child(2n + 1)
 					margin-right: 5px 
 				&:nth-child(2n + 2)

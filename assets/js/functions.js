@@ -67,7 +67,7 @@ function addMultipleInput(e){
       $val = 'Rodada Comercial';
     }
 
-    el.eq(0).clone(true).appendTo($(e).closest('.rodadas').find('.columns')).closest('li').find('.nivel_rodada').val(nivel_rodada).attr('value',nivel_rodada).closest('li').attr('data-origin', '').find('input[type="date"]').val('').closest('li').find('.rodadas-footer').removeClass('disabled').closest('li').find('[name="rodada-tipo[]"]').val($val).attr('value',$val);
+    el.eq(0).clone(true).appendTo($(e).closest('.rodadas').find('.columns')).closest('li').find('.nivel_rodada').val(nivel_rodada).attr('value',nivel_rodada).closest('li').attr('data-origin', '').find('input[type="date"]').val('').closest('li').find('.rodadas-footer').closest('li').find('[name="rodada-tipo[]"]').val($val).attr('value',$val);
 }
 function changeMessage(message){
     if(!$('.error-message').length){
@@ -97,9 +97,7 @@ $(document).ready(function () {
         $('.subfamilia_result').html($(this).val());
     });
 
-    // if($('#processo-form.-edit').length){
-    //     // percent();        
-    // } else {
+    // if(!$('#processo-form.-edit').length){
     //   if($('#processo-form').length){
     //     $('#processo-form').children('div.fieldset').addClass('disabled'),
     //     $('#processo-form').children('div.fieldset').first().removeClass('disabled');     
@@ -282,41 +280,7 @@ $(document).ready(function () {
         if(t > ($('.forms-footer:not(.-sticky)').offset().top - 1000)) {
             $(".forms-footer.-sticky").removeClass("-stuck");
         }
-    });  
-
-    // if(localStorage.getItem('mensagem')){
-    //   alert(localStorage.getItem('mensagem'));
-
-    //   setTimeout(function(){ 
-    //     localStorage.removeItem('mensagem');
-    //   }, 600);
-    // }
-
-    // $( '.logout,  [title="Deletar"], .forms-footer .btn').click(function( event ) {
-    //     event.preventDefault();
-
-    //     var el = event.target.classList.value;
-
-    //     if(el.indexOf('logout') != -1){
-    //       localStorage.setItem('mensagem', 'Deslogado com sucesso.');
-    //     } else if (el.indexOf('btn') != -1){
-    //       var action = $('[name="action"]').val();
-
-    //       if(action == 'salvar'){
-    //         localStorage.setItem('mensagem', 'Salvo com sucesso.');
-    //       } else if(action == 'atualizar') {
-    //         localStorage.setItem('mensagem', 'Atualizado com sucesso.');
-    //       }
-    //     } else if(el.indexOf('trash') != -1){
-    //       localStorage.setItem('mensagem', 'Deletado com sucesso.');
-    //     }
-
-    //     if(event.currentTarget.href != undefined){
-    //       setTimeout(function(){ 
-    //         window.location = event.currentTarget.href;
-    //       }, 300);
-    //     }
-    // });   
+    });   
 
     $( '.remove-rodada' ).click(function( event ) {
         event.preventDefault();
@@ -358,14 +322,7 @@ $(document).ready(function () {
 
         if($('.rodadas .columns').children().length % 2 === 0){
           nivel_rodada -=1;
-        }        
-        console.log(parseInt($('.rodadas .columns').children().last().find('.nivel_rodada').val()));
-
-        // if($('.rodadas .columns').children().length > 2){
- 
-        // } else {
-        //   alert('Não é possível deletar todas as rodadas, cadastre mais um nível para que possa deletar.');
-        // }
+        }   
     });   
     $( "#sociedades input[type='checkbox']" ).each(function() {
         $(this).change(function() {
@@ -405,8 +362,7 @@ $(document).ready(function () {
 
   $( ".rodadas .columns" ).children().each(function() {
     if($(this).index() == 0){
-      $(this).find('.rodadas-footer').addClass('disabled')
-      .closest('li').find('[name="rodada-tipo[]"]').val('Rodada Comercial');
+      $(this).find('.rodadas-footer').closest('li').find('[name="rodada-tipo[]"]').val('Rodada Comercial');
     }
   });    
 });

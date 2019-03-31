@@ -296,7 +296,7 @@
 														echo '<span><span class="fieldset">
 															<span class="custom-combobox">
 														    	<i class="fal fa-angle-down"></i>
-											    				<select name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+											    				<select required="required" name="'.str_replace('-', '_', to_permalink($value)).'[]">';
 											    				echo '<option value="">Selecione uma opção</option>';
 													    while($row = $responsavel->fetch_assoc()) :
 															echo '<option '.(isset($_GET['id']) && $rid == $row['id'] ? 'selected="selected"' : '' ).' value="'.$row['id'].'">'.$row['nome'].'</option>';
@@ -314,7 +314,7 @@
 														echo '<span><span class="fieldset">
 															<span class="custom-combobox">
 														    	<i class="fal fa-angle-down"></i>
-											    				<select name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+											    				<select required="required" name="'.str_replace('-', '_', to_permalink($value)).'[]">';
 											    				echo '<option value="">Selecione uma opção</option>';
 													    while($row = $responsavel->fetch_assoc()) :
 															echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
@@ -332,7 +332,7 @@
 													echo '<span><span class="fieldset">
 														<span class="custom-combobox">
 													    	<i class="fal fa-angle-down"></i>
-										    				<select name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+										    				<select required="required" name="'.str_replace('-', '_', to_permalink($value)).'[]">';
 										    				echo '<option value="">Selecione uma opção</option>';
 												    while($row = $responsavel->fetch_assoc()) :
 														echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
@@ -349,6 +349,9 @@
 										      </a>
 										    </div>
 										</div>';	
+
+
+
 								} elseif(str_replace('-', '_', to_permalink($value)) == 'tipo_processo') {
 						        		echo '
 										<div class="fieldset '.( ($_SESSION['userType'] == 'responsavel') ? 'disabled' : '' ).' field_id_'.str_replace('-', '_', to_permalink($value)).'">
@@ -395,7 +398,7 @@
 									    echo'
 									  </div>';
 								} elseif(str_replace('-', '_', to_permalink($value)) == 'comprador') {
-					        		if(!isset($_GET['id']) && $_SESSION['userType'] == 'comprador' || isset($_GET['id']) && $_SESSION['userType'] == 'comprador' && $processo['comprador'] == $_SESSION['usuario']){
+					        		if(!isset($_GET['id']) && $_SESSION['userType'] == 'comprador' || isset($_GET['id']) && $_SESSION['userType'] == 'comprador' && $processo['comprador'] == $_SESSION['uid']){
 										echo '<input tabindex="'.$i.'" value="'.$_SESSION['usuario'].'" name="'.str_replace('-', '_', to_permalink($value)).'" type="hidden">';
 					        		} else {
 						        		echo '

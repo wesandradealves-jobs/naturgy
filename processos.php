@@ -107,7 +107,9 @@
 							// Define a condição do usuário
 							switch ($_SESSION['userType']) {
 								case 'responsavel':
-									$userCondition = ' AND id IN ('.implode(',', $pids).')'; 
+									if(!empty($pids)){
+										$userCondition = ' AND id IN ('.implode(',', $pids).')'; 
+									}
 									break;		
 								case 'comprador':
 									$userCondition = ' AND `processos`.uid = '.$_SESSION['uid']; 
@@ -130,7 +132,9 @@
 						// Define a condição do usuário
 						switch ($_SESSION['userType']) {
 							case 'responsavel':
-								$userCondition = ' WHERE id IN ('.implode(',', $pids).')'; 
+								if(!empty($pids)){
+									$userCondition = ' WHERE id IN ('.implode(',', $pids).')'; 
+								}
 								break;		
 							case 'comprador':
 								$userCondition = ' WHERE `processos`.uid = '.$_SESSION['uid']; 
@@ -144,7 +148,9 @@
 					// Define a condição do usuário
 					switch ($_SESSION['userType']) {
 						case 'responsavel':
-							$userCondition = ' WHERE id IN ('.implode(',', $pids).')'; 
+							if(!empty($pids)){
+								$userCondition = ' WHERE id IN ('.implode(',', $pids).')';
+							} 
 							break;		
 						case 'comprador':
 							$userCondition = ' WHERE `processos`.comprador = '.$_SESSION['uid']; 
