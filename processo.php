@@ -288,7 +288,9 @@
 									    <span>';
 								      		if(isset($_GET['id'])){
 												$sql_responsaveis = "SELECT * FROM responsavel_by_processos WHERE pid = ".$_GET['id'];
+										        
 										        $res_sql_responsaveis = mysqli_query($conn,$sql_responsaveis);
+
 										        while($row = mysqli_fetch_array($res_sql_responsaveis)) :
 													$responsaveis = "SELECT * FROM `users` WHERE `userType` = 'responsavel' ORDER BY nome";
 													$rid = $row['responsavel'];
@@ -323,9 +325,8 @@
 															  	</span>		  
 															</span></span>';
 													}
-	 												$responsavel->free();										        	
-										        }
-	
+	 												$responsavel->free();
+	 											}										        	
 								      		} else {
 												$responsaveis = "SELECT * FROM `users` WHERE `userType` = 'responsavel' ORDER BY nome";
 												if ($responsavel = $conn->query($responsaveis)) {
