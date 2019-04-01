@@ -54,9 +54,10 @@
 					foreach($_GET["search"] as $k=>$v){
 						if(!empty($v)) {
 							if(!empty($queryCondition)) {
-								$queryCondition .= " AND ".str_replace("'", "", $k)." = '".$v."'";
+								$queryCondition .= " AND LOWER(users.".str_replace("'", "", $k).") LIKE '%".$v."%'";
 							} else {
-								$queryCondition .= " WHERE ".str_replace("'", "", $k)." = '".$v."'";
+								// $queryCondition .= " WHERE ".str_replace("'", "", $k)." = '".$v."'";
+								$queryCondition .= " WHERE LOWER(users.".str_replace("'", "", $k).") LIKE '%".$v."%'";
 							}
 						}
 					}
