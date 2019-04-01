@@ -291,7 +291,58 @@ $(document).ready(function () {
 						});					
 					});
 				}
-			});							
+			});	
+			// - Drafts
+		    $( document ).idleTimer( {
+		        timeout:900000, 
+		        idle:true
+		    }).on( "idle.idleTimer", function(event, elem, obj){
+		        // function you want to fire when the user goes idle
+				console.log('Idle');
+
+		        var nfields = [];
+
+				$("#processo-form").children('div.fieldset').find('input,select').each(function() {
+					if($(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
+						if(jQuery.inArray($(this).attr('name'), nfields) === -1){
+							nfields.push($(this).attr('name'));
+						}
+					}				
+				});	 
+
+				console.log(nfields.length);
+
+				if(nfields.length >= 2){
+					var dataparam = $("#processo-form").serialize();
+
+			        $.ajax({
+			            type: 'POST',
+			            async: true,
+			            url: window.location.origin + '/functions/draft.php',
+			            data: dataparam,
+			            datatype: 'json',
+			            cache: true,
+			            global: false,
+			            beforeSend: function() { 
+			                $("#loader").css('display', 'flex');
+			            },
+			            success: function(data) {
+			                if(data){
+			                	// 
+			                	var json = jQuery.parseJSON(data);
+			                	window.location = window.location.origin + '/processo/' + json.uid + '/' + json.id + '?draft=true';
+			                }
+			            },
+			            complete: function() { 
+			                $("#loader").css('display', 'none');
+			            }
+			        }); 			
+				}
+		    }).on( "active.idleTimer", function(event, elem, obj, triggerevent){
+		        // function you want to fire when the user becomes active again
+		    	console.log('Active');
+		    	nfields = [];
+		    });									
 		} else {
 			var nfields = [], 
 				status = $('[name="status"]').val();
@@ -412,6 +463,7 @@ $(document).ready(function () {
 	      nivel_rodada -=1;
 	    }   
 	});
+
+
 });
-      
-      
+  

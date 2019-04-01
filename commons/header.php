@@ -56,6 +56,9 @@
             <span>            
           <?php
             switch (explode('=',substr($_SERVER['REQUEST_URI'], strpos($_SERVER['REQUEST_URI'], "?") + 1))[0]) {
+              case 'draft':
+                echo 'Seu processo foi salvo automaticamente.';
+                break;              
               case 'updated':
                 echo 'Atualizado com sucesso.';
                 break;
