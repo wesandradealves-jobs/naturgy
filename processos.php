@@ -191,12 +191,14 @@
 
 	    			        $stblresponsavel = "SELECT * FROM users WHERE id IN (".implode(',', $responsaveis).")";
 
-		    			    $qtblresponsavel = mysqli_fetch_array(mysqli_query($conn, $stblresponsavel));
+	    			        if(mysqli_query($conn,$stblresponsavel)){
+			    			    $qtblresponsavel = mysqli_fetch_array(mysqli_query($conn, $stblresponsavel));
 
-					        $rqtblresponsavel = mysqli_query($conn,$stblresponsavel);
-					        while($rwqtblresponsavel = mysqli_fetch_array($rqtblresponsavel)) :
-					        	print_r($rwqtblresponsavel['nome'].'<br>');
-					        endwhile;	
+						        $rqtblresponsavel = mysqli_query($conn,$stblresponsavel);
+						        while($rwqtblresponsavel = mysqli_fetch_array($rqtblresponsavel)) :
+						        	print_r($rwqtblresponsavel['nome'].'<br>');
+						        endwhile;		
+	    			        }
 						}
 					?>
 				</th>
