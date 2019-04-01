@@ -266,6 +266,26 @@ $(document).ready(function () {
 							if(rfields == $(this).closest('ul').find('input:not([readonly="readonly"])').length){
 								$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
 							} else {
+								var nfields = [];
+								
+								$(this).closest('div.fieldset').nextAll('div.fieldset').find('input,select').each(function() {
+									if($(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
+										if(jQuery.inArray($(this).attr('name'), nfields) === -1){
+											nfields.push($(this).attr('name'));
+										}
+									}				
+								});	 		
+								
+								console.log(nfields);
+
+								filled -=nfields.length;
+
+								setTimeout(function(){
+									nfields = [];
+								}, 600);									
+
+								// =
+
 								$(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled').find('input, select').val(''); 
 							}
 						});					

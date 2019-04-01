@@ -12,7 +12,7 @@
 		<div class="section-header">
 			<h2 class="title"><span>&#187;</span> Todos os Processos</h2>
 		</div>
-          <table class="tables tables-1" width="100%">m
+          <table class="tables tables-1" width="100%">
            <thead>
               <tr>
               	<th><a title="ID" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=id' : 'processos/ordem/?orderBy=id';?>">ID</a></th>
