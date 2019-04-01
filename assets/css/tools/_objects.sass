@@ -206,7 +206,8 @@ section
         color: $blue
         display: inline-block 
         vertical-align: middle
-        text-decoration: underline 
+        &:hover
+            text-decoration: underline 
         &:nth-child(2):not(:last-child)
             margin: 0 7.5px
         &.enabled
@@ -221,6 +222,14 @@ section
             width: 25px
             +rem(('font-size' : 14px, 'line-height' : 16px))
             text-align: center
+        i 
+            &[class*="-off"]
+                color: lightseagreen
+                &[class*="-on"]
+                    color: red !important 
+            &::after,
+            &::before 
+                color: inherit
     .disabled
         background-color: initial !important
         color: coral !important
