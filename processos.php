@@ -12,7 +12,7 @@
 		<div class="section-header">
 			<h2 class="title"><span>&#187;</span> Todos os Processos</h2>
 		</div>
-          <table class="tables tables-1" width="100%">
+          <table class="tables tables-1" width="100%">m
            <thead>
               <tr>
               	<th><a title="ID" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=id' : 'processos/ordem/?orderBy=id';?>">ID</a></th>
@@ -236,7 +236,9 @@
 						$moedas = array();
 						foreach ($sociedades_by_processos as $key => $value) {
 							array_push($valores, $value['valor']);
-							array_push($moedas, $value['moeda']);
+							if(!in_array($value['moeda'], $moedas)){
+							    array_push($moedas, $value['moeda']);
+							}
 						}
 						print_r(array_sum($valores));
 					?>
