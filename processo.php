@@ -130,7 +130,7 @@
 											echo '</label>
 									    <span>'; 
 									    echo '
-									      <input '.( (str_replace('-', '_', to_permalink($value)) == 'nome_processo' || str_replace('-', '_', to_permalink($value)) == 'numero_processo') ? 'required="required"' : '' ).' tabindex="'.$i.'" value="'. ( (isset($_GET['id']) && isset($processo)) ? $processo[str_replace('-', '_', to_permalink($value))] : '' ) .'" name="'.str_replace('-', '_', to_permalink($value)).'" type="'.( (to_permalink($value) == 'tramite-assinatura-externa-retirada' || to_permalink($value) == 'tramite-assinatura-externa-devolucao' || to_permalink($value) == 'adjudicacao-vencimento' || to_permalink($value) == 'disponivel-sap' || stripos( str_replace('-', '_', to_permalink($value)), 'data' )) ? 'date' : 'text' ).'">
+									      <input '.( (str_replace('-', '_', to_permalink($value)) == 'nome_processo' || str_replace('-', '_', to_permalink($value)) == 'numero_processo') ? 'required="required"' : '' ).' tabindex="'.$i.'" value="'. ( (isset($_GET['id']) && isset($processo)) ? $processo[str_replace('-', '_', to_permalink($value))] : '' ) .'" name="'.str_replace('-', '_', to_permalink($value)).'" type="'.( (to_permalink($value) == 'tramite-assinatura-externa-retirada' || to_permalink($value) == 'tramite-assinatura-externa-devolucao' || to_permalink($value) == 'adjudicacao-vencimento' || to_permalink($value) == 'disponivel-sap' || to_permalink($value) == 'data-disp-compras' || stripos( str_replace('-', '_', to_permalink($value)), 'data' )) ? 'date' : 'text' ).'">
 									    </span>
 									  </div>';		
 								} elseif(str_replace('-', '_', to_permalink($value)) == 'rodadas') { 

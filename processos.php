@@ -233,13 +233,21 @@
 				<th>
 					<?php 
 						$valores = array();
+						$moedas = array();
 						foreach ($sociedades_by_processos as $key => $value) {
 							array_push($valores, $value['valor']);
+							array_push($moedas, $value['moeda']);
 						}
 						print_r(array_sum($valores));
 					?>
 				</th>
-				<th><?php echo $row['moeda'] ?></th>
+				<th>
+					<?php 
+						foreach ($moedas as $value) {
+							echo '●'.$value.'<br>';
+						}
+					?>
+				</th>
 				<th><?php echo $row['tipo_processo'] ?></th>
 				<th>
 					<?php 
