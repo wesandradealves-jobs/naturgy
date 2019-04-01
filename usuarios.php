@@ -9,6 +9,7 @@
           <table class="tables tables-1" width="100%">
             <thead>
               <tr>
+              	<th width="20"></th>
                 <th width="20">ID</th>
                 <th width="100">Usuário</th>
                 <th width="100">Nome</th>
@@ -69,6 +70,15 @@
 		        while($row = mysqli_fetch_array($res_data)) :
 		    ?>
 			<tr>
+				<th>
+					<?php if($_SESSION['userType']=='administrador') : ?>	
+						<?php if($_SESSION['uid'] != $row['id']) : ?>
+						<a title="Habilitar" class="enable" href="<?php echo $default_url.'/functions/enable.php?table=users&id='.$row['id']; ?>">
+							<i class="fal <?php echo ($row['enabled']==1) ? 'fa-toggle-on' : 'fa-toggle-off'; ?>"></i>
+						</a>
+						<?php endif; ?>	
+					<?php endif; ?>
+				</th>
 				<th><?php echo $row['id'] ?></th>
 				<th><?php echo $row['usuario'] ?></th>
 				<th><?php echo $row['nome'] ?></th>
@@ -91,9 +101,9 @@
 						<a title="Deletar" class="editar" href="<?php echo $default_url.'/functions/delete.php?table=users&id='.$row['id']; ?>">
 							<i class="fal fa-trash"></i>
 						</a>	
-						<a title="Habilitar" class="enable" href="<?php echo $default_url.'/functions/enable.php?table=users&id='.$row['id']; ?>">
-							<i class="fal fa-toggle-off <?php echo ($row['enabled']==1) ? 'fa-toggle-off' : 'fa-toggle-on'; ?>"></i>
-						</a>
+<!-- 						<a title="Habilitar" class="enable" href="<?php echo $default_url.'/functions/enable.php?table=users&id='.$row['id']; ?>">
+							<i class="fal <?php echo ($row['enabled']==1) ? 'fa-toggle-on' : 'fa-toggle-off'; ?>"></i>
+						</a> -->
 						<?php endif; ?>	
 					<?php endif; ?>
 				</th>
