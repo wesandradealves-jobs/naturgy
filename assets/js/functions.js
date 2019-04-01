@@ -5,34 +5,6 @@ function getUrlParameter(name) {
   var results = regex.exec(location.search);
   return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
-// function percent(){
-//     // Get the div you want to look in.
-//     var div = document.getElementById("processo-form");
-//     // Get all the input fields inside your div
-//     var inputs = div.querySelectorAll('#processo-form > .fieldset > span > input, #sociedades li > div > input, .rodadas .columns > li > .fieldset input');
-
-//     // Get the number of the found inputs.
-//     var totalInputs = inputs.length;
-
-//     // Loop through them and check which of them has a value.
-//     var inputsWithValue = 0;
-
-//     for(var i=0; i<totalInputs; i++){
-//         if(inputs[i].value!==''){
-//           inputsWithValue +=1;   
-//         }
-//     }
-
-//     var filledPercentage = ((inputsWithValue/totalInputs)*100);   
-//     $('[name="status"]').val(filledPercentage.toString().split(".")[0]);      
-
-//     if($('.progressBar').length){
-//       var el = $('.progressBar');
-//       el.find('.progressStatus > span').html(filledPercentage.toString().split(".")[0]);
-//       el.find('.progressLoader > span').css('width', filledPercentage.toString().split(".")[0] + '%');
-//       el.find('.progressStatus').css('left', (filledPercentage.toString().split(".")[0] - 2) + '%');
-//     }  
-// }
 function resetForm(){
   $('body').css('overflow', 'initial'),
   $('form')[0].reset();
@@ -82,289 +54,344 @@ function closeMessage(e){
     window.location = url;
 }
 $(document).ready(function () {
-    $('#senha').on('keypress', function() {
-      $(this).attr('type', 'text');
-    }).on('keyup blur', function() {
-      setTimeout(function(){ 
-        $(this).attr('type', 'password');
-      }, 300);
-    });
+	$('#senha').on('keypress', function() {
+	  $(this).attr('type', 'text');
+	}).on('keyup blur', function() {
+	  setTimeout(function(){ 
+	    $(this).attr('type', 'password');
+	  }, 300);
+	});
 
-    $( "#subfamilia" ).find('select').on( "change", function() {
-        if(!$(this).closest('.fieldset').find($('.subfamilia_result')).length){
-            $('<div class="subfamilia_result"/>').appendTo($(this).closest('.fieldset'));
-        }
-        $('.subfamilia_result').html($(this).val());
-    });
+	$( "#subfamilia" ).find('select').on( "change", function() {
+	    if(!$(this).closest('.fieldset').find($('.subfamilia_result')).length){
+	        $('<div class="subfamilia_result"/>').appendTo($(this).closest('.fieldset'));
+	    }
+	    $('.subfamilia_result').html($(this).val());
+	});
 
-    // if(!$('#processo-form.-edit').length){
-    //   if($('#processo-form').length){
-    //     $('#processo-form').children('div.fieldset').addClass('disabled'),
-    //     $('#processo-form').children('div.fieldset').first().removeClass('disabled');     
-    //   }
-    // }
+	$('.telefone').mask('(00) 00000-0000');
+	$('.money').maskMoney({prefix:'', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+	if($('.progressBar').length){
+	  $(".progressBar").before($(".progressBar").clone(true).addClass("-sticky")),
+	  $(".forms-footer").before($(".forms-footer").clone(true).addClass("-sticky")), 
+	  $(".forms-footer.-sticky").find('input').remove();
+	}
+	$(window).scroll(function() {
+	    var t = $(this).scrollTop();
+	    if (t > $('.progressBar:not(.-sticky)').offset().top){
+	        $(".progressBar.-sticky").addClass("-stuck");
+	        $(".forms-footer.-sticky").addClass("-stuck");
+	    } else {
+	        $(".progressBar.-sticky").removeClass("-stuck");
+	        $(".forms-footer.-sticky").removeClass("-stuck");
+	    }
+	    if(t > ($('.forms-footer:not(.-sticky)').offset().top - 1000)) {
+	        $(".forms-footer.-sticky").removeClass("-stuck");
+	    }
+	});   
 
-    // if($('.register.processo').length){
-    //   $( ".register.processo input" ).each(function() {
-    //       $(this).on('blur', function (e) {
-    //           if($(this).val()){
-    //               // percent();
-    //           }
-    //       });
-    //   });            
-    // }
+	$( "#sociedades input[type='checkbox']" ).each(function() {
+	    $(this).change(function() {
+	      if(!$(this).is( ":checked" )){
+	        $(this).closest('li').find('.money, .moeda').val('').attr('required', false);
+	      } else {
+	        $(this).closest('li').find('.money, .moeda').attr('required', true);
+	      }
+	    });        
+	});     
+	$( "#sociedades .moeda" ).each(function() {
+	    $(this).on('change', function (e) {
+	      if($(this).val()){
+	        if(!$(this).closest('li').find('input[type="checkbox"]').is(":checked")){
+	          $(this).closest('li').find('input[type="checkbox"]').trigger('click');
+	        }
+	      } else {
+	        if($(this).closest('li').find('input[type="checkbox"]').is(":checked")){
+	          $(this).closest('li').find('input[type="checkbox"]').trigger('click');
+	        }
+	      }
+	    });
+	});
+	$( "#sociedades .money" ).each(function() {
+	    $(this).on('blur keypress', function (e) {
+	      if($(this).val()){
+	        if(!$(this).parent().prev().find('input').is(":checked")){
+	          $(this).parent().prev().find('input').trigger('click');
+	        }
+	      } else {
+	        if($(this).parent().prev().find('input').is(":checked")){
+	          $(this).parent().prev().find('input').trigger('click');
+	        }
+	      }
+	    });
+	});
 
-    // var fields = [],
-    //     fields__notIn = ['[class*="nome_processo"],[class*="numero_processo"],[class*="tipo_processo"]'],
-    //     inputsWithValue = 0,
-    //     chosen_byType = null;
+	$( ".rodadas .columns" ).children().each(function() {
+		if($(this).index() == 0){
+		  $(this).find('.rodadas-footer').closest('li').find('[name="rodada-tipo[]"]').val('Rodada Comercial');
+		}
+	});   
 
-    // $('[name="tipo_processo"]').on('change', function() {
-    //   // $(this).closest('div.fieldset:visible').nextAll('div.fieldset:visible').fadeOut();
-    //   chosen_byType = true;
-    //   fields = [];
-      
-    //   switch($(this).val()) {
-    //     case 'ADJUDICAÇÃO DIRETA':
-    //       fields.push('[class*="requisicao"]','[class*="responsavel"]','[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_disponivel_sap"]');
-    //       // $(this).closest('form').children('div.fieldset:not()').fadeOut();
-    //       var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
-    //       break;
-    //     case 'LICITAÇÃO':
-    //     case 'LEILÃO':
-    //       fields.push('[class*="requisicao"]','[class*="responsavel"]','[class*="id_comprador"]','[class*="id_estrategia"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_leilao"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
-    //       var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
-    //       break;
-    //     case 'RENOVAÇÃO':
-    //     case 'PCAE':
-    //     case 'RAMPA DE SAÍDA':
-    //     case 'RÉPLICA GLOBAL':
-    //       fields.push('[class*="requisicao"]','[class*="responsavel"]','[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
-    //       var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
-    //       break;
-    //     default:
-    //       // code block
-    //   }
-    //   // $(this).closest('form').children(fields.toString()).on('change', function() {
-    //   //   for(var i=0; i<inputs_length; i++){
-    //   //       if($(fields.toString().split(',')[i]).value!==''){
-    //   //         inputsWithValue +=1;   
-    //   //       } else {
-    //   //         inputsWithValue -=1; 
-    //   //       }
-    //   //   }   
-    //   // });
+	// - Controle de forms. 
 
-    //   // console.log(inputsWithValue);
-    //   if(window.location.pathname.split('/')[2] && window.location.pathname.split('/')[3]){
-    //     $(this).closest('form').children('.fieldset:not('+ fields__notIn.toString() +')').removeClass('chosen_byType').addClass('disabled').fadeOut(),
-    //     $(this).closest('form').children(fields.toString()).addClass('chosen_byType').fadeIn().removeClass('disabled');
-    //   } else {
-    //     $(this).closest('form').children('.fieldset:not('+ fields__notIn.toString() +')').removeClass('chosen_byType').addClass('disabled').fadeOut(),
-    //     $(this).closest('form').children(fields.toString()).addClass('chosen_byType').fadeIn().first().removeClass('disabled');  
-    //   }
-    // });
+	var filled = 0,
+		checkes = 0,
+		result = 0,
+		fieldsAfterChecks = 0,
+		rfields = 0,
+		cfields = 0,
+		columnFields = 0,
+		fields = [],
+		curr_val;
 
-    // if(window.location.pathname.split('/')[2] && window.location.pathname.split('/')[3]){
-    //   var tipo = $('[name=tipo_processo]').val();
-    //   switch(tipo) {
-    //     case 'ADJUDICAÇÃO DIRETA':
-    //       fields.push('[class*="responsavel"]','[class*="requisicao"]','[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_disponivel_sap"]');
-    //       // $(this).closest('form').children('div.fieldset:not()').fadeOut();
-    //       var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
-    //       break;
-    //     case 'LICITAÇÃO':
-    //     case 'LEILÃO':
-    //       fields.push('[class*="responsavel"]','[class*="requisicao"]','[class*="id_comprador"]','[class*="id_estrategia"]','[class*="id_rodadas"]','[class*="id_negociacao"]','[class*="id_elaboracao_pa"]','[class*="id_leilao"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
-    //       var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
-    //       break;
-    //     case 'RENOVAÇÃO':
-    //     case 'PCAE':
-    //     case 'RAMPA DE SAÍDA':
-    //     case 'RÉPLICA GLOBAL':
-    //       fields.push('[class*="responsavel"]','[class*="requisicao"]','[class*="id_comprador"]','[class*="id_rodadas"]','[class*="id_elaboracao_pa"]','[class*="id_workflow"]','[class*="id_criacao_de_pedido"]','[class*="id_tramite_assinatura"]','[class*="id_disponivel_sap"]');
-    //       var inputs_length = $(this).closest('div.fieldset').nextAll('div.fieldset[style=""]').length;
-    //       break;
-    //     default:
-    //       // code block
-    //   }
-    //   $('form').children('.fieldset:not('+ fields__notIn.toString() +')').removeClass('chosen_byType').addClass('disabled').fadeOut(),
-    //   $('form').children(fields.toString()).addClass('chosen_byType').fadeIn().removeClass('disabled');
-    //   if($('.progressBar').length){
-    //     var el = $('.progressBar');
-    //     el.find('.progressStatus > span').html($('[name="status"]').val());
-    //     el.find('.progressLoader > span').css('width', $('[name="status"]').val()+'%');
-    //     el.find('.progressStatus').css('left', $('[name="status"]').val()+'%');
-    //   } 
-    // }
+	$( "#processo-form" ).each(function() {		
+		// - Desabilitando todos os campos, exceto o primeiro.
+		if(!$(this).is('.-edit')){
+			$(this).children('div.fieldset:not(:first-of-type)').each(function() {
+				$(this).addClass('disabled');
+			});	
+			// - Pegando campos e a quantidade.
+			$(this).children('div.fieldset').find('input,select').each(function() {
+				// - Filtra por tipo.
+				if($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden'){
+					// - Filtra por classes.e names.
+					if(!$(this).is('.moeda') && !$(this).is('.money') && $(this).attr('name') != 'data-final-rodada[]' && $(this).attr('name') != 'data-inicial-rodada[]'){
+						// - Elimina readonlies.
+						if(!$(this).attr('readonly')){
+							fields.push($(this).attr('name'));
+							// - Trabalhando eventos.
+							$(this).on('focus', function() {
+								// - Pega valor atual, antes de inserir.
+								curr_val = $(this).val();
+							}).on('blur', function() {
+								if($(this).val()){
+									// - Habilita campo posterior e soma campos filled.
+									$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
 
-    // var inputs = 0,
-    //     chosen_inputs = 0;
+									if(curr_val == '' && $(this).val() != curr_val){
+										filled +=1;
+									}	
 
-    // $( ".register.processo div.fieldset input, .register.processo div.fieldset select" ).each(function() {
-    //   $(this).on('change', function (e) {
-    //     var next_step = $(this).closest('div.fieldset').next('div.fieldset');
-    //     var all_next_steps = $(this).closest('div.fieldset').nextAll('div.fieldset');
-        
-    //     var chosen_inputs_length = $(this).closest('form').find('div.fieldset.chosen_byType input, div.fieldset.chosen_byType select').length;
-    //     var inputs_length = $(".register.processo div.fieldset:not(.chosen_byType) input, .register.processo div.fieldset:not(.chosen_byType) select").length;
-        
-    //     if ($(this).val()) {
-    //         // Should also perform validation here
-    //         if($(this).closest('div.fieldset').is('.chosen_byType')){
-    //           var all_next_steps = $(this).closest('div.fieldset').nextAll('div.fieldset.chosen_byType');
-    //           var next_step = $(this).closest('div.fieldset').nextAll('div.fieldset.chosen_byType').first();
-    //           chosen_inputs +=1;
-    //         }
-    //         inputs +=1;
-    //         next_step.removeClass('disabled');
-    //     }
-    //     // // If the element doesn't have a value
-    //     else {
-    //         // Clear the value of all next steps and disable
-    //         if($(this).closest('div.fieldset').is('.chosen_byType')){
-    //           chosen_inputs -=1;
-    //         }
-    //         inputs -=1;
-    //         all_next_steps.find('input, select').val('').addClass('disabled');
-    //     }
+									// -
+									console.log(filled + '/' + fields.length);	
+									$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+								} else {
+									// - Subtrai e limpa campos vazios.
+									if($(this).val() != curr_val && $(this).is('select') || $(this).val() == '' && $(this).val() != curr_val && !$(this).is('select')){
+										filled -=1;
+										// -
+										console.log(filled + '/' + fields.length);	
+										$(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled'); 
+									}
+									$(this).closest('div.fieldset').nextAll('div.fieldset').find('input,select').each(function() {
+										if(jQuery.inArray($(this).attr('name'), fields) !== -1){
+											curr_val = $(this).val();
+						                    $(this).val('');
 
-    //     // var inputs : submited inputs
-    //     // var chosen_inputs + 3 (Obrigatorios) : contagem com chosen inputs
+											if(curr_val != $(this).val()){
+												filled -=1;
+												// -
+												console.log(filled + '/' + fields.length);	
+											} 
+										} else if($(this).is(':checked')){
+											// - Desmarca campos clicados se marcados, quando for limpar todos.
+					                        $(this).trigger('click');
+					                    }
+									});									
+								}
+								// - Pega porcentagem.
+								result = Math.ceil( 100 - ((fields.length - filled)/fields.length) * 100 );
+								console.log(result);
+								// - Mostrar %
+							    if($('.progressBar').length){
+							      var el = $('.progressBar');
+							      el.find('.progressStatus > span').html(Math.ceil(parseInt(result)));
+							      el.find('.progressLoader > span').css('width', Math.ceil(parseInt(result))+'%');
+							      el.find('.progressStatus').css('left', result+'%');
+							      $('[name="status"]').val(Math.ceil(parseInt(result)));
+							    } 							
+							});						
+						}
+					}
+				}
+				// - Campos de SOCIEDADE.
+				if($(this).attr('type') == 'checkbox') {
+					$(this).on('change', function() {
+						if($(this).is(':checked')){
+							checkes +=1;
+							if(checkes >= 1){
+								$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+							}
+						} else {
+							if(checkes >= 1){
+								checkes -=1;
+								if(checkes == 0){
+									$(this).closest('div.fieldset').nextAll('div.fieldset').find('input:not([readonly="readonly"]),select').each(function() {
+										if($(this).val()){
+											fieldsAfterChecks +=1;
+										}
+									});
+									$(this).closest('div.fieldset').nextAll('div.fieldset').removeClass('enabled').find('input:not([readonly="readonly"]),select').val('');
+									if(fieldsAfterChecks > 0){
+										filled -=fieldsAfterChecks;
+									}
+									fieldsAfterChecks = 0;
+								}						
+							}
+						}
+						console.log(checkes);	
+					});
+				}
+				// - Rodadas
+				if($(this).attr('name') == 'data-final-rodada[]' || $(this).attr('name') == 'data-inicial-rodada[]'){
+					$(this).each(function() {
+						$(this).on('focus', function() {
+							curr_val = $(this).val();
+						}).on('change', function() {
+							var val = $(this).val();
+							if(val){
+								$(this).attr('value', val);
+							} else {
+								$(this).attr('value', '');
+							}
+						}).on('blur', function() {
+							if(curr_val == '' && $(this).val() != curr_val){
+								rfields +=1;
+							} else if($(this).val() == '' && $(this).val() != curr_val){
+								if(rfields >= 1){
+									rfields -=1;
+								}
+							}
+							console.log(rfields + ' ' + $(this).closest('ul').find('input:not([readonly="readonly"])').length);
+							if(rfields == $(this).closest('ul').find('input:not([readonly="readonly"])').length){
+								$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+							} else {
+								$(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled').find('input, select').val(''); 
+							}
+						});					
+					});
+				}
+			});							
+		} else {
+			var nfields = [], 
+				status = $('[name="status"]').val();
 
-    //     console.log(
-    //       chosen_inputs + '/' + 
-    //       chosen_inputs_length + ' => ' + 
-    //       inputs + '/' + inputs_length + ' | ' + 
-    //       chosen_inputs + '/' + inputs + ' # ' +
-    //       ((chosen_inputs / chosen_inputs_length) * 100) + '% / ' +
-    //       ((chosen_inputs / inputs) * 100) + '% / ' +
-    //       ((inputs / inputs_length) * 100) + '%'
-    //     );
+			function progressBar(status){
+			    if($('.progressBar').length && status){
+			      var el = $('.progressBar');
+			      el.find('.progressStatus > span').html(status);
+			      el.find('.progressLoader > span').css('width', status+'%');
+			      el.find('.progressStatus').css('left', status+'%');
+			    } 					
+			}	
 
-    //     if($(this).closest('div.fieldset').is('.chosen_byType')){
-    //       // console.log('Percent: ' + ((chosen_inputs / chosen_inputs_length) * 100) + '%');
-    //       var percent = ((chosen_inputs / chosen_inputs_length) * 100).toString();
-    //     } else {
-    //       // console.log('Percent: ' + ((inputs / inputs_length) * 100) + '%');
-    //       var percent = ((inputs / inputs_length) * 100).toString();
-    //     }
+			progressBar($('[name="status"]').val());				
 
-    //     if($('.progressBar').length){
-    //       var el = $('.progressBar');
-    //       el.find('.progressStatus > span').html(Math.ceil(parseInt(percent)));
-    //       el.find('.progressLoader > span').css('width', Math.ceil(parseInt(percent))+'%');
-    //       el.find('.progressStatus').css('left', percent+'%');
-    //       $('[name="status"]').val(Math.ceil(parseInt(percent)));
-    //     }  
+			$(this).children('div.fieldset').find('input,select').each(function() {
+				// - Filtra por tipo.
+				if($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden'){
+					// - Filtra por classes.e names.
+					if(!$(this).is('.moeda') && !$(this).is('.money') && $(this).attr('name') != 'data-final-rodada[]' && $(this).attr('name') != 'data-inicial-rodada[]'){
+						// - Elimina readonlies.
+						if(!$(this).attr('readonly')){
+							fields.push($(this).attr('name'));
+						}
+					}
+				}
+				if(jQuery.inArray($(this).attr('name'), fields) !== -1){
+					if($(this).val()){
+						filled +=1;
+						nfields.push($(this).attr('name'));
+					}
+				}				
+			});		
 
-    //   });
-    // });
+			$(this).find(".forms-footer .btn").click(function( event ) {
+			    // event.preventDefault();
 
-    $('.telefone').mask('(00) 00000-0000');
-    $('.money').maskMoney({prefix:'', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
-    if($('.progressBar').length){
-      $(".progressBar").before($(".progressBar").clone(true).addClass("-sticky")),
-      $(".forms-footer").before($(".forms-footer").clone(true).addClass("-sticky")), 
-      $(".forms-footer.-sticky").find('input').remove();
-    }
-    $(window).scroll(function() {
-        var t = $(this).scrollTop();
-        if (t > $('.progressBar:not(.-sticky)').offset().top){
-            $(".progressBar.-sticky").addClass("-stuck");
-            $(".forms-footer.-sticky").addClass("-stuck");
-        } else {
-            $(".progressBar.-sticky").removeClass("-stuck");
-            $(".forms-footer.-sticky").removeClass("-stuck");
-        }
-        if(t > ($('.forms-footer:not(.-sticky)').offset().top - 1000)) {
-            $(".forms-footer.-sticky").removeClass("-stuck");
-        }
-    });   
+				$(this).closest('form').children('div.fieldset').find('input,select').each(function() {
+					if($(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
+						if(jQuery.inArray($(this).attr('name'), nfields) === -1){
+							nfields.push($(this).attr('name'));
+						}
+					} else if(!$(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
+						if(jQuery.inArray($(this).attr('name'), nfields) !== -1){
+						    var index = nfields.indexOf($(this).attr('name'));
+						 
+						    if (index > -1) {
+						       nfields.splice(index, 1);
+						    }							
+						}
+					}				
+				});	 
 
-    $( '.remove-rodada' ).click(function( event ) {
-        event.preventDefault();
+				result = Math.ceil( 100 - ((fields.length - nfields.length)/fields.length) * 100 );
 
-        
+				$('[name="status"]').val(result);
 
-        if($(this).closest('li').attr('data-origin')){
-          var vars = window.location.pathname,
-              id = vars.split('/')[3],
-              uid = vars.split('/')[2],
-              position = parseInt($('.rodadas .columns').children().last().index());
+				progressBar($('[name="status"]').val());
+			});
+		}
 
-            $.ajax({
-                type: 'POST',
-                async: true,
-                url: window.location.origin + '/functions/delete.php',
-                data: {
-                  'table' : 'rodadas',
-                  'pid' : id,
-                  'position' : position,
-                },
-                datatype: 'json',
-                cache: true,
-                global: false,
-                beforeSend: function() { 
-                    $("#loader").css('display', 'flex'),
-                    $('.rodadas .columns').children().eq(position).fadeOut();
-                },
-                success: function(data) {
-                    console.log(data);
-                },
-                complete: function() { 
-                    $("#loader").css('display', 'none');
-                }
-            });  
-        }
+	});	
 
-        $(this).closest('li').remove();
+	$( '.remove-rodada' ).click(function( event ) {
+	    event.preventDefault();
 
-        if($('.rodadas .columns').children().length % 2 === 0){
-          nivel_rodada -=1;
-        }   
-    });   
-    $( "#sociedades input[type='checkbox']" ).each(function() {
-        $(this).change(function() {
-          if(!$(this).is( ":checked" )){
-            $(this).closest('li').find('.money, .moeda').val('').attr('required', false);
-          } else {
-            $(this).closest('li').find('.money, .moeda').attr('required', true);
-          }
-        });        
-    });     
-    $( "#sociedades .moeda" ).each(function() {
-        $(this).on('change', function (e) {
-          if($(this).val()){
-            if(!$(this).closest('li').find('input[type="checkbox"]').is(":checked")){
-              $(this).closest('li').find('input[type="checkbox"]').trigger('click');
-            }
-          } else {
-            if($(this).closest('li').find('input[type="checkbox"]').is(":checked")){
-              $(this).closest('li').find('input[type="checkbox"]').trigger('click');
-            }
-          }
-        });
-    });
-    $( "#sociedades .money" ).each(function() {
-        $(this).on('blur keypress', function (e) {
-          if($(this).val()){
-            if(!$(this).parent().prev().find('input').is(":checked")){
-              $(this).parent().prev().find('input').trigger('click');
-            }
-          } else {
-            if($(this).parent().prev().find('input').is(":checked")){
-              $(this).parent().prev().find('input').trigger('click');
-            }
-          }
-        });
-    });
+	    if($(this).closest('li').attr('data-origin')){
+	      var vars = window.location.pathname,
+	          id = vars.split('/')[3],
+	          uid = vars.split('/')[2],
+	          position = parseInt($('.rodadas .columns').children().last().index());
 
-  $( ".rodadas .columns" ).children().each(function() {
-    if($(this).index() == 0){
-      $(this).find('.rodadas-footer').closest('li').find('[name="rodada-tipo[]"]').val('Rodada Comercial');
-    }
-  });    
+	        $.ajax({
+	            type: 'POST',
+	            async: true,
+	            url: window.location.origin + '/functions/delete.php',
+	            data: {
+	              'table' : 'rodadas',
+	              'pid' : id,
+	              'position' : position,
+	            },
+	            datatype: 'json',
+	            cache: true,
+	            global: false,
+	            beforeSend: function() { 
+	                $("#loader").css('display', 'flex'),
+	                $('.rodadas .columns').children().eq(position).fadeOut();
+	            },
+	            success: function(data) {
+	                console.log(data);
+	            },
+	            complete: function() { 
+	                $("#loader").css('display', 'none');
+	            }
+	        });  
+	    }	  
+
+	    if(!$('#processo-form').is('.-edit')){
+
+			var counter = 0;
+
+			$(this).closest('li').find('input:not([readonly="readonly"])').each(function() {
+				if($(this).val()){
+					counter +=1;
+				}
+			});    		
+
+			rfields -=counter;
+
+			setTimeout(function(){
+				counter = 0;
+			}, 600);
+		}
+
+		$(this).closest('li').remove();
+
+	    if($('.rodadas .columns').children().length % 2 === 0){
+	      nivel_rodada -=1;
+	    }   
+	});
 });
       
       

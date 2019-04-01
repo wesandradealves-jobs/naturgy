@@ -16,13 +16,13 @@
            <thead>
               <tr>
               	<th><a title="ID" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=id' : 'processos/ordem/?orderBy=id';?>">ID</a></th>
-                <th width="20">Responsável<br/>(Cliente)</th>
+                <th width="20">Responsável(eis)<br/>(Cliente)</th>
                 <th width="100">Comprador</th>
                 <th width="100"><a title="Solped" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=numero_processo' : 'processos/ordem/?orderBy=numero_processo';?>">Solped</a></th>
                 <th width="100"><a title="Objeto" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=nome_processo' : 'processos/ordem/?orderBy=nome_processo';?>">Objeto</a></th>
                 <th width="100">Sociedade(s)</th>
                 <th width="150">Valor</th>
-                <th width="100">Moeda</th>
+                <th width="100">Moeda(s)</th>
                 <th width="100"><a title="Tratamento" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=tipo_processo' : 'processos/ordem/?orderBy=tipo_processo';?>">Tratamento</a></th>
                 <th width="250">Tempo em curso<br/>(Dias úteis)</th>
                 <th width="150"><a title="Status" href="<?php echo ($_SERVER['QUERY_STRING']) ? explode('orderBy',$url)[0].'&orderBy=status' : 'processos/ordem/?orderBy=status';?>">Status</a></th>
@@ -31,7 +31,7 @@
             </thead>	
             <tbody>
 			<?php
-				$orderby = " ORDER BY ". ( (isset($_GET['orderBy'])) ? (($_GET['orderBy'] == 'status') ? 'ABS('.$_GET['orderBy'].')' : $_GET['orderBy']) : 'id' ) ." ASC"; 
+				$orderby = " ORDER BY ". ( (isset($_GET['orderBy'])) ? (($_GET['orderBy'] == 'status' || $_GET['orderBy'] == 'numero_processo') ? 'ABS('.$_GET['orderBy'].')' : "'".$_GET['orderBy']."'") : 'id' ) ." DESC"; 
 
 				$queryCondition = NULL;
 				$userCondition = NULL;
@@ -233,13 +233,21 @@
 				<th>
 					<?php 
 						$valores = array();
+						$moedas = array();
 						foreach ($sociedades_by_processos as $key => $value) {
 							array_push($valores, $value['valor']);
+							array_push($moedas, $value['moeda']);
 						}
 						print_r(array_sum($valores));
 					?>
 				</th>
-				<th><?php echo $row['moeda'] ?></th>
+				<th>
+					<?php 
+						foreach ($moedas as $value) {
+							echo '●'.$value.'<br>';
+						}
+					?>
+				</th>
 				<th><?php echo $row['tipo_processo'] ?></th>
 				<th>
 					<?php 
