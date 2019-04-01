@@ -6,7 +6,7 @@
 		<div class="section-header">
 			<h2 class="title"><span>&#187;</span> Todos os Usuários</h2>
 		</div>
-          <table class="tables tables-1" width="100%">
+          <table class="tables tables-1 tables-usuarios" width="100%">
             <thead>
               <tr>
               	<th width="20"></th>
@@ -84,8 +84,10 @@
 				<th><?php echo $row['usuario'] ?></th>
 				<th><?php echo $row['nome'] ?></th>
 				<th><?php echo $row['sap'] ?></th>
-				<th><?php echo $row['telefone'] ?></th>
-				<th><?php echo $row['email'] ?></th>
+				<th><a href="tel:<?php echo $row['telefone'] ?>" title="<?php echo $row['telefone'] ?>"><?php echo $row['telefone'] ?></a></th>
+				<th>
+					<a title="<?php echo $row['email'] ?>" href="mailto:<?php echo $row['email'] ?>"><?php echo $row['email'] ?></a>
+				</th>
 				<th><?php echo $row['classificacao'] ?></th>
 				<th><?php echo $row['setor'] ?></th>
 				<th><?php echo $row['gerencia'] ?></th>

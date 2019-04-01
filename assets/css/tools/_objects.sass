@@ -200,52 +200,62 @@ section
             vertical-align: middle
 
 .tables
-    text-align: center
-    +rem('font-size', 13px)
-    a 
-        color: $blue
-        display: inline-block 
-        vertical-align: middle
-        &:hover
-            text-decoration: underline 
-        &:nth-child(2):not(:last-child)
-            margin: 0 7.5px
-        &.enabled
-            background-color: lightseagreen !important
-        &.disabled 
-            background-color: coral !important
-        &.enabled,
-        &.disabled
-            +border(999px)
-            color: white !important
-            height: 16px
-            width: 25px
-            +rem(('font-size' : 14px, 'line-height' : 16px))
-            text-align: center
-        i 
-            &[class*="-on"]
-                color: lightseagreen
-            &::after,
-            &::before 
-                color: inherit
-    .disabled
-        background-color: initial !important
-        color: coral !important
-        cursor: pointer !important
-        pointer-events: initial !important
-        opacity: initial !important
-        *
-            color: inherit
-    &-1
-        thead 
-            th,td 
-                background-color: $tealblue
-        tbody 
-            th,td 
-                color: $gray
-        th,td 
-            border: 1px $gray solid
-            padding: 15px 10px
+	text-align: center
+	+rem('font-size', 11px)
+	width: 100%
+	&.tables-usuarios   	
+		tr 
+			@extend .flex 
+			flex-flow: row wrap 
+			>*
+				flex: 1
+				overflow: hidden 
+				text-overflow: ellipsis
+				white-space: nowrap
+				&:nth-child(6), &:nth-child(7) 
+					flex: 0 0 auto
+					width: 105px
+				&:nth-child(7) 
+					width: 175px
+				&:nth-child(2), &:nth-child(1)
+					flex: 0 0 auto
+					width: 40px    
+	a 
+		color: $blue
+		display: inline-block 
+		vertical-align: middle
+		&:hover
+			text-decoration: underline 
+			&:nth-child(2):not(:last-child)
+				margin: 0 7.5px
+			&.enabled
+				background-color: lightseagreen !important
+			&.disabled 
+				background-color: coral !important
+			&.enabled,
+			&.disabled
+				+border(999px)
+				color: white !important
+				height: 16px
+				width: 25px
+				+rem(('font-size' : 14px, 'line-height' : 16px))
+				text-align: center
+				i 
+					&[class*="-on"]
+						color: lightseagreen
+					&::after,
+					&::before 
+						color: inherit
+	&-1
+		thead 
+			th,td 
+				background-color: $tealblue
+		tbody 
+			th,td 
+				color: $gray
+		th,td 
+			border: 1px $gray solid
+			padding: 15px 10px
 
 .pagination
     margin: 65px auto 0
