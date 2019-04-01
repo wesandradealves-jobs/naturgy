@@ -282,46 +282,7 @@ $(document).ready(function () {
 	    }
 	});   
 
-	$( '.remove-rodada' ).click(function( event ) {
-	    event.preventDefault();
 
-	    if($(this).closest('li').attr('data-origin')){
-	      var vars = window.location.pathname,
-	          id = vars.split('/')[3],
-	          uid = vars.split('/')[2],
-	          position = parseInt($('.rodadas .columns').children().last().index());
-
-	        $.ajax({
-	            type: 'POST',
-	            async: true,
-	            url: window.location.origin + '/functions/delete.php',
-	            data: {
-	              'table' : 'rodadas',
-	              'pid' : id,
-	              'position' : position,
-	            },
-	            datatype: 'json',
-	            cache: true,
-	            global: false,
-	            beforeSend: function() { 
-	                $("#loader").css('display', 'flex'),
-	                $('.rodadas .columns').children().eq(position).fadeOut();
-	            },
-	            success: function(data) {
-	                console.log(data);
-	            },
-	            complete: function() { 
-	                $("#loader").css('display', 'none');
-	            }
-	        });  
-	    }
-
-	    $(this).closest('li').remove();
-
-	    if($('.rodadas .columns').children().length % 2 === 0){
-	      nivel_rodada -=1;
-	    }   
-	});   
 	$( "#sociedades input[type='checkbox']" ).each(function() {
 	    $(this).change(function() {
 	      if(!$(this).is( ":checked" )){
@@ -364,59 +325,201 @@ $(document).ready(function () {
 		}
 	});    
 
-	$( "#processo-form" ).children('.fieldset:not(:first-of-type)').each(function() {
-		$(this).addClass('disabled');
+	var filled = 0,
+		checkes = 0,
+		result = 0,
+		fieldsAfterChecks = 0,
+		rfields = 0,
+		cfields = 0,
+		columnFields = 0,
+		fields = [],
+		curr_val;	
+
+	$( "#processo-form" ).each(function() {		
+		// - Definindo VARS
+		// var filled = 0,
+		// 	checkes = 0,
+		// 	result = 0,
+		// 	fieldsAfterChecks = 0,
+		// 	rfields = 0,
+		// 	columnFields = 0,
+		// 	fields = [],
+		// 	curr_val;
+		// - Desabilitando todos os campos, exceto o primeiro.
+		if(!$(this).is('.-edit')){
+			$(this).children('div.fieldset:not(:first-of-type)').each(function() {
+				$(this).addClass('disabled');
+			});	
+		}
+		// - Pegando campos e a quantidade.
+		$(this).children('div.fieldset').find('input,select').each(function() {
+			// - Filtra por tipo.
+			if($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden'){
+				// - Filtra por classes.e names.
+				if(!$(this).is('.moeda') && !$(this).is('.money') && $(this).attr('name') != 'data-final-rodada[]' && $(this).attr('name') != 'data-inicial-rodada[]'){
+					// - Elimina readonlies.
+					if(!$(this).attr('readonly')){
+						fields.push($(this).attr('name'));
+						// - Trabalhando eventos.
+						$(this).on('focus', function() {
+							// - Pega valor atual, antes de inserir.
+							curr_val = $(this).val();
+						}).on('blur', function() {
+							if($(this).val()){
+								// - Habilita campo posterior e soma campos filled.
+								$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+
+								if(curr_val == '' && $(this).val() != curr_val){
+									filled +=1;
+								}	
+
+								// -
+								console.log(filled + '/' + fields.length);	
+								$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+							} else {
+								// - Subtrai e limpa campos vazios.
+								if($(this).val() != curr_val && $(this).is('select') || $(this).val() == '' && $(this).val() != curr_val && !$(this).is('select')){
+									filled -=1;
+									// -
+									console.log(filled + '/' + fields.length);	
+									$(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled'); 
+								}
+								$(this).closest('div.fieldset').nextAll('div.fieldset').find('input,select').each(function() {
+									if(jQuery.inArray($(this).attr('name'), fields) !== -1){
+										curr_val = $(this).val();
+					                    $(this).val('');
+
+										if(curr_val != $(this).val()){
+											filled -=1;
+											// -
+											console.log(filled + '/' + fields.length);	
+										} 
+									} else if($(this).is(':checked')){
+										// - Desmarca campos clicados se marcados, quando for limpar todos.
+				                        $(this).trigger('click');
+				                    }
+								});									
+							}
+							// - Pega porcentagem.
+							result = Math.ceil( 100 - ((fields.length - filled)/fields.length) * 100 );
+							console.log(result);
+						});						
+					}
+				}
+			}
+			// - Campos de SOCIEDADE.
+			if($(this).attr('type') == 'checkbox') {
+				$(this).on('change', function() {
+					if($(this).is(':checked')){
+						checkes +=1;
+						if(checkes >= 1){
+							$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+						}
+					} else {
+						if(checkes >= 1){
+							checkes -=1;
+							if(checkes == 0){
+								$(this).closest('div.fieldset').nextAll('div.fieldset').find('input:not([readonly="readonly"]),select').each(function() {
+									if($(this).val()){
+										fieldsAfterChecks +=1;
+									}
+								});
+								$(this).closest('div.fieldset').nextAll('div.fieldset').removeClass('enabled').find('input:not([readonly="readonly"]),select').val('');
+								if(fieldsAfterChecks > 0){
+									filled -=fieldsAfterChecks;
+								}
+								fieldsAfterChecks = 0;
+							}						
+						}
+					}
+					console.log(checkes);	
+				});
+			}
+			// - Rodadas
+			if($(this).attr('name') == 'data-final-rodada[]' || $(this).attr('name') == 'data-inicial-rodada[]'){
+				$(this).each(function() {
+					$(this).on('focus', function() {
+						curr_val = $(this).val();
+					}).on('change', function() {
+						var val = $(this).val();
+						if(val){
+							$(this).attr('value', val);
+						} else {
+							$(this).attr('value', '');
+						}
+					}).on('blur', function() {
+						if(curr_val == '' && $(this).val() != curr_val){
+							rfields +=1;
+						} else if($(this).val() == '' && $(this).val() != curr_val){
+							if(rfields >= 1){
+								rfields -=1;
+							}
+						}
+						console.log(rfields + ' ' + $(this).closest('ul').find('input:not([readonly="readonly"])').length);
+						if(rfields == $(this).closest('ul').find('input:not([readonly="readonly"])').length){
+							$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+						} else {
+							$(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled').find('input, select').val(''); 
+						}
+					});					
+				});
+			}
+		});
 	});	
 
-	var filled = 0,
-		max_inputs = $('form').children('.fieldset').find('input:not([type="checkbox"]):not([type="hidden"]):not([readonly="readonly"]), select').length,
-		curr_val;
+	$( '.remove-rodada' ).click(function( event ) {
+	    event.preventDefault();
 
-	$( "#processo-form input, #processo-form select" ).each(function() {
-		$(this).on('focus', function() {
-			curr_val = $(this).val();
-		}).on('blur', function() {
+	    if($(this).closest('li').attr('data-origin')){
+	      var vars = window.location.pathname,
+	          id = vars.split('/')[3],
+	          uid = vars.split('/')[2],
+	          position = parseInt($('.rodadas .columns').children().last().index());
+
+	        $.ajax({
+	            type: 'POST',
+	            async: true,
+	            url: window.location.origin + '/functions/delete.php',
+	            data: {
+	              'table' : 'rodadas',
+	              'pid' : id,
+	              'position' : position,
+	            },
+	            datatype: 'json',
+	            cache: true,
+	            global: false,
+	            beforeSend: function() { 
+	                $("#loader").css('display', 'flex'),
+	                $('.rodadas .columns').children().eq(position).fadeOut();
+	            },
+	            success: function(data) {
+	                console.log(data);
+	            },
+	            complete: function() { 
+	                $("#loader").css('display', 'none');
+	            }
+	        });  
+	    }	  
+
+		var counter = 0;
+
+		$(this).closest('li').find('input:not([readonly="readonly"])').each(function() {
 			if($(this).val()){
-				$(this).closest('div.fieldset').nextAll('.fieldset:first').addClass('enabled');
-				if(curr_val == '' && $(this).val() != curr_val){
-					filled +=1;
-				}
+				counter +=1;
 			}
-			console.log(filled + '/' + max_inputs);
-		}).on('change', function() {
-			if($(this).val()){
-				$(this).closest('div.fieldset').nextAll('.fieldset:first').addClass('enabled');
-			} else {					
-				if(($(this).val() != curr_val && $(this).is('select')) || ($(this).val() == '' && !$(this).is('select'))){
-					filled -=1;
-				}
-				$(this).closest('div.fieldset').nextAll('div.fieldset').find('input:not([type="checkbox"]):not([type="hidden"]):not([readonly="readonly"]):not(.moeda), select').each(function() {
-					curr_val = $(this).val();
-                    $(this).val('');
+		});    		
 
-					if(curr_val != $(this).val()){
-						// console.log($(this).val());
-						filled -=1;
-					} 
-				});			
-                $(this).closest('div.fieldset').nextAll('div.fieldset').find('input[type="checkbox"]').each(function() {
-                    if($(this).is(':checked')){
-                        $(this).trigger('click');
-                    }
-                });      
-                $(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled').find('input:not([type="checkbox"]):not([type="hidden"]):not([readonly="readonly"]),select').val('');           		
-			}
-			var result = parseFloat(parseInt(filled, 10) * 100)/parseInt(max_inputs, 10);
-            result = (result) < 0 ? 0 : result;
+		rfields -=counter;
 
-		    if($('.progressBar').length){
-		      var el = $('.progressBar');
-		      el.find('.progressStatus > span').html(Math.ceil(parseInt(result)));
-		      el.find('.progressLoader > span').css('width', Math.ceil(parseInt(result))+'%');
-		      el.find('.progressStatus').css('left', result+'%');
-		      $('[name="status"]').val(Math.ceil(parseInt(result)));
-		    } 			
-		});
+		$(this).closest('li').remove();
+
+	    if($('.rodadas .columns').children().length % 2 === 0){
+	      nivel_rodada -=1;
+	    }   
+
+		setTimeout(function(){
+			counter = 0;
+		}, 600);
 	});
 });
       
