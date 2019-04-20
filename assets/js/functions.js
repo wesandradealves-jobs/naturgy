@@ -14,6 +14,7 @@ var fields = [],
 	filled = 0,
 	old_val,
 	rodadas = 0,
+	rodadas_filled = 0,
 	filtered_fields = [];
 
 function getUrlParameter(name) {
@@ -94,6 +95,12 @@ function removeRodada(e){
 	            }
 	        });  
 	    } else {
+	    	$(e).closest('li').find( 'input[type="date"][required="true"]' ).each(function() {
+	    		if($(this).val()){
+					filled -=1;
+	    		}
+			});
+
 	    	$(e).closest('li').remove();
 	    	rodadas = $( '.rodadas input[type="date"][required="true"]' ).length;
 	    }
@@ -107,6 +114,15 @@ function removeRodada(e){
 				   counter.splice(indexes[i],1);				
 			}
 		}
+
+		// filled -=rodadas_filled;
+
+		// if($('.rodadas .columns').children().length == 0){
+		// 	setTimeout(function(){ 
+		// 		rodadas_filled = 0;
+		// 	}, 300);
+		// }
+
 		console.log(counter);	    
 	}	
 }
@@ -357,6 +373,19 @@ $(document).ready(function () {
 		$('.rodadas input, .rodadas select').attr('required', false).attr('placeholder', '').removeClass('obrigatorio');
 
 		switch($(this).val()){
+			case '':
+				filtered_fields = [];
+				default_fields = [
+					'nome_processo',
+					'tipo_processo',
+					'comprador',
+					'subfamilia',
+					'grupo_de_compras',
+					'data_disp_compras',
+					'responsavel[]',
+					'cod_material'
+				];
+			break;
 			case 'Licitação':
 			case 'Adj. Direta':
 				filtered_fields = [
@@ -470,10 +499,14 @@ $(document).ready(function () {
 
 	$( "#processo-form" ).each(function() {		
 		if(!$(this).is('.-edit')){
-			$( "#processo-form" ).find('input,select').each(function() {
-				$(this).on('focus', function() {
+			// $( "#processo-form" ).find('input,select').each(function() {
+				// $(this).on('focus', function() {
+				$(this).on('focus', 'input,select', function () {
 					old_val = $(this).val();
-				}).on('blur', function() {
+				// }).on('blur', function() {
+				}).on('blur', 'input,select', function () {
+					console.log($(this).attr('name'));
+
 					if(jQuery.inArray($(this).attr('name'), counter) !== -1){
 						if($(this).val()){							
 							if(old_val == '' && $(this).val() != old_val){
@@ -493,7 +526,7 @@ $(document).ready(function () {
 				      $('[name="status"]').val(Math.ceil(parseInt(result)));
 				    } 					
 				});					
-			});	
+			// });	
 			// - Drafts
 		    $( document ).idleTimer( {
 		        timeout:900000, 
