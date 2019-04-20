@@ -247,10 +247,12 @@ $(document).ready(function () {
 			'subfamilia',
 			'grupo_de_compras',
 			'data_disp_compras',
-			'responsavel',
 			'responsavel[]',
 			'cod_material'
 		],
+		counter = [],
+		filled = 0,
+		old_val,
 		filtered_fields = [];	
 
 	// Subfamilias
@@ -267,9 +269,9 @@ $(document).ready(function () {
 	$( "#sociedades input[type='checkbox']" ).each(function() {
 	    $(this).change(function() {
 	      if(!$(this).is( ":checked" )){
-	        $(this).closest('li').find('.money, .moeda').val('').attr('required', false);
+	        $(this).closest('li').find('.money, .moeda').val('').attr('required', false).removeClass('obrigatorio').closest('.custom-combobox').removeClass('obrigatorio');
 	      } else {
-	        $(this).closest('li').find('.money, .moeda').attr('required', true);
+	        $(this).closest('li').find('.money, .moeda').attr('required', true).addClass('obrigatorio').closest('.custom-combobox').addClass('obrigatorio');
 	      }
 	    });        
 	});     
@@ -316,10 +318,18 @@ $(document).ready(function () {
 	// Define required pros campos default
 
 	$.each( default_fields, function( key, value ) {
-		jQuery('[name="'+value+'"]').attr('required', true);
-	});
+		jQuery('[name="'+value+'"]').attr('required', true).attr('placeholder', 'campo obrigatório *').addClass('obrigatorio').closest('.custom-combobox').addClass('obrigatorio');
+	});	
 
 	// Pega os campos por tipo de processo
+
+	$.each( default_fields, function( key, value ) {
+		if(jQuery.inArray(value, counter) === -1){
+			counter.push(value);
+		}
+	});	
+
+	console.log(counter);	
 
 	$('[name="tipo_processo"]').on('change', function() {
 		$('.rodadas input, .rodadas select').attr('required', false).attr('placeholder', '').removeClass('obrigatorio');
@@ -342,13 +352,7 @@ $(document).ready(function () {
 					'criacao_de_pedido_data_final',
 					'disponivel_sap'
 				];
-				$('.rodadas input, .rodadas select').attr('required', true).attr('placeholder', 'campo obrigatório *').addClass('obrigatorio').on('blur change', function() {
-					if($(this).is('.obrigatorio') && $(this).val()){
-						$(this).removeClass('obrigatorio').attr('placeholder', '');
-					} else if(!$(this).val()){
-						$(this).addClass('obrigatorio').attr('placeholder', 'campo obrigatório *');
-					}
-				});
+				$('.rodadas input, .rodadas select').attr('required', true).attr('placeholder', 'campo obrigatório *').addClass('obrigatorio');
 			break;	
 			case 'Amp. Verba':
 			case 'Amp. VP':
@@ -387,13 +391,7 @@ $(document).ready(function () {
 					'dados_bravo_sav',
 					'dados_bravo_rqf'
 				];
-				$('.rodadas input, .rodadas select').attr('required', true).attr('placeholder', 'campo obrigatório *').addClass('obrigatorio').on('blur change', function() {
-					if($(this).is('.obrigatorio') && $(this).val()){
-						$(this).removeClass('obrigatorio').attr('placeholder', '');
-					} else if(!$(this).val()){
-						$(this).addClass('obrigatorio').attr('placeholder', 'campo obrigatório *');
-					}
-				});
+				$('.rodadas input, .rodadas select').attr('required', true).attr('placeholder', 'campo obrigatório *').addClass('obrigatorio');
 			break;		
 			case 'Rep. Global':
 				filtered_fields = [
@@ -425,20 +423,94 @@ $(document).ready(function () {
 
 		// Define required pros campos da regra excluindo os default
 
+		counter = [];
+
 		$.each( fields, function( key, value ) {
 			if(jQuery.inArray(value, default_fields) === -1){
 				$('[name="'+value+'"]').attr('required', false).attr('placeholder', '').removeClass('obrigatorio');
 			}
 		}),
+		$.each( default_fields, function( key, value ) {
+			if(jQuery.inArray(value, counter) === -1){
+				counter.push(value);
+			}
+		}),		
 		$.each( filtered_fields, function( key, value ) {
-			$('[name="'+value+'"]').attr('required', true).attr('placeholder', 'campo obrigatório *').addClass('obrigatorio').on('blur change', function() {
-				if($(this).is('.obrigatorio') && $(this).val()){
-					$(this).removeClass('obrigatorio').attr('placeholder', '');
-				} else if(!$(this).val()){
-					$(this).addClass('obrigatorio').attr('placeholder', 'campo obrigatório *');
-				}
+			if(jQuery.inArray(value, counter) === -1){
+				counter.push(value);
+			}
+			// 
+			$('[name="'+value+'"]').attr('required', true).attr('placeholder', 'campo obrigatório *').addClass('obrigatorio');	
+		});			
+
+		console.log(counter.length);	
+	});	
+
+	$( "#processo-form" ).each(function() {		
+		if(!$(this).is('.-edit')){
+			$( "#processo-form" ).find('input,select').each(function() {
+				$(this).on('focus', function() {
+					old_val = $(this).val();
+				}).on('blur', function() {
+					if(jQuery.inArray($(this).attr('name'), counter) !== -1){
+						if($(this).val()){							
+							if(old_val == '' && $(this).val() != old_val){
+								filled+=1;
+							}
+						} else if($(this).val() != old_val && $(this).is('select') || $(this).val() == '' && $(this).val() != old_val && !$(this).is('select')) {
+							filled-=1;
+						}	
+					}	
+					result = Math.ceil( 100 - ((counter.length - filled)/counter.length) * 100 );
+					console.log(filled + ' ' + counter.length + ' ' + result+'%');
+				    if($('.progressBar').length){
+				      var el = $('.progressBar');
+				      el.find('.progressStatus > span').html(Math.ceil(parseInt(result)));
+				      el.find('.progressLoader > span').css('width', Math.ceil(parseInt(result))+'%');
+				      el.find('.progressStatus').css('left', result+'%');
+				      $('[name="status"]').val(Math.ceil(parseInt(result)));
+				    } 					
+				});					
 			});	
-		});				
+			// - Drafts
+		    $( document ).idleTimer( {
+		        timeout:6000, 
+		        idle:true
+		    }).on( "idle.idleTimer", function(event, elem, obj){
+		        // function you want to fire when the user goes idle
+				console.log('Idle');
+
+				if(filled){
+					var dataparam = $("#processo-form").serialize();
+
+			        $.ajax({
+			            type: 'POST',
+			            async: true,
+			            url: window.location.origin + '/functions/draft.php',
+			            data: dataparam,
+			            datatype: 'json',
+			            cache: true,
+			            global: false,
+			            beforeSend: function() { 
+			                $("#loader").css('display', 'flex');
+			            },
+			            success: function(data) {
+			                if(data){
+			                	// 
+			                	var json = jQuery.parseJSON(data);
+			                	window.location = window.location.origin + '/processo/' + json.uid + '/' + json.id + '?draft=true';
+			                }
+			            },
+			            complete: function() { 
+			                $("#loader").css('display', 'none');
+			            }
+			        }); 			
+				}
+		    }).on( "active.idleTimer", function(event, elem, obj, triggerevent){
+		        // function you want to fire when the user becomes active again
+		    	console.log('Active');
+		    });				
+		}
 	});	
 
 	// $( ".rodadas .columns" ).children().each(function() {
@@ -459,267 +531,279 @@ $(document).ready(function () {
 	// 	fields = [],
 	// 	curr_val;
 
-	// $( "#processo-form" ).each(function() {		
-	// 	// - Desabilitando todos os campos, exceto o primeiro.
-	// 	if(!$(this).is('.-edit')){
-	// 		$(this).children('div.fieldset:not(:first-of-type)').each(function() {
-	// 			$(this).addClass('disabled');
-	// 		});	
-	// 		// - Pegando campos e a quantidade.
-	// 		$(this).children('div.fieldset').find('input,select').each(function() {
-	// 			// - Filtra por tipo.
-	// 			if($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden'){
-	// 				// - Filtra por classes.e names.
-	// 				if(!$(this).is('.moeda') && !$(this).is('.money') && $(this).attr('name') != 'data-final-rodada[]' && $(this).attr('name') != 'data-inicial-rodada[]'){
-	// 					// - Elimina readonlies.
-	// 					if(!$(this).attr('readonly')){
-	// 						fields.push($(this).attr('name'));
-	// 						// - Trabalhando eventos.
-	// 						$(this).on('focus', function() {
-	// 							// - Pega valor atual, antes de inserir.
-	// 							curr_val = $(this).val();
-	// 						}).on('blur', function() {
-	// 							if($(this).val()){
-	// 								// - Habilita campo posterior e soma campos filled.
-	// 								$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+	$( "#processo-form" ).each(function() {		
+		// - Desabilitando todos os campos, exceto o primeiro.
+		if(!$(this).is('.-edit')){
+			// $.each( counter, function( key, value ) {
+			// 	$( "#processo-form" ).children('div.fieldset').find('input,select').each(function() {
+			// 		if($(this).attr('name') == value){
+			// 			$(this).on('blur', function() {
+			// 				console.log($(this).val());
+			// 			});
+			// 		}
+			// 	});
+			// });
 
-	// 								if(curr_val == '' && $(this).val() != curr_val){
-	// 									filled +=1;
-	// 								}	
+			// console.log(counter);
 
-	// 								// -
-	// 								console.log(filled + '/' + fields.length);	
-	// 								$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
-	// 							} else {
-	// 								// - Subtrai e limpa campos vazios.
-	// 								if($(this).val() != curr_val && $(this).is('select') || $(this).val() == '' && $(this).val() != curr_val && !$(this).is('select')){
-	// 									filled -=1;
-	// 									// -
-	// 									console.log(filled + '/' + fields.length);	
-	// 									$(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled'); 
-	// 								}
-	// 								$(this).closest('div.fieldset').nextAll('div.fieldset').find('input,select').each(function() {
-	// 									if(jQuery.inArray($(this).attr('name'), fields) !== -1){
-	// 										curr_val = $(this).val();
-	// 					                    $(this).val('');
+			// $(this).children('div.fieldset:not(:first-of-type)').each(function() {
+			// 	$(this).addClass('disabled');
+			// });	
+			// // - Pegando campos e a quantidade.
+			// $(this).children('div.fieldset').find('input,select').each(function() {
+			// 	// - Filtra por tipo.
+			// 	if($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden'){
+			// 		// - Filtra por classes.e names.
+			// 		if(!$(this).is('.moeda') && !$(this).is('.money') && $(this).attr('name') != 'data-final-rodada[]' && $(this).attr('name') != 'data-inicial-rodada[]'){
+			// 			// - Elimina readonlies.
+			// 			if(!$(this).attr('readonly')){
+			// 				fields.push($(this).attr('name'));
+			// 				// - Trabalhando eventos.
+			// 				$(this).on('focus', function() {
+			// 					// - Pega valor atual, antes de inserir.
+			// 					curr_val = $(this).val();
+			// 				}).on('blur', function() {
+			// 					if($(this).val()){
+			// 						// - Habilita campo posterior e soma campos filled.
+			// 						$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
 
-	// 										if(curr_val != $(this).val()){
-	// 											filled -=1;
-	// 											// -
-	// 											console.log(filled + '/' + fields.length);	
-	// 										} 
-	// 									} else if($(this).is(':checked')){
-	// 										// - Desmarca campos clicados se marcados, quando for limpar todos.
-	// 				                        $(this).trigger('click');
-	// 				                    }
-	// 								});									
-	// 							}
-	// 							// - Pega porcentagem.
-	// 							result = Math.ceil( 100 - ((fields.length - filled)/fields.length) * 100 );
-	// 							console.log(result);
-	// 							// - Mostrar %
-	// 						    if($('.progressBar').length){
-	// 						      var el = $('.progressBar');
-	// 						      el.find('.progressStatus > span').html(Math.ceil(parseInt(result)));
-	// 						      el.find('.progressLoader > span').css('width', Math.ceil(parseInt(result))+'%');
-	// 						      el.find('.progressStatus').css('left', result+'%');
-	// 						      $('[name="status"]').val(Math.ceil(parseInt(result)));
-	// 						    } 							
-	// 						});						
-	// 					}
-	// 				}
-	// 			}
-	// 			// - Campos de SOCIEDADE.
-	// 			if($(this).attr('type') == 'checkbox') {
-	// 				$(this).on('change', function() {
-	// 					if($(this).is(':checked')){
-	// 						checkes +=1;
-	// 						if(checkes >= 1){
-	// 							$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
-	// 						}
-	// 					} else {
-	// 						if(checkes >= 1){
-	// 							checkes -=1;
-	// 							if(checkes == 0){
-	// 								$(this).closest('div.fieldset').nextAll('div.fieldset').find('input:not([readonly="readonly"]),select').each(function() {
-	// 									if($(this).val()){
-	// 										fieldsAfterChecks +=1;
-	// 									}
-	// 								});
-	// 								$(this).closest('div.fieldset').nextAll('div.fieldset').removeClass('enabled').find('input:not([readonly="readonly"]),select').val('');
-	// 								if(fieldsAfterChecks > 0){
-	// 									filled -=fieldsAfterChecks;
-	// 								}
-	// 								fieldsAfterChecks = 0;
-	// 							}						
-	// 						}
-	// 					}
-	// 					console.log(checkes);	
-	// 				});
-	// 			}
-	// 			// - Rodadas
-	// 			if($(this).attr('name') == 'data-final-rodada[]' || $(this).attr('name') == 'data-inicial-rodada[]'){
-	// 				$(this).each(function() {
-	// 					$(this).on('focus', function() {
-	// 						curr_val = $(this).val();
-	// 					}).on('change', function() {
-	// 						var val = $(this).val();
-	// 						if(val){
-	// 							$(this).attr('value', val);
-	// 						} else {
-	// 							$(this).attr('value', '');
-	// 						}
-	// 					}).on('blur', function() {
-	// 						if(curr_val == '' && $(this).val() != curr_val){
-	// 							rfields +=1;
-	// 						} else if($(this).val() == '' && $(this).val() != curr_val){
-	// 							if(rfields >= 1){
-	// 								rfields -=1;
-	// 							}
-	// 						}
-	// 						console.log(rfields + ' ' + $(this).closest('ul').find('input:not([readonly="readonly"])').length);
-	// 						if(rfields == $(this).closest('ul').find('input:not([readonly="readonly"])').length){
-	// 							$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
-	// 						} else {
-	// 							var nfields = [];
+			// 						if(curr_val == '' && $(this).val() != curr_val){
+			// 							filled +=1;
+			// 						}	
+
+			// 						// -
+			// 						console.log(filled + '/' + fields.length);	
+			// 						$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+			// 					} else {
+			// 						// - Subtrai e limpa campos vazios.
+			// 						if($(this).val() != curr_val && $(this).is('select') || $(this).val() == '' && $(this).val() != curr_val && !$(this).is('select')){
+			// 							filled -=1;
+			// 							// -
+			// 							console.log(filled + '/' + fields.length);	
+			// 							$(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled'); 
+			// 						}
+			// 						$(this).closest('div.fieldset').nextAll('div.fieldset').find('input,select').each(function() {
+			// 							if(jQuery.inArray($(this).attr('name'), fields) !== -1){
+			// 								curr_val = $(this).val();
+			// 			                    $(this).val('');
+
+			// 								if(curr_val != $(this).val()){
+			// 									filled -=1;
+			// 									// -
+			// 									console.log(filled + '/' + fields.length);	
+			// 								} 
+			// 							} else if($(this).is(':checked')){
+			// 								// - Desmarca campos clicados se marcados, quando for limpar todos.
+			// 		                        $(this).trigger('click');
+			// 		                    }
+			// 						});									
+			// 					}
+			// 					// - Pega porcentagem.
+			// 					result = Math.ceil( 100 - ((fields.length - filled)/fields.length) * 100 );
+			// 					console.log(result);
+			// 					// - Mostrar %
+			// 				    if($('.progressBar').length){
+			// 				      var el = $('.progressBar');
+			// 				      el.find('.progressStatus > span').html(Math.ceil(parseInt(result)));
+			// 				      el.find('.progressLoader > span').css('width', Math.ceil(parseInt(result))+'%');
+			// 				      el.find('.progressStatus').css('left', result+'%');
+			// 				      $('[name="status"]').val(Math.ceil(parseInt(result)));
+			// 				    } 							
+			// 				});						
+			// 			}
+			// 		}
+			// 	}
+			// 	// - Campos de SOCIEDADE.
+			// 	if($(this).attr('type') == 'checkbox') {
+			// 		$(this).on('change', function() {
+			// 			if($(this).is(':checked')){
+			// 				checkes +=1;
+			// 				if(checkes >= 1){
+			// 					$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+			// 				}
+			// 			} else {
+			// 				if(checkes >= 1){
+			// 					checkes -=1;
+			// 					if(checkes == 0){
+			// 						$(this).closest('div.fieldset').nextAll('div.fieldset').find('input:not([readonly="readonly"]),select').each(function() {
+			// 							if($(this).val()){
+			// 								fieldsAfterChecks +=1;
+			// 							}
+			// 						});
+			// 						$(this).closest('div.fieldset').nextAll('div.fieldset').removeClass('enabled').find('input:not([readonly="readonly"]),select').val('');
+			// 						if(fieldsAfterChecks > 0){
+			// 							filled -=fieldsAfterChecks;
+			// 						}
+			// 						fieldsAfterChecks = 0;
+			// 					}						
+			// 				}
+			// 			}
+			// 			console.log(checkes);	
+			// 		});
+			// 	}
+			// 	// - Rodadas
+			// 	if($(this).attr('name') == 'data-final-rodada[]' || $(this).attr('name') == 'data-inicial-rodada[]'){
+			// 		$(this).each(function() {
+			// 			$(this).on('focus', function() {
+			// 				curr_val = $(this).val();
+			// 			}).on('change', function() {
+			// 				var val = $(this).val();
+			// 				if(val){
+			// 					$(this).attr('value', val);
+			// 				} else {
+			// 					$(this).attr('value', '');
+			// 				}
+			// 			}).on('blur', function() {
+			// 				if(curr_val == '' && $(this).val() != curr_val){
+			// 					rfields +=1;
+			// 				} else if($(this).val() == '' && $(this).val() != curr_val){
+			// 					if(rfields >= 1){
+			// 						rfields -=1;
+			// 					}
+			// 				}
+			// 				console.log(rfields + ' ' + $(this).closest('ul').find('input:not([readonly="readonly"])').length);
+			// 				if(rfields == $(this).closest('ul').find('input:not([readonly="readonly"])').length){
+			// 					$(this).closest('div.fieldset').nextAll('div.fieldset:first').addClass('enabled');
+			// 				} else {
+			// 					var nfields = [];
 								
-	// 							$(this).closest('div.fieldset').nextAll('div.fieldset').find('input,select').each(function() {
-	// 								if($(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
-	// 									if(jQuery.inArray($(this).attr('name'), nfields) === -1){
-	// 										nfields.push($(this).attr('name'));
-	// 									}
-	// 								}				
-	// 							});	 		
+			// 					$(this).closest('div.fieldset').nextAll('div.fieldset').find('input,select').each(function() {
+			// 						if($(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
+			// 							if(jQuery.inArray($(this).attr('name'), nfields) === -1){
+			// 								nfields.push($(this).attr('name'));
+			// 							}
+			// 						}				
+			// 					});	 		
 								
-	// 							console.log(nfields);
+			// 					console.log(nfields);
 
-	// 							filled -=nfields.length;
+			// 					filled -=nfields.length;
 
-	// 							setTimeout(function(){
-	// 								nfields = [];
-	// 							}, 600);									
+			// 					setTimeout(function(){
+			// 						nfields = [];
+			// 					}, 600);									
 
-	// 							// =
+			// 					// =
 
-	// 							$(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled').find('input, select').val(''); 
-	// 						}
-	// 					});					
-	// 				});
-	// 			}
-	// 		});	
-	// 		// - Drafts
-	// 	    $( document ).idleTimer( {
-	// 	        timeout:900000, 
-	// 	        idle:true
-	// 	    }).on( "idle.idleTimer", function(event, elem, obj){
-	// 	        // function you want to fire when the user goes idle
-	// 			console.log('Idle');
+			// 					$(this).closest('div.fieldset').nextAll('div.fieldset:first, div.fieldset').removeClass('enabled').find('input, select').val(''); 
+			// 				}
+			// 			});					
+			// 		});
+			// 	}
+			// });	
+			// - Drafts
+		  //   $( document ).idleTimer( {
+		  //       timeout:900000, 
+		  //       idle:true
+		  //   }).on( "idle.idleTimer", function(event, elem, obj){
+		  //       // function you want to fire when the user goes idle
+				// console.log('Idle');
 
-	// 	        var nfields = [];
+		  //       var nfields = [];
 
-	// 			$("#processo-form").children('div.fieldset').find('input,select').each(function() {
-	// 				if($(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
-	// 					if(jQuery.inArray($(this).attr('name'), nfields) === -1){
-	// 						nfields.push($(this).attr('name'));
-	// 					}
-	// 				}				
-	// 			});	 
+				// $("#processo-form").children('div.fieldset').find('input,select').each(function() {
+				// 	if($(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
+				// 		if(jQuery.inArray($(this).attr('name'), nfields) === -1){
+				// 			nfields.push($(this).attr('name'));
+				// 		}
+				// 	}				
+				// });	 
 
-	// 			console.log(nfields.length);
+				// console.log(nfields.length);
 
-	// 			if(nfields.length >= 2){
-	// 				var dataparam = $("#processo-form").serialize();
+				// if(nfields.length >= 2){
+				// 	var dataparam = $("#processo-form").serialize();
 
-	// 		        $.ajax({
-	// 		            type: 'POST',
-	// 		            async: true,
-	// 		            url: window.location.origin + '/functions/draft.php',
-	// 		            data: dataparam,
-	// 		            datatype: 'json',
-	// 		            cache: true,
-	// 		            global: false,
-	// 		            beforeSend: function() { 
-	// 		                $("#loader").css('display', 'flex');
-	// 		            },
-	// 		            success: function(data) {
-	// 		                if(data){
-	// 		                	// 
-	// 		                	var json = jQuery.parseJSON(data);
-	// 		                	window.location = window.location.origin + '/processo/' + json.uid + '/' + json.id + '?draft=true';
-	// 		                }
-	// 		            },
-	// 		            complete: function() { 
-	// 		                $("#loader").css('display', 'none');
-	// 		            }
-	// 		        }); 			
-	// 			}
-	// 	    }).on( "active.idleTimer", function(event, elem, obj, triggerevent){
-	// 	        // function you want to fire when the user becomes active again
-	// 	    	console.log('Active');
-	// 	    	nfields = [];
-	// 	    });									
-	// 	} else {
-	// 		var nfields = [], 
-	// 			status = $('[name="status"]').val();
+			 //        $.ajax({
+			 //            type: 'POST',
+			 //            async: true,
+			 //            url: window.location.origin + '/functions/draft.php',
+			 //            data: dataparam,
+			 //            datatype: 'json',
+			 //            cache: true,
+			 //            global: false,
+			 //            beforeSend: function() { 
+			 //                $("#loader").css('display', 'flex');
+			 //            },
+			 //            success: function(data) {
+			 //                if(data){
+			 //                	// 
+			 //                	var json = jQuery.parseJSON(data);
+			 //                	window.location = window.location.origin + '/processo/' + json.uid + '/' + json.id + '?draft=true';
+			 //                }
+			 //            },
+			 //            complete: function() { 
+			 //                $("#loader").css('display', 'none');
+			 //            }
+			 //        }); 			
+				// }
+		  //   }).on( "active.idleTimer", function(event, elem, obj, triggerevent){
+		  //       // function you want to fire when the user becomes active again
+		  //   	console.log('Active');
+		  //   	nfields = [];
+		  //   });									
+		} else {
+			// var nfields = [], 
+			// 	status = $('[name="status"]').val();
 
-	// 		function progressBar(status){
-	// 		    if($('.progressBar').length && status){
-	// 		      var el = $('.progressBar');
-	// 		      el.find('.progressStatus > span').html(status);
-	// 		      el.find('.progressLoader > span').css('width', status+'%');
-	// 		      el.find('.progressStatus').css('left', status+'%');
-	// 		    } 					
-	// 		}	
+			// function progressBar(status){
+			//     if($('.progressBar').length && status){
+			//       var el = $('.progressBar');
+			//       el.find('.progressStatus > span').html(status);
+			//       el.find('.progressLoader > span').css('width', status+'%');
+			//       el.find('.progressStatus').css('left', status+'%');
+			//     } 					
+			// }	
 
-	// 		progressBar($('[name="status"]').val());				
+			// progressBar($('[name="status"]').val());				
 
-	// 		$(this).children('div.fieldset').find('input,select').each(function() {
-	// 			// - Filtra por tipo.
-	// 			if($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden'){
-	// 				// - Filtra por classes.e names.
-	// 				if(!$(this).is('.moeda') && !$(this).is('.money') && $(this).attr('name') != 'data-final-rodada[]' && $(this).attr('name') != 'data-inicial-rodada[]'){
-	// 					// - Elimina readonlies.
-	// 					if(!$(this).attr('readonly')){
-	// 						fields.push($(this).attr('name'));
-	// 					}
-	// 				}
-	// 			}
-	// 			if(jQuery.inArray($(this).attr('name'), fields) !== -1){
-	// 				if($(this).val()){
-	// 					filled +=1;
-	// 					nfields.push($(this).attr('name'));
-	// 				}
-	// 			}				
-	// 		});		
+			// $(this).children('div.fieldset').find('input,select').each(function() {
+			// 	// - Filtra por tipo.
+			// 	if($(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden'){
+			// 		// - Filtra por classes.e names.
+			// 		if(!$(this).is('.moeda') && !$(this).is('.money') && $(this).attr('name') != 'data-final-rodada[]' && $(this).attr('name') != 'data-inicial-rodada[]'){
+			// 			// - Elimina readonlies.
+			// 			if(!$(this).attr('readonly')){
+			// 				fields.push($(this).attr('name'));
+			// 			}
+			// 		}
+			// 	}
+			// 	if(jQuery.inArray($(this).attr('name'), fields) !== -1){
+			// 		if($(this).val()){
+			// 			filled +=1;
+			// 			nfields.push($(this).attr('name'));
+			// 		}
+			// 	}				
+			// });		
 
-	// 		$(this).find(".forms-footer .btn").click(function( event ) {
-	// 		    // event.preventDefault();
+			// $(this).find(".forms-footer .btn").click(function( event ) {
+			//     // event.preventDefault();
 
-	// 			$(this).closest('form').children('div.fieldset').find('input,select').each(function() {
-	// 				if($(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
-	// 					if(jQuery.inArray($(this).attr('name'), nfields) === -1){
-	// 						nfields.push($(this).attr('name'));
-	// 					}
-	// 				} else if(!$(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
-	// 					if(jQuery.inArray($(this).attr('name'), nfields) !== -1){
-	// 					    var index = nfields.indexOf($(this).attr('name'));
+			// 	$(this).closest('form').children('div.fieldset').find('input,select').each(function() {
+			// 		if($(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
+			// 			if(jQuery.inArray($(this).attr('name'), nfields) === -1){
+			// 				nfields.push($(this).attr('name'));
+			// 			}
+			// 		} else if(!$(this).val() && (!$(this).is('.money') && !$(this).is('.moeda') && !$(this).attr('readonly["readonly"]') && !$(this).closest('ul').is('.columns') && $(this).attr('type') != 'checkbox' && $(this).attr('type') != 'hidden')){
+			// 			if(jQuery.inArray($(this).attr('name'), nfields) !== -1){
+			// 			    var index = nfields.indexOf($(this).attr('name'));
 						 
-	// 					    if (index > -1) {
-	// 					       nfields.splice(index, 1);
-	// 					    }							
-	// 					}
-	// 				}				
-	// 			});	 
+			// 			    if (index > -1) {
+			// 			       nfields.splice(index, 1);
+			// 			    }							
+			// 			}
+			// 		}				
+			// 	});	 
 
-	// 			result = Math.ceil( 100 - ((fields.length - nfields.length)/fields.length) * 100 );
+			// 	result = Math.ceil( 100 - ((fields.length - nfields.length)/fields.length) * 100 );
 
-	// 			$('[name="status"]').val(result);
+			// 	$('[name="status"]').val(result);
 
-	// 			progressBar($('[name="status"]').val());
-	// 		});
-	// 	}
+			// 	progressBar($('[name="status"]').val());
+			// });
+		}
 
-	// });	
+	});	
 
 	
 

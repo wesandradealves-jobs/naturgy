@@ -8,10 +8,12 @@
                 <?php if(isset($_SESSION['userType']) && $_SESSION['userType']!='responsavel') : ?>
                 <li>
                       <a href="cadastro/processos">Cadastro de Processos</a>
+                      <?php if($_SESSION['userType']=='administrador') : ?>
                       <ul>
                         <li><a href="cadastro/subfamilia">Subfamília(s)</a></li>
                         <!-- <li><a href="cadastro/tipos-de-processos">Tipos de Processos</a></li> -->
                       </ul>
+                      <?php endif; ?>
                 </li>  
                 <?php endif; ?>  
                 <?php if(isset($_SESSION['userType']) && $_SESSION['userType']=='administrador') : ?>
