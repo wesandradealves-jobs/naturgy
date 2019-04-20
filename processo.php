@@ -3,6 +3,10 @@
 	if(isset($_GET['id'])) :
 		$query_processos = "SELECT * FROM processos WHERE `processos`.`id` = '".$_GET['id']."'";
 		$processo = mysqli_fetch_assoc(mysqli_query($conn, $query_processos));
+	else: 
+		$ids = array();
+        $res_data = mysqli_query($conn, "SELECT * FROM processos ORDER BY id ASC");
+		$last_register = (int)$res_data->num_rows;		
 	endif;
 ?>
 <section>
@@ -130,7 +134,7 @@
 											echo '</label>
 									    <span>'; 
 									    echo '
-									      <input '.( (str_replace('-', '_', to_permalink($value)) == 'nome_processo' || str_replace('-', '_', to_permalink($value)) == 'numero_processo') ? 'required="required"' : '' ).' tabindex="'.$i.'" value="'. ( (isset($_GET['id']) && isset($processo)) ? $processo[str_replace('-', '_', to_permalink($value))] : '' ) .'" name="'.str_replace('-', '_', to_permalink($value)).'" type="'.( (to_permalink($value) == 'tramite-assinatura-externa-retirada' || to_permalink($value) == 'tramite-assinatura-externa-devolucao' || to_permalink($value) == 'adjudicacao-vencimento' || to_permalink($value) == 'disponivel-sap' || to_permalink($value) == 'data-disp-compras' || stripos( str_replace('-', '_', to_permalink($value)), 'data' )) ? 'date' : 'text' ).'">
+<input '.( (str_replace('-', '_', to_permalink($value)) == 'numero_processo') ? 'readonly="readonly"' : '' ).' tabindex="'.$i.'" value="'. ( (isset($_GET['id']) && isset($processo)) ? $processo[str_replace('-', '_', to_permalink($value))] : (str_replace('-', '_', to_permalink($value)) == 'numero_processo' && isset($last_register) ? $last_register + 1 : '' ) ) .'" name="'.str_replace('-', '_', to_permalink($value)).'" type="'.( (to_permalink($value) == 'tramite-assinatura-externa-retirada' || to_permalink($value) == 'tramite-assinatura-externa-devolucao' || to_permalink($value) == 'adjudicacao-vencimento' || to_permalink($value) == 'disponivel-sap' || to_permalink($value) == 'data-disp-compras' || stripos( str_replace('-', '_', to_permalink($value)), 'data' )) ? 'date' : 'text' ).'">
 									    </span>
 									  </div>';		
 								} elseif(str_replace('-', '_', to_permalink($value)) == 'rodadas') { 
@@ -153,41 +157,45 @@
 													            <span class="fieldset">
 													              <label for="nivel-rodada">Nível</label>
 													              <span>
-													                <input readonly="readonly" value="'.$row['nivel'].'" name="nivel-rodada[]" class="nivel_rodada" type="text">
+													                <input  readonly="readonly" value="'.$row['nivel'].'" name="nivel-rodada[]" class="nivel_rodada" type="text">
 													              </span>		              
 													            </span> 
-													            <!--
 													            <span class="fieldset">
 													            	<label for="rodada_tipo">Tipo</label>
 																	<span class="custom-combobox">
 															        <i class="fal fa-angle-down"></i>
-															        <select name="rodada-tipo[]">
+															        <select  name="rodada-tipo[]">
 															          <option '.( ($row['tipo'] == 'Rodada Comercial') ? 'selected="selected"' : '' ).' value="Rodada Comercial">Rodada Comercial</option>
 															          <option '.( ($row['tipo'] == 'Rodada Técnica') ? 'selected="selected"' : '' ).' value="Rodada Técnica">Rodada Técnica</option>
 															        </select>
 															      	</span>
-													            </span>-->
-															    <span class="fieldset">
+													            </span>
+															    <!--<span class="fieldset">
 															      <label for="rodada-tipo">Tipo</label>
 															      <span>
 															        <input value="'.$row['tipo'].'" readonly="readonly" name="rodada-tipo[]" type="text">
 															      </span>		              
-															    </span>	
+															    </span>-->
 													            <span class="fieldset">
 													              <label for="data-inicial-rodada">Início</label>
 													              <span>
-													                <input value="'.$row['data_inicial'].'" name="data-inicial-rodada[]" type="date">
+													                <input  value="'.$row['data_inicial'].'" name="data-inicial-rodada[]" type="date">
 													              </span>
 													            </span>  
 													            <span class="fieldset">
 													              <label for="data-final-rodada">Fim</label>
 													              <span>
-													                <input value="'.$row['data_final'].'" name="data-final-rodada[]" type="date">
+													                <input  value="'.$row['data_final'].'" name="data-final-rodada[]" type="date">
 													              </span>
 													            </span>
 															    <span class="fieldset rodadas-footer">
+															      <!--<span>
+															      <a class="collapse" onclick="collapse(this)" href="javascript:void(0)">
+																	<i class="fa fa-angle-up"></i>
+															      </a>
+															      </span>	-->				    
 															      <span> 
-															        <a href="javascript:void(0)" class="remove-rodada btn btn-2">Excluir</a>
+															      <a href="javascript:void(0)" onclick="removeRodada(this)" class="remove-rodada btn btn-2">Excluir</a>
 															      </span>
 															    </span>													            
 													            <!--
@@ -200,71 +208,92 @@
 													          </li>
 											      			';
 												        endwhile;
-												        if(!$res_sql_rodadas->num_rows){
-															echo '<li>
-															    <span class="fieldset">
-															      <label for="nivel-rodada">Nível</label>
-															      <span>
-															        <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
-															      </span>		              
-															    </span>
-															    <span class="fieldset">
-															      <label for="rodada-tipo">Tipo</label>
-															      <span>
-															        <input value=""  readonly="readonly" name="rodada-tipo[]" type="text">
-															      </span>		              
-															    </span>															    
-															    <span class="fieldset">
-															      <label for="data-inicial-rodada">Início</label>
-															      <span>
-															        <input name="data-inicial-rodada[]" type="date">
-															      </span>
-															    </span>  
-															    <span class="fieldset">
-															      <label for="data-final-rodada">Fim</label>
-															      <span>
-															        <input name="data-final-rodada[]" type="date">
-															      </span>
-															    </span> 
-															    <span class="fieldset rodadas-footer">
-															      <span> 
-															        <a href="javascript:void(0)" class="remove-rodada btn btn-2">Excluir</a>
-															      </span>
-															    </span>
-															  </li>';	
-												        }
+												   //      if(!$res_sql_rodadas->num_rows){
+															// echo '<li>
+															//     <span class="fieldset">
+															//       <label for="nivel-rodada">Nível</label>
+															//       <span>
+															//         <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
+															//       </span>		              
+															//     </span>
+															//     <!--<span class="fieldset">
+															//       <label for="rodada-tipo">Tipo</label>
+															//       <span>
+															//         <input value=""  readonly="readonly" name="rodada-tipo[]" type="text">
+															//       </span>		              
+															//     </span>-->
+													  //           <span class="fieldset">
+													  //           	<label for="rodada_tipo">Tipo</label>
+															// 		<span class="custom-combobox">
+															//         <i class="fal fa-angle-down"></i>
+															//         <select name="rodada-tipo[]">
+															//           <option value="Rodada Comercial">Rodada Comercial</option>
+															//           <option value="Rodada Técnica">Rodada Técnica</option>
+															//         </select>
+															//       	</span>
+													  //           </span>				      
+															//     <span class="fieldset">
+															//       <label for="data-inicial-rodada">Início</label>
+															//       <span>
+															//         <input name="data-inicial-rodada[]" type="date">
+															//       </span>
+															//     </span>  
+															//     <span class="fieldset">
+															//       <label for="data-final-rodada">Fim</label>
+															//       <span>
+															//         <input name="data-final-rodada[]" type="date">
+															//       </span>
+															//     </span> 
+															//     <span class="fieldset rodadas-footer">
+															//       <span> 
+															//         <a href="javascript:void(0)" onclick="removeRodada(this)" class="remove-rodada btn btn-2">Excluir</a>
+															//       </span>
+															//     </span>
+															//   </li>';	
+												   //      }
 										      		} else {	
-										      			echo '<li>
-												            <span class="fieldset">
-												              <label for="nivel-rodada">Nível</label>
-												              <span>
-												                <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
-												              </span>		              
-												            </span> 
-														    <span class="fieldset">
-														      <label for="rodada-tipo">Tipo</label>
-														      <span>
-														        <input value=""  readonly="readonly" name="rodada-tipo[]" type="text">
-														      </span>		              
-														    </span>	
-												            <span class="fieldset">
-												              <label for="data-inicial-rodada">Início</label>
-												              <span>
-												                <input name="data-inicial-rodada[]" type="date">
-												              </span>
-												            </span>  
-												            <span class="fieldset">
-												              <label for="data-final-rodada">Fim</label>
-												              <span>
-												                <input name="data-final-rodada[]" type="date">
-												              </span>
-												            </span> 
-												            <span class="fieldset rodadas-footer">
-												              <span> 
-												                <a href="javascript:void(0)" class="remove-rodada btn btn-2">Excluir</a>
-												              </span>
-												            </span>
-												          </li>';
+										      // 			echo '<li>
+												    //         <span class="fieldset">
+												    //           <label for="nivel-rodada">Nível</label>
+												    //           <span>
+												    //             <input value="1"  readonly="readonly" name="nivel-rodada[]" class="nivel_rodada" type="text">
+												    //           </span>		              
+												    //         </span>
+												    //         <span class="fieldset">
+												    //         	<label for="rodada_tipo">Tipo</label>
+																// <span class="custom-combobox">
+														  //       <i class="fal fa-angle-down"></i>
+														  //       <select name="rodada-tipo[]">
+														  //         <option value="Rodada Comercial">Rodada Comercial</option>
+														  //         <option value="Rodada Técnica">Rodada Técnica</option>
+														  //       </select>
+														  //     	</span>
+												    //         </span>	
+												    //         <!--
+														  //   <span class="fieldset">
+														  //     <label for="rodada-tipo">Tipo</label>
+														  //     <span>
+														  //       <input value=""  readonly="readonly" name="rodada-tipo[]" type="text">
+														  //     </span>		              
+														  //   </span>-->
+												    //         <span class="fieldset">
+												    //           <label for="data-inicial-rodada">Início</label>
+												    //           <span>
+												    //             <input name="data-inicial-rodada[]" type="date">
+												    //           </span>
+												    //         </span>  
+												    //         <span class="fieldset">
+												    //           <label for="data-final-rodada">Fim</label>
+												    //           <span>
+												    //             <input name="data-final-rodada[]" type="date">
+												    //           </span>
+												    //         </span> 
+												    //         <span class="fieldset rodadas-footer">
+												    //           <span> 
+												    //             <a href="javascript:void(0)" onclick="removeRodada(this)" class="remove-rodada btn btn-2">Excluir</a>
+												    //           </span>
+												    //         </span>
+												    //       </li>';
 												    }
 										          echo '
 										        </ul>
@@ -273,7 +302,7 @@
 									                	if(isset($res_sql_rodadas)){
 									                		echo '<a class="btn btn-2 deletar_rodada">Excluir</a>';
 									                	} else {
-									                		echo '<a href="javascript:void(0)" class="remove-rodada btn btn-2 disabled">Excluir</a>';		
+									                		echo '<a href="javascript:void(0)" onclick="removeRodada(this)" class="remove-rodada btn btn-2 disabled">Excluir</a>';		
 									                	}
 									                echo '
 										        </div>
@@ -298,7 +327,7 @@
 														echo '<span><span class="fieldset">
 															<span class="custom-combobox">
 														    	<i class="fal fa-angle-down"></i>
-											    				<select required="required" name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+											    				<select   name="'.str_replace('-', '_', to_permalink($value)).'[]">';
 											    				echo '<option value="">Selecione uma opção</option>';
 													    while($row = $responsavel->fetch_assoc()) :
 															echo '<option '.(isset($_GET['id']) && $rid == $row['id'] ? 'selected="selected"' : '' ).' value="'.$row['id'].'">'.$row['nome'].'</option>';
@@ -316,7 +345,7 @@
 														echo '<span><span class="fieldset">
 															<span class="custom-combobox">
 														    	<i class="fal fa-angle-down"></i>
-											    				<select required="required" name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+											    				<select     name="'.str_replace('-', '_', to_permalink($value)).'[]">';
 											    				echo '<option value="">Selecione uma opção</option>';
 													    while($row = $responsavel->fetch_assoc()) :
 															echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
@@ -333,7 +362,7 @@
 													echo '<span><span class="fieldset">
 														<span class="custom-combobox">
 													    	<i class="fal fa-angle-down"></i>
-										    				<select required="required" name="'.str_replace('-', '_', to_permalink($value)).'[]">';
+										    				<select     name="'.str_replace('-', '_', to_permalink($value)).'[]">';
 										    				echo '<option value="">Selecione uma opção</option>';
 												    while($row = $responsavel->fetch_assoc()) :
 														echo '<option value="'.$row['id'].'">'.$row['nome'].'</option>';
@@ -362,7 +391,7 @@
 												echo '<span><span class="fieldset">
 													<span class="custom-combobox">
 												    	<i class="fal fa-angle-down"></i>
-									    				<select name="'.str_replace('-', '_', to_permalink($value)).'">';
+									    				<select  name="'.str_replace('-', '_', to_permalink($value)).'">';
 									    				echo '<option value="">Selecione uma opção</option>';
 											    while($row = $tipo_processo->fetch_assoc()) :
 													echo '<option '.( (isset($processo) && $processo['tipo_processo'] == $row['tipo']) ? 'selected="selected"' : '' ).' value="'.$row['tipo'].'">'.$row['tipo'].'</option>';
@@ -379,7 +408,7 @@
 									    <label for="'.str_replace('-', '_', to_permalink($value)).'">'.$value.'</label>
 									    <span class="custom-combobox">
 									      <i class="fal fa-angle-down"></i>
-									      <select name="subfamilia">
+									      <select  name="subfamilia">
 									      	<option value="">Selecione</option>
 									      	'; 
 										        $subfamilias = "SELECT * FROM subfamilia";
@@ -387,8 +416,10 @@
 										        $subfamilia = mysqli_fetch_assoc($res_compradores);
 
 										        while($row = mysqli_fetch_array($res_subfamilias)) :
-										        	echo '<option '.( $processo['subfamilia'] == $row['subfamilia'] ? 'selected="selected"' : '' ).' value="'.$row['subfamilia'].'">'.$row['subfamilia'].'</option>';
+										        	echo '<option '.( $processo['subfamilia'] == $row['subfamilia'].' | Homologável: '.$row['homologavel'].' | Nível de Risco: '.$row['nivel_de_risco'].' | ARC: '.$row['arc'] ? 'selected="selected"' : '' ).' value="'.$row['subfamilia'].' | Homologável: '.$row['homologavel'].' | Nível de Risco: '.$row['nivel_de_risco'].' | ARC: '.$row['arc'].'">'.$row['subfamilia'].' | Homologável: '.$row['homologavel'].' | Nível de Risco: '.$row['nivel_de_risco'].' | ARC: '.$row['arc'].'</option>';
 										        endwhile;
+
+										        // '.$row['subfamilia'].' | Homologável: '.$row['homologavel'].' | Nível de Risco: '.$row['nivel_de_risco'].' | ARC: '.$row['arc']'
 									      	echo '
 									      </select>
 									    </span>
@@ -411,7 +442,7 @@
 												echo '<span><span class="fieldset">
 													<span class="custom-combobox">
 												    	<i class="fal fa-angle-down"></i>
-									    				<select name="'.str_replace('-', '_', to_permalink($value)).'">';
+									    				<select  name="'.str_replace('-', '_', to_permalink($value)).'">';
 									    				echo '<option value="">Selecione uma opção</option>';
 											    while($row = $comprador->fetch_assoc()) :
 													echo '<option '.( (isset($processo) && $processo['comprador'] == $row['id']) ? 'selected="selected"' : '' ).' value="'.$row['id'].'">'.$row['nome'].'</option>';

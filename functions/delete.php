@@ -40,9 +40,47 @@
             }
         } 
     } elseif($_POST){
-        $query_rodadas = 'DELETE FROM '.$_POST['table'].' WHERE pid = '.$_POST['pid'].' AND position = '.$_POST['position'];
-    
-        print_r(json_encode( array('SQL'=>mysqli_query($conn, $query_rodadas) ) ));  
+        if($_POST['table'] != 'rodadas'){
+            $query = 'DELETE FROM '.$_POST['table'].' WHERE id = '.$_POST['id'];
+            
+            $check = "SELECT * FROM `".$_POST['table']."` WHERE id = ".$_POST['id'];
+            $res_data = mysqli_query($conn,$check);
+
+            if($_POST['table'] == 'subfamilia'){
+                while($row = mysqli_fetch_array($res_data)) :
+                    $res = $row['subfamilia'].' | Homologável: '.$row['homologavel'].' | Nível de Risco: '.$row['nivel_de_risco'].' | ARC: '.$row['arc'];
+                endwhile;     
+
+                $check_processo = "SELECT * FROM processos WHERE subfamilia = '".$res."'"; 
+                $res_data_processo = mysqli_query($conn,$check_processo); 
+
+                while($r = mysqli_fetch_array($res_data_processo)) :
+                    $pid = $r['id'];
+                endwhile;                   
+
+                $update = "UPDATE processos SET subfamilia = '' WHERE `processos`.`subfamilia` = '".$res."'";  
+
+                mysqli_query($conn, $update); 
+            } elseif($_POST['table'] == 'processos_tipos'){
+                while($row = mysqli_fetch_array($res_data)) :
+                    $res = $row['tipo'];
+                endwhile;     
+
+                $check_processo = "SELECT * FROM processos WHERE tipo_processo = '".$res."'"; 
+                $res_data_processo = mysqli_query($conn,$check_processo); 
+
+                while($r = mysqli_fetch_array($res_data_processo)) :
+                    $pid = $r['id'];
+                endwhile;                   
+
+                $update = "UPDATE processos SET tipo_processo = '' WHERE `processos`.`tipo_processo` = '".$res."'";  
+
+                mysqli_query($conn, $update); 
+            }
+        } else {
+            $query = 'DELETE FROM '.$_POST['table'].' WHERE pid = '.$_POST['pid'].' AND position = '.$_POST['position'];
+        }
+        print_r(json_encode( array('SQL'=>mysqli_query($conn, $query) ) ));     
     }
 
 

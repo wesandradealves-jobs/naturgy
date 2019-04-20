@@ -36,6 +36,12 @@ RewriteRule ^processos/ordem/(.*) processos.php?orderBy=$1 [L]
 
 RewriteRule ^cadastro/processos processo.php [L]
 
+RewriteRule ^cadastro/subfamilia subfamilia.php [L]
+
+RewriteRule ^cadastro/subfamilia/?p=([0-9]+) subfamilia.php?page=$1 [L]
+
+RewriteRule ^cadastro/tipos-de-processos tipos-de-processos.php [L]
+
 RewriteRule ^processo/([0-9]+)/([0-9]+) processo.php?uid=$1&id=$2 [L]
 
 RewriteRule ^busca/processos processos [L]

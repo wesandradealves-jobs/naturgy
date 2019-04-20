@@ -28,8 +28,7 @@
 		background-color: $blue 
 		border-top: 4px white solid
 		color: white
-		+mq(767px, max)
-			overflow: auto
+		z-index: 10
 		.container  
 			padding-top: 10px
 			padding-bottom: 10px
@@ -38,6 +37,20 @@
 			>ul 
 				text-align: center
 				>li 
+					&:hover ul 
+						display: block
+					ul 
+						display: none 
+						position: absolute 
+						top: 100%
+						width: 100%
+						left: -22px
+						background-color: $blue
+						> li 	
+							background-color: $blue 
+							color: white
+							display: block
+							padding: 10px 22px 
 					&.disabled
 						background-color: transparent !important
 					display: inline-block

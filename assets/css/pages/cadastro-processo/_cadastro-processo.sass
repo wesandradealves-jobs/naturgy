@@ -75,11 +75,12 @@
 	margin-right: -40px
 	padding: 20px 40px 55px 0
 	.subfamilia_result
-		bottom: 30px
+		bottom: 7px
 		color: $blue 
 		+rem('font-size', 15px)
 		padding-left: 170px
 		padding-top: 15px	
+		padding-right: 30px
 		position: absolute 
 #sociedades
 	margin: 25px 0 35px
@@ -93,6 +94,17 @@
 	flex-flow: row wrap 
 	max-width: 814px
 	justify-content: space-between 
+	.collapse
+		border: 1px $blue solid 
+		display: block 
+		height: 25px
+		width: 25px
+		line-height: 23px
+		text-align: center
+		+rem('font-size', 19px)
+		color: $blue 
+		+border(999px)
+		cursor: pointer
 	>h3 
 		flex: 0 0 auto 
 		color: $blue 
@@ -134,7 +146,8 @@
 			    height: 40px
 			    padding: 0px 35px			
 			> * 
-				margin-left: auto
+				&:last-of-type
+					margin-left: auto
 		&-header 
 			align-items: flex-end 
 			color: $blue 
@@ -159,6 +172,10 @@
 				margin-bottom: 15px!important
 				padding: 15px
 				width: calc(50% - 8px)
+				+transition(500ms)
+				max-height: auto 
+				&.collapsed
+					max-height: 75px
 				&:first-child,
 				&:not(:last-child)
 					.rodadas-footer 

@@ -1,6 +1,23 @@
 .searchbar
 	background-color: $lightblue
 	&.forms
+		&.assets
+			.fieldset
+				&:first-child
+					flex: 1		
+					&.checkbox 
+						flex: 0 0 auto					
+		.custom-checkbox
+			border-color: $lightgray
+			background-color: white
+			border-radius: 0
+			height: 37px
+			width: 37px
+			margin-top: 0		
+			input,label
+				height: 100%
+				width: 100%
+				line-height: 35px
 		.container
 			align-items: flex-end
 			@extend .flex 
