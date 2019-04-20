@@ -1,4 +1,21 @@
 
+var fields = [],
+	default_fields = [
+		'nome_processo',
+		'tipo_processo',
+		'comprador',
+		'subfamilia',
+		'grupo_de_compras',
+		'data_disp_compras',
+		'responsavel[]',
+		'cod_material'
+	],
+	counter = [],
+	filled = 0,
+	old_val,
+	rodadas = 0,
+	filtered_fields = [];
+
 function getUrlParameter(name) {
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
   var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -78,7 +95,19 @@ function removeRodada(e){
 	        });  
 	    } else {
 	    	$(e).closest('li').remove();
+	    	rodadas = $( '.rodadas input[type="date"][required="true"]' ).length;
 	    }
+
+	    console.log($('.rodadas .columns').children().length == 0);
+
+		if($('.rodadas .columns').children().length == 0){
+			if(jQuery.inArray('data-inicial-rodada[]', counter) !== -1 && jQuery.inArray('data-final-rodada[]', counter) !== -1){
+			    var indexes = [counter.indexOf('data-inicial-rodada[]'),counter.indexOf('data-final-rodada[]')];			
+				for (var i = indexes.length -1; i >= 0; i--)
+				   counter.splice(indexes[i],1);				
+			}
+		}
+		console.log(counter);	    
 	}	
 }
 
@@ -134,10 +163,19 @@ function addMultipleInput(e){
 	html += '</li>';	    
 
     $(html).appendTo($(e).closest('.rodadas').find('.columns'));
+
+	rodadas = $( '.rodadas input[type="date"][required="true"]' ).length; 
+
+	$( '.rodadas input[type="date"][required="true"]' ).each(function() {
+		if(jQuery.inArray($(this).attr('name'), counter) === -1){
+			counter.push($(this).attr('name'));
+		}
+	});
+
+	console.log(counter);
 }
 
 $(document).ready(function () {
-
 	$(".assets").submit(function( event ) {
 		event.preventDefault();
 		
@@ -238,22 +276,6 @@ $(document).ready(function () {
 	});   
 
 	// - Controle do form	
-
-	var fields = [],
-		default_fields = [
-			'nome_processo',
-			'tipo_processo',
-			'comprador',
-			'subfamilia',
-			'grupo_de_compras',
-			'data_disp_compras',
-			'responsavel[]',
-			'cod_material'
-		],
-		counter = [],
-		filled = 0,
-		old_val,
-		filtered_fields = [];	
 
 	// Subfamilias
 
@@ -461,8 +483,8 @@ $(document).ready(function () {
 							filled-=1;
 						}	
 					}	
-					result = Math.ceil( 100 - ((counter.length - filled)/counter.length) * 100 );
-					console.log(filled + ' ' + counter.length + ' ' + result+'%');
+					result = Math.ceil( 100 - (((counter.length + rodadas) - filled)/(counter.length + rodadas)) * 100 );
+					console.log(filled + ' ' + (counter.length + rodadas) + ' ' + result+'%');
 				    if($('.progressBar').length){
 				      var el = $('.progressBar');
 				      el.find('.progressStatus > span').html(Math.ceil(parseInt(result)));
@@ -474,7 +496,7 @@ $(document).ready(function () {
 			});	
 			// - Drafts
 		    $( document ).idleTimer( {
-		        timeout:6000, 
+		        timeout:900000, 
 		        idle:true
 		    }).on( "idle.idleTimer", function(event, elem, obj){
 		        // function you want to fire when the user goes idle
